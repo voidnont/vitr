@@ -30,3 +30,12 @@ Saved songs, history, playlists, recent searches, recommendations, appearance an
 - GitHub: `github.com/bloodvitr`
 - Vitr: `github.com/bloodvitr/vitr`
 - Ko-fi: `ko-fi.com/bloodvitr`
+
+
+## License
+
+Vitr is **source-available**, not open source.
+
+You may download, view, and run unmodified copies for personal, non-commercial use. Modifications are only permitted when made privately for the purpose of contributing them back to the official Vitr project. Redistribution, forks, derivative releases, commercial use, or other modifications require prior permission from **Blood**.
+
+See [LICENSE](./LICENSE) for the full terms.
