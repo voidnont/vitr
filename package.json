@@ -22,5 +22,6 @@
     "@playwright/test": "^1.55.0",
     "@vitejs/plugin-react": "^5.0.2",
     "vite": "^7.1.5"
-  }
+  },
+  "license": "SEE LICENSE IN LICENSE"
 }
