@@ -24,6 +24,6 @@
       "Android Auto",
       "Queue"
     ],
-    "syncError": "https://api.github.com/repos/bloodvitr/vitr returned 404"
+    "syncError": "https://api.github.com/repos/bloodvitr/vitr/git/trees/main?recursive=1 returned 409"
   }
 }
