@@ -1,0 +1,57 @@
+name: Desktop Linux Packages
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: desktop
+
+jobs:
+  build-linux:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    steps:
+      - name: Checkout vitr
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - name: Install Tauri Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev patchelf
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Read release version
+        id: release
+        run: echo "version=$(node tools/release-metadata.mjs version)" >> "$GITHUB_OUTPUT"
+
+      - name: Build and smoke-test Linux packages
+        run: bash platforms/linux/build.sh
+
+      - name: Upload vitr Linux packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: vitr-${{ steps.release.outputs.version }}-Linux
+          path: |
+            desktop/release-upload/vitr-${{ steps.release.outputs.version }}-amd64.deb
+            desktop/release-upload/vitr-${{ steps.release.outputs.version }}-x86_64.AppImage
+          if-no-files-found: error

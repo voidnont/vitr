@@ -1,0 +1,118 @@
+name: macOS DMG
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build-dmg:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            label: macOS-Apple-Silicon
+            release_arch: arm64
+          - runner: macos-15-intel
+            label: macOS-Intel
+            release_arch: x64
+
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 75
+    steps:
+      - name: Checkout vitr
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Read release version
+        id: release
+        run: echo "version=$(node tools/release-metadata.mjs version)" >> "$GITHUB_OUTPUT"
+
+      - name: Configure optional Apple signing and notarization
+        shell: bash
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          set -euo pipefail
+
+          has_cert=0
+          has_cert_password=0
+          has_keychain_password=0
+          has_apple_id=0
+          has_apple_password=0
+          has_team_id=0
+          [[ -n "${APPLE_CERTIFICATE:-}" ]] && has_cert=1
+          [[ -n "${APPLE_CERTIFICATE_PASSWORD:-}" ]] && has_cert_password=1
+          [[ -n "${KEYCHAIN_PASSWORD:-}" ]] && has_keychain_password=1
+          [[ -n "${APPLE_ID:-}" ]] && has_apple_id=1
+          [[ -n "${APPLE_PASSWORD:-}" ]] && has_apple_password=1
+          [[ -n "${APPLE_TEAM_ID:-}" ]] && has_team_id=1
+
+          signing_sum=$((has_cert + has_cert_password + has_keychain_password))
+          notarization_sum=$((has_apple_id + has_apple_password + has_team_id))
+
+          if [[ "$signing_sum" -eq 0 && "$notarization_sum" -eq 0 ]]; then
+            echo "VITR_MAC_DISTRIBUTION=validation-only" >> "$GITHUB_ENV"
+            echo "Apple signing credentials are not configured; producing a validation-only DMG."
+            exit 0
+          fi
+
+          if [[ "$signing_sum" -ne 3 ]]; then
+            echo "APPLE_CERTIFICATE, APPLE_CERTIFICATE_PASSWORD and KEYCHAIN_PASSWORD must all be set when macOS signing is enabled." >&2
+            exit 1
+          fi
+          if [[ "$notarization_sum" -ne 0 && "$notarization_sum" -ne 3 ]]; then
+            echo "APPLE_ID, APPLE_PASSWORD and APPLE_TEAM_ID must all be set when notarization is enabled." >&2
+            exit 1
+          fi
+
+          bash platforms/macos/import-signing-certificate.sh
+
+          if [[ "$notarization_sum" -eq 3 ]]; then
+            {
+              echo "APPLE_ID=$APPLE_ID"
+              echo "APPLE_PASSWORD=$APPLE_PASSWORD"
+              echo "APPLE_TEAM_ID=$APPLE_TEAM_ID"
+              echo "VITR_MAC_DISTRIBUTION=signed-notarized"
+            } >> "$GITHUB_ENV"
+          else
+            echo "VITR_MAC_DISTRIBUTION=signed-validation-only" >> "$GITHUB_ENV"
+            echo "macOS signing is configured without notarization; artifact remains validation-only."
+          fi
+
+      - name: Build and smoke-test macOS package
+        run: bash platforms/macos/build.sh
+
+      - name: Verify notarization staple when configured
+        if: env.VITR_MAC_DISTRIBUTION == 'signed-notarized'
+        run: |
+          xcrun stapler validate "release-upload/vitr-${{ steps.release.outputs.version }}-macos-${{ matrix.release_arch }}.dmg"
+
+      - name: Upload vitr macOS package
+        uses: actions/upload-artifact@v4
+        with:
+          name: vitr-${{ steps.release.outputs.version }}-${{ matrix.label }}
+          path: release-upload/vitr-${{ steps.release.outputs.version }}-macos-${{ matrix.release_arch }}.dmg
+          if-no-files-found: error

@@ -1,0 +1,408 @@
+name: Desktop Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    working-directory: desktop
+
+jobs:
+  release-info:
+    name: Resolve release version
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.release.outputs.version }}
+      should_release: ${{ steps.release.outputs.should_release }}
+    steps:
+      - name: Checkout vitr
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+
+      - name: Resolve release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="$(node tools/release-metadata.mjs version)"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if gh release view "v$version" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "should_release=false" >> "$GITHUB_OUTPUT"
+            echo "Release v$version already exists; skipping publication."
+          else
+            echo "should_release=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  windows:
+    name: Windows x64 release package
+    needs: release-info
+    if: needs.release-info.outputs.should_release == 'true'
+    runs-on: windows-2025
+    timeout-minutes: 75
+    steps:
+      - name: Checkout vitr
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Configure Windows signing and updater artifacts
+        shell: pwsh
+        env:
+          WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
+          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+          WINDOWS_TIMESTAMP_URL: ${{ vars.WINDOWS_TIMESTAMP_URL }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: |
+          $hasCertificate = -not [string]::IsNullOrWhiteSpace($env:WINDOWS_CERTIFICATE)
+          $hasPassword = -not [string]::IsNullOrWhiteSpace($env:WINDOWS_CERTIFICATE_PASSWORD)
+          $hasUpdaterKey = -not [string]::IsNullOrWhiteSpace($env:TAURI_SIGNING_PRIVATE_KEY)
+          $bundle = @{}
+
+          if ($hasUpdaterKey) {
+            $bundle["createUpdaterArtifacts"] = $true
+            "VITR_UPDATER_ARTIFACTS=true" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          } else {
+            "VITR_UPDATER_ARTIFACTS=false" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+            Write-Host "TAURI_SIGNING_PRIVATE_KEY is not configured; signed auto-update artifacts will be skipped."
+          }
+
+          if ($hasCertificate -xor $hasPassword) {
+            throw "WINDOWS_CERTIFICATE and WINDOWS_CERTIFICATE_PASSWORD must either both be set or both be absent."
+          }
+
+          if ($hasCertificate) {
+            if ([string]::IsNullOrWhiteSpace($env:WINDOWS_TIMESTAMP_URL)) {
+              throw "WINDOWS_TIMESTAMP_URL repository variable is required when Windows signing is enabled."
+            }
+            $thumbprint = (& .\platforms\windows\import-signing-certificate.ps1).Trim()
+            if ([string]::IsNullOrWhiteSpace($thumbprint)) {
+              throw "Windows signing certificate import did not return a thumbprint."
+            }
+            $bundle["windows"] = @{
+              certificateThumbprint = $thumbprint
+              digestAlgorithm = "sha256"
+              timestampUrl = $env:WINDOWS_TIMESTAMP_URL
+            }
+            "VITR_WINDOWS_DISTRIBUTION=signed" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          } else {
+            "VITR_WINDOWS_DISTRIBUTION=validation-only" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+            Write-Host "Windows code-signing certificate is not configured; installer metadata still uses publisher blood."
+          }
+
+          if ($bundle.Count -gt 0) {
+            @{ bundle = $bundle } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath "src-tauri\tauri.windows.conf.json" -Encoding utf8
+          }
+
+      - name: Build and smoke-test Windows package
+        shell: pwsh
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: |
+          & .\platforms\windows\build.bat
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Verify Windows signature when configured
+        if: env.VITR_WINDOWS_DISTRIBUTION == 'signed'
+        shell: pwsh
+        run: |
+          $packages = @(
+            "release-upload/vitr-${{ needs.release-info.outputs.version }}-setup.exe",
+            "release-upload/vitr-${{ needs.release-info.outputs.version }}-x64.msi"
+          )
+          foreach ($package in $packages) {
+            $signature = Get-AuthenticodeSignature -FilePath $package
+            if ($signature.Status -ne 'Valid') {
+              throw "Windows package signature is not valid for $package: $($signature.Status) $($signature.StatusMessage)"
+            }
+          }
+
+      - name: Upload Windows release package
+        uses: actions/upload-artifact@v4
+        with:
+          name: vitr-${{ needs.release-info.outputs.version }}-Windows
+          path: |
+            desktop/release-upload/vitr-${{ needs.release-info.outputs.version }}-setup.exe
+            desktop/release-upload/vitr-${{ needs.release-info.outputs.version }}-setup.exe.sig
+            desktop/release-upload/vitr-${{ needs.release-info.outputs.version }}-x64.msi
+            desktop/release-upload/vitr-${{ needs.release-info.outputs.version }}-x64.msi.sig
+          if-no-files-found: error
+
+  linux:
+    name: Linux x86_64 release packages
+    needs: release-info
+    if: needs.release-info.outputs.should_release == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    steps:
+      - name: Checkout vitr
+        uses: actions/checkout@v5
+
+      - name: Install Tauri Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev patchelf
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Configure signed updater artifacts
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: |
+          if [[ -n "${TAURI_SIGNING_PRIVATE_KEY:-}" ]]; then
+            printf '%s\n' '{"bundle":{"createUpdaterArtifacts":true}}' > src-tauri/tauri.linux.conf.json
+          else
+            echo "Updater signing key not configured; Linux updater signature will be skipped."
+          fi
+
+      - name: Build and smoke-test Linux packages
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: bash platforms/linux/build.sh
+
+      - name: Upload Linux release packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: vitr-${{ needs.release-info.outputs.version }}-Linux
+          path: |
+            desktop/release-upload/vitr-${{ needs.release-info.outputs.version }}-amd64.deb
+            desktop/release-upload/vitr-${{ needs.release-info.outputs.version }}-x86_64.AppImage
+            desktop/release-upload/vitr-${{ needs.release-info.outputs.version }}-x86_64.AppImage.sig
+          if-no-files-found: error
+
+  macos:
+    name: macOS release package (${{ matrix.label }})
+    needs: release-info
+    if: needs.release-info.outputs.should_release == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            label: Apple-Silicon
+            release_arch: arm64
+          - runner: macos-15-intel
+            label: Intel
+            release_arch: x64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 75
+    steps:
+      - name: Checkout vitr
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Configure optional Apple signing and notarization
+        shell: bash
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          set -euo pipefail
+
+          has_cert=0
+          has_cert_password=0
+          has_keychain_password=0
+          has_apple_id=0
+          has_apple_password=0
+          has_team_id=0
+          [[ -n "${APPLE_CERTIFICATE:-}" ]] && has_cert=1
+          [[ -n "${APPLE_CERTIFICATE_PASSWORD:-}" ]] && has_cert_password=1
+          [[ -n "${KEYCHAIN_PASSWORD:-}" ]] && has_keychain_password=1
+          [[ -n "${APPLE_ID:-}" ]] && has_apple_id=1
+          [[ -n "${APPLE_PASSWORD:-}" ]] && has_apple_password=1
+          [[ -n "${APPLE_TEAM_ID:-}" ]] && has_team_id=1
+
+          signing_sum=$((has_cert + has_cert_password + has_keychain_password))
+          notarization_sum=$((has_apple_id + has_apple_password + has_team_id))
+
+          if [[ "$signing_sum" -eq 0 && "$notarization_sum" -eq 0 ]]; then
+            echo "VITR_MAC_DISTRIBUTION=validation-only" >> "$GITHUB_ENV"
+            echo "Apple signing credentials are not configured; package will be unsigned."
+            exit 0
+          fi
+
+          if [[ "$signing_sum" -ne 3 ]]; then
+            echo "APPLE_CERTIFICATE, APPLE_CERTIFICATE_PASSWORD and KEYCHAIN_PASSWORD must all be set when macOS signing is enabled." >&2
+            exit 1
+          fi
+          if [[ "$notarization_sum" -ne 0 && "$notarization_sum" -ne 3 ]]; then
+            echo "APPLE_ID, APPLE_PASSWORD and APPLE_TEAM_ID must all be set when notarization is enabled." >&2
+            exit 1
+          fi
+
+          bash platforms/macos/import-signing-certificate.sh
+
+          if [[ "$notarization_sum" -eq 3 ]]; then
+            {
+              echo "APPLE_ID=$APPLE_ID"
+              echo "APPLE_PASSWORD=$APPLE_PASSWORD"
+              echo "APPLE_TEAM_ID=$APPLE_TEAM_ID"
+              echo "VITR_MAC_DISTRIBUTION=signed-notarized"
+            } >> "$GITHUB_ENV"
+          else
+            echo "VITR_MAC_DISTRIBUTION=signed-validation-only" >> "$GITHUB_ENV"
+          fi
+
+      - name: Configure signed updater artifacts
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: |
+          if [[ -n "${TAURI_SIGNING_PRIVATE_KEY:-}" ]]; then
+            printf '%s\n' '{"bundle":{"createUpdaterArtifacts":true}}' > src-tauri/tauri.macos.conf.json
+          else
+            echo "Updater signing key not configured; macOS updater archive will be skipped."
+          fi
+
+      - name: Build and smoke-test macOS package
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: bash platforms/macos/build.sh
+
+      - name: Verify notarization staple when configured
+        if: env.VITR_MAC_DISTRIBUTION == 'signed-notarized'
+        run: |
+          xcrun stapler validate "release-upload/vitr-${{ needs.release-info.outputs.version }}-macos-${{ matrix.release_arch }}.dmg"
+
+      - name: Upload macOS release package
+        uses: actions/upload-artifact@v4
+        with:
+          name: vitr-${{ needs.release-info.outputs.version }}-macOS-${{ matrix.label }}
+          path: |
+            desktop/release-upload/vitr-${{ needs.release-info.outputs.version }}-macos-${{ matrix.release_arch }}.dmg
+            desktop/release-upload/vitr-${{ needs.release-info.outputs.version }}-macos-${{ matrix.release_arch }}.app.tar.gz
+            desktop/release-upload/vitr-${{ needs.release-info.outputs.version }}-macos-${{ matrix.release_arch }}.app.tar.gz.sig
+          if-no-files-found: error
+
+  publish:
+    name: Publish GitHub Release
+    needs: [release-info, windows, linux, macos]
+    if: needs.release-info.outputs.should_release == 'true'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout vitr
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+
+      - name: Download release packages
+        uses: actions/download-artifact@v5
+        with:
+          path: desktop/release-assets
+          merge-multiple: true
+
+      - name: Verify release package set
+        env:
+          VERSION: ${{ needs.release-info.outputs.version }}
+        run: |
+          set -euo pipefail
+          required=(
+            "vitr-${VERSION}-setup.exe"
+            "vitr-${VERSION}-x64.msi"
+            "vitr-${VERSION}-amd64.deb"
+            "vitr-${VERSION}-x86_64.AppImage"
+            "vitr-${VERSION}-macos-arm64.dmg"
+            "vitr-${VERSION}-macos-x64.dmg"
+          )
+          for file in "${required[@]}"; do
+            test -f "release-assets/$file" || { echo "Missing release asset: $file" >&2; exit 1; }
+          done
+
+          updater_required=(
+            "vitr-${VERSION}-setup.exe.sig"
+            "vitr-${VERSION}-x86_64.AppImage.sig"
+            "vitr-${VERSION}-macos-arm64.app.tar.gz"
+            "vitr-${VERSION}-macos-arm64.app.tar.gz.sig"
+            "vitr-${VERSION}-macos-x64.app.tar.gz"
+            "vitr-${VERSION}-macos-x64.app.tar.gz.sig"
+          )
+          updater_present=0
+          for file in "${updater_required[@]}"; do
+            [[ -f "release-assets/$file" ]] && updater_present=$((updater_present + 1))
+          done
+          if [[ "$updater_present" -ne 0 && "$updater_present" -ne "${#updater_required[@]}" ]]; then
+            echo "Signed updater artifacts are incomplete; refusing to publish a broken updater manifest." >&2
+            exit 1
+          fi
+          if [[ "$updater_present" -eq "${#updater_required[@]}" ]]; then
+            node tools/generate-updater-manifest.mjs release-assets
+          else
+            echo "No updater signing key was configured; publishing installers without latest.json."
+          fi
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.release-info.outputs.version }}
+        run: |
+          set -euo pipefail
+          cat > release-notes.md <<EOF
+          vitr ${VERSION}
+
+          Cross-platform desktop hardening release for Windows, Linux and macOS.
+
+          - Windows branded Setup EXE (recommended)
+          - Windows x64 MSI (fallback)
+          - Linux x86_64 DEB and AppImage
+          - macOS Apple Silicon DMG
+          - macOS Intel DMG
+          - Durable playback/session persistence
+          - Hardened native packaging, runtime updates, local-media permissions and release CI
+
+          Publisher metadata: blood.
+
+          Signed automatic updates are published when TAURI_SIGNING_PRIVATE_KEY is configured. Windows Authenticode and macOS signing/notarization are applied when their platform credentials are configured.
+          EOF
+
+          gh release create "v${VERSION}" release-assets/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "vitr ${VERSION}" \
+            --notes-file release-notes.md

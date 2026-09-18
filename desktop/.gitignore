@@ -1,0 +1,13 @@
+node_modules/
+release-upload/
+src-tauri/target/
+src-tauri/icons/
+.vitr-runtime/
+*.log
+.DS_Store
+
+# Local updater signing material must never be committed.
+vitr-updater*
+*.key
+*.key.pub
+*.key.txt

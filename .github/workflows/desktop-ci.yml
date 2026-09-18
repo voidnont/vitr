@@ -1,0 +1,82 @@
+name: Desktop CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: desktop
+
+jobs:
+  frontend:
+    name: Shared frontend and contracts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout vitr
+        uses: actions/checkout@v5
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - name: Install locked frontend tooling
+        run: npm ci
+      - name: Verify frontend and contracts
+        run: npm run check
+
+  native:
+    name: Native ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            name: Linux x86_64
+          - os: windows-2025
+            name: Windows x64
+          - os: macos-15
+            name: macOS Apple Silicon
+          - os: macos-15-intel
+            name: macOS Intel
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    steps:
+      - name: Checkout vitr
+        uses: actions/checkout@v5
+
+      - name: Install Tauri Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev patchelf
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+
+      - name: Install locked frontend tooling
+        run: npm ci
+
+      - name: Generate app icons
+        run: npm run icons
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Run native tests
+        run: cargo test --locked --manifest-path src-tauri/Cargo.toml
+
+      - name: Check native build
+        run: cargo check --locked --manifest-path src-tauri/Cargo.toml

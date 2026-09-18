@@ -11,7 +11,16 @@
     "build": "vite build",
     "test:e2e": "npm run build && playwright test",
     "test:e2e:ci": "playwright test",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "desktop:install": "npm --prefix desktop ci",
+    "desktop:test": "npm --prefix desktop test",
+    "desktop:check": "npm --prefix desktop run check",
+    "desktop:dev": "npm --prefix desktop run tauri:dev",
+    "desktop:build": "npm --prefix desktop run tauri:build",
+    "desktop:build:windows": "npm --prefix desktop run tauri:build:windows",
+    "desktop:build:linux": "npm --prefix desktop run tauri:build:linux",
+    "desktop:build:macos": "npm --prefix desktop run tauri:build:macos",
+    "check:all": "npm run check && npm run test:unit && npm run desktop:check"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",

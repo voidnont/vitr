@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>vitr mini player</title>
+  <link rel="icon" href="./vitr-icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./mini-player.css" />
+</head>
+<body>
+  <main id="mini-player" class="mini-shell" data-vitr-drag-region data-tauri-drag-region>
+    <div class="mini-art" data-vitr-drag-region data-tauri-drag-region>
+      <img id="mini-cover" src="./vitr-icon.svg" alt="" draggable="false" />
+    </div>
+    <div class="mini-copy" data-vitr-drag-region data-tauri-drag-region>
+      <strong id="mini-title">Nothing playing</strong>
+      <span id="mini-artist">vitr</span>
+      <div class="mini-progress" aria-hidden="true"><i id="mini-progress-bar"></i></div>
+    </div>
+    <div class="mini-controls">
+      <button data-action="previous" aria-label="Previous">‹</button>
+      <button class="mini-play" data-action="toggle-play" aria-label="Play"><span id="mini-play-icon">▶</span></button>
+      <button data-action="next" aria-label="Next">›</button>
+      <button class="mini-close" data-action="disable" aria-label="Disable floating mini player">×</button>
+    </div>
+  </main>
+  <script type="module" src="./mini-player.mjs"></script>
+</body>
+</html>

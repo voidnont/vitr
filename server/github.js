@@ -164,6 +164,6 @@ export async function loadVitrApp(fetchImpl = fetch) {
   return {
     ...merged,
     description: sources.find((source) => source.description)?.description || 'Vitr music player by Blood.',
-    url: 'https://github.com/bloodvitr/vitr',
+    url: 'https://github.com/voidnont/vitr',
   };
 }

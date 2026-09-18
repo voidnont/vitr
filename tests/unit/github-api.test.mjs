@@ -58,14 +58,14 @@ test('Vitr detail reads the canonical repository', async () => {
   const seen = [];
   const fakeFetch = async (url) => {
     const value = String(url); seen.push(value);
-    if (value.endsWith('/repos/bloodvitr/vitr')) return Response.json({ full_name: 'bloodvitr/vitr', name: 'vitr', owner: { login: 'bloodvitr' }, description: 'Vitr', html_url: 'https://github.com/bloodvitr/vitr' });
-    if (value.includes('/repos/bloodvitr/vitr/releases')) return Response.json([{ draft: false, prerelease: false, tag_name: 'v0.7.0', assets: [{ id: 1, name: 'Vitr-0.7.0-arm64.apk', size: 1, browser_download_url: 'https://github.com/bloodvitr/vitr/releases/download/v0.7.0/Vitr.apk' }] }]);
+    if (value.endsWith('/repos/voidnont/vitr')) return Response.json({ full_name: 'voidnont/vitr', name: 'vitr', owner: { login: 'bloodvitr' }, description: 'Vitr', html_url: 'https://github.com/voidnont/vitr' });
+    if (value.includes('/repos/voidnont/vitr/releases')) return Response.json([{ draft: false, prerelease: false, tag_name: 'v0.7.0', assets: [{ id: 1, name: 'Vitr-0.7.0-arm64.apk', size: 1, browser_download_url: 'https://github.com/voidnont/vitr/releases/download/v0.7.0/Vitr.apk' }] }]);
     throw new Error(`unexpected ${url}`);
   };
   const app = await loadVitrApp(fakeFetch);
   assert.deepEqual(app.availablePlatforms, ['android']);
-  assert.equal(app.url, 'https://github.com/bloodvitr/vitr');
-  assert.ok(seen.some((value) => value.includes('/bloodvitr/vitr/releases')));
+  assert.equal(app.url, 'https://github.com/voidnont/vitr');
+  assert.ok(seen.some((value) => value.includes('/voidnont/vitr/releases')));
 });
 test('rate limit errors are explicit', async () => {
   const fakeFetch = async () => new Response(JSON.stringify({ message: 'rate limited' }), { status: 403, headers: { 'x-ratelimit-remaining': '0', 'content-type': 'application/json' } });
