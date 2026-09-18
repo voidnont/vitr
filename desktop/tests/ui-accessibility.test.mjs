@@ -21,11 +21,11 @@ test('mini player exposes an always-accessible volume slider', async () => {
   assert.match(ui, /aria-label="Volume"/);
 });
 
-test('Home and About include canonical Ko-fi and GitHub pill links', async () => {
+test('Home and About include canonical Ko-fi and Vitr repository pill links', async () => {
   const ui = await uiSource();
   assert.match(ui, /home-links/);
   assert.match(ui, /https:\/\/ko-fi\.com\/bloodvitr/);
-  assert.match(ui, /https:\/\/github\.com\/bloodvitr\/vitr/);
+  assert.match(ui, /https:\/\/github\.com\/voidnont\/vitr/);
   assert.match(ui, /support-links/);
   assert.doesNotMatch(ui, /vitr-windows/i);
 });
