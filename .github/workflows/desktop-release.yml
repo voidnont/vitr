@@ -3,9 +3,16 @@ name: Desktop Release
 on:
   push:
     branches: [main]
+    paths:
+      - 'desktop/**'
+      - '.github/workflows/desktop-release.yml'
 
 permissions:
   contents: write
+
+concurrency:
+  group: vitr-desktop-release
+  cancel-in-progress: true
 
 defaults:
   run:

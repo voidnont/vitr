@@ -3,6 +3,9 @@ name: Adapt VITR web source
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'desktop/**'
+      - '.github/workflows/desktop-*.yml'
   schedule:
     - cron: '*/15 * * * *'
   workflow_dispatch:

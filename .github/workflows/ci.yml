@@ -3,8 +3,14 @@ name: Build Vitr
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'desktop/**'
+      - '.github/workflows/desktop-*.yml'
   pull_request:
     branches: [main]
+    paths-ignore:
+      - 'desktop/**'
+      - '.github/workflows/desktop-*.yml'
 
 permissions:
   contents: read
