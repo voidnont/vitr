@@ -37,10 +37,10 @@ test('Ko-fi links use the Vitr cup-and-heart icon in header and footer', () => {
 });
 
 
-test('download controls are locked to bloodvitr/vitr releases', () => {
+test('download controls are locked to voidnont/vitr releases', () => {
   const app = read('src/App.jsx');
   const vitrApp = read('shared/vitr-app.js');
-  assert.match(vitrApp, /export const VITR_REPO = 'bloodvitr\/vitr'/);
+  assert.match(vitrApp, /export const VITR_REPO = 'voidnont\/vitr'/);
   assert.match(app, /VITR_RELEASES_URL = `\$\{VITR_REPO_URL\}\/releases`/);
   assert.match(app, /Choose Windows download/);
   assert.match(app, /ALL BUILDS/);
