@@ -1,0 +1,47 @@
+name: Adapt VITR web source
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: vitr-source-adapter
+  cancel-in-progress: true
+
+jobs:
+  adapt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Adapt VITR web player source metadata
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/adapt-sources.mjs
+
+      - name: Commit source adaptation when changed
+        run: |
+          if [ -z "$(git status --porcelain -- src/music/MusicApp.tsx src/generated/source-manifest.json)" ]; then
+            echo "VITR web source metadata is already synchronized."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/music/MusicApp.tsx src/generated/source-manifest.json
+          git commit -m "chore: adapt VITR web source metadata"
+          git push
