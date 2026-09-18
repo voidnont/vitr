@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Vitr droplet logo">
+  <rect width="512" height="512" rx="96" fill="#F2EEE8"/>
+  <path d="M252 86C247 118 225 147 203 178C174 219 150 260 150 309C150 380 198 426 260 426C327 426 374 376 374 309C374 260 350 219 321 178C295 141 268 109 252 86Z" fill="#2A0502"/>
+  <path d="M249 111C242 141 220 171 200 202C177 237 161 272 161 310C161 365 195 404 245 414C298 424 347 386 360 334C372 288 352 248 326 209C300 170 273 137 249 111Z" fill="none" stroke="#E7DDD2" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="198" cy="337" r="6.5" fill="#E7DDD2"/>
+</svg>
