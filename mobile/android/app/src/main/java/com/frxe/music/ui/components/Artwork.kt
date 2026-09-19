@@ -50,18 +50,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 private val artworkPalettes = listOf(
-    Color(0xFF9BFF65) to Color(0xFF12304A),
-    Color(0xFFA78BFA) to Color(0xFF211636),
-    Color(0xFFFF5C9E) to Color(0xFF33152A),
-    Color(0xFF44DDF0) to Color(0xFF172353),
-    Color(0xFFFFBD66) to Color(0xFF542447),
-    Color(0xFF6EA8FF) to Color(0xFF10162D)
+    Color(0xFFF22F5D) to Color(0xFF35101C),
+    Color(0xFFFF5C86) to Color(0xFF2B0D17),
+    Color(0xFFCE1E4C) to Color(0xFF40101F),
+    Color(0xFFFF8AA5) to Color(0xFF36131D),
+    Color(0xFFA81740) to Color(0xFF25090F),
+    Color(0xFFE82958) to Color(0xFF18080D)
 )
 
 private val artworkCache = ConcurrentHashMap<String, ImageBitmap>()
 
 fun artworkPalette(track: Track?): Pair<Color, Color> {
-    if (track == null) return Color(0xFF9BFF65) to Color(0xFF18202B)
+    if (track == null) return Color(0xFFF22F5D) to Color(0xFF241018)
     return artworkPalettes[track.artworkSeed.absoluteValue % artworkPalettes.size]
 }
 
