@@ -43,6 +43,7 @@
     library:function(){return call("library",[])},
     history:function(){return call("history",[])},
     toggleFavorite:function(track){return call("toggleFavorite",[JSON.stringify(track||{})])},
+    lyrics:function(track){return call("lyrics",[JSON.stringify(track||{})])},
     download:function(track,format){return call("download",[JSON.stringify(track||{}),String(format||"m4a")])},
     runtimeStatus:function(){return call("runtimeStatus",[])},
     updateRuntime:function(){return call("updateRuntime",[])},
@@ -53,7 +54,9 @@
     next:function(){if(window.VitrNative)window.VitrNative.next()},
     previous:function(){if(window.VitrNative)window.VitrNative.previous()},
     seek:function(positionMs){if(window.VitrNative)window.VitrNative.seek(Number(positionMs)||0)},
-    setVolume:function(volume){if(window.VitrNative)window.VitrNative.setVolume(Math.max(0,Math.min(1,Number(volume)||0)))}
+    setVolume:function(volume){if(window.VitrNative)window.VitrNative.setVolume(Math.max(0,Math.min(1,Number(volume)||0)))},
+    setShuffle:function(enabled){if(window.VitrNative)window.VitrNative.setShuffle(!!enabled)},
+    setRepeat:function(mode){if(window.VitrNative)window.VitrNative.setRepeat(String(mode||"off"))}
   };
 
   window.dispatchEvent(new CustomEvent("vitr-backend-ready"));
