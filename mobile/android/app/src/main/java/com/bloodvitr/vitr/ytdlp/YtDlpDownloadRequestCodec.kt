@@ -1,9 +1,9 @@
-package com.frxe.music.ytdlp
+package com.bloodvitr.vitr.ytdlp
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.frxe.music.save.SaveFormat
-import com.frxe.music.save.SaveQuality
+import com.bloodvitr.vitr.save.SaveFormat
+import com.bloodvitr.vitr.save.SaveQuality
 
 object YtDlpDownloadRequestCodec {
     private const val VERSION = 3

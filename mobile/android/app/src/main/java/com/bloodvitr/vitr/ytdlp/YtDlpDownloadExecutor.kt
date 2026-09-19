@@ -1,6 +1,6 @@
-package com.frxe.music.ytdlp
+package com.bloodvitr.vitr.ytdlp
 
-import com.frxe.music.intake.UrlIntakeParser
+import com.bloodvitr.vitr.intake.UrlIntakeParser
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLRequest
 import java.io.File

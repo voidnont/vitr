@@ -1,7 +1,7 @@
-package com.frxe.music.ytdlp
+package com.bloodvitr.vitr.ytdlp
 
 import android.content.Context
-import com.frxe.music.intake.UrlIntakeParser
+import com.bloodvitr.vitr.intake.UrlIntakeParser
 import com.yausername.aria2c.Aria2c
 import com.yausername.ffmpeg.FFmpeg
 import com.yausername.youtubedl_android.YoutubeDL
@@ -48,8 +48,8 @@ object YtDlpCore {
         return initializedCapabilities
     }
 
-    fun newInspectionProcessId(): String = "frxe-inspect-${UUID.randomUUID()}"
-    fun newDownloadProcessId(): String = "frxe-download-${UUID.randomUUID()}"
+    fun newInspectionProcessId(): String = "vitr-inspect-${UUID.randomUUID()}"
+    fun newDownloadProcessId(): String = "vitr-download-${UUID.randomUUID()}"
 
     suspend fun inspect(url: String, processId: String = newInspectionProcessId()): YtDlpInspectionResult {
         val normalizedUrl = UrlIntakeParser.extractFirstHttpUrl(url)

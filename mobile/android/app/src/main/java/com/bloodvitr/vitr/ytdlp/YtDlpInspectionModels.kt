@@ -1,4 +1,4 @@
-package com.frxe.music.ytdlp
+package com.bloodvitr.vitr.ytdlp
 
 sealed interface YtDlpInspectionResult {
     data class Success(

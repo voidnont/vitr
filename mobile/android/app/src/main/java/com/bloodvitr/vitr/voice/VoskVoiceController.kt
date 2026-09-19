@@ -1,4 +1,4 @@
-package com.frxe.music.voice
+package com.bloodvitr.vitr.voice
 
 import android.content.Context
 import org.json.JSONObject

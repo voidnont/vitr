@@ -1,4 +1,4 @@
-package com.frxe.music.ytdlp
+package com.bloodvitr.vitr.ytdlp
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper

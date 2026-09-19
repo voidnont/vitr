@@ -1,4 +1,4 @@
-package com.frxe.music.ytdlp
+package com.bloodvitr.vitr.ytdlp
 
 enum class YtDlpCoreCapability { YtDlp, FFmpeg, Aria2c, Mutagen }
 

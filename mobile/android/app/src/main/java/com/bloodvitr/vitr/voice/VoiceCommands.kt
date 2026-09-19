@@ -1,4 +1,4 @@
-package com.frxe.music.voice
+package com.bloodvitr.vitr.voice
 
 sealed interface VoiceCommand {
     data object Play : VoiceCommand

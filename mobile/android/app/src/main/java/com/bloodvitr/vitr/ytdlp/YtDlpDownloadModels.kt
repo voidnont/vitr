@@ -1,7 +1,7 @@
-package com.frxe.music.ytdlp
+package com.bloodvitr.vitr.ytdlp
 
-import com.frxe.music.save.SaveFormat
-import com.frxe.music.save.SaveQuality
+import com.bloodvitr.vitr.save.SaveFormat
+import com.bloodvitr.vitr.save.SaveQuality
 
 enum class YtDlpMediaKind { Audio, Video }
 
