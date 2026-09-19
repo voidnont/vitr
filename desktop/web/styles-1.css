@@ -42,7 +42,7 @@ body.is-playing #ambient.has-art { animation: ambient-float 14s ease-in-out infi
 
 .titlebar { position: fixed; z-index: 40; top: 0; left: 0; right: 0; height: 48px; display: flex; align-items: center; border-width: 0 0 1px; }
 .brand { height: 100%; display: flex; align-items: center; gap: 10px; padding: 0 14px; min-width: 184px; }
-.brand-mark { width: 29px; height: 29px; display: block; flex: 0 0 auto; border-radius: 8px; object-fit: cover; color: transparent; background: #09090B url('./vitr-icon.svg') center / cover no-repeat; box-shadow: 0 5px 18px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08); overflow: hidden; }
+.brand-mark { width: 29px; height: 29px; display: block; flex: 0 0 auto; border-radius: 8px; object-fit: cover; color: transparent; background: #09090B url('./vitr-icon.png') center / cover no-repeat; box-shadow: 0 5px 18px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08); overflow: hidden; }
 .brand-mark.large { width: 58px; height: 58px; border-radius: 16px; font-size: 26px; flex: 0 0 auto; }
 .brand > div:last-child { display: flex; align-items: baseline; gap: 5px; }
 .brand strong { font-size: 14px; letter-spacing: -.01em; }
