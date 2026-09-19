@@ -218,6 +218,10 @@ export function createBackend({ invoke, listen = null, convertFileSrc = (path) =
       return invoke('resolve_stream_url', { videoId: track.id });
     },
 
+    defaultDownloadDir() {
+      return invoke('default_download_dir');
+    },
+
     scanDownloads(dir) {
       return invoke('scan_downloads', { dir });
     },
@@ -267,8 +271,12 @@ export function createBackend({ invoke, listen = null, convertFileSrc = (path) =
       return invoke('update_runtime_dependencies');
     },
 
-    autoUpdate() {
-      return invoke('auto_update');
+    checkClientUpdate() {
+      return invoke('check_client_update');
+    },
+
+    openReleasePage(url) {
+      return invoke('open_release_page', { url: url || null });
     },
 
     setMiniPlayerEnabled(enabled, layout = 'bar') {
