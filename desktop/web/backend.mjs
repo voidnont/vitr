@@ -9,32 +9,104 @@ const DISCOVERY_TERMS = [
   ['Sleep', 'mood'], ['Romance', 'mood'], ['Energy', 'mood'],
 ];
 
+function normalizeCatalogItem(item, fallbackType = 'item', source = 'youtube_music') {
+  if (!item?.title) return null;
+  const entityType = String(item?.metadata?.entityType || item?.kind || fallbackType).toLowerCase();
+  const title = String(item.title).trim();
+  const searchQuery = String(
+    item?.metadata?.searchQuery ||
+    (entityType === 'album' ? `${title} album` :
+      entityType === 'playlist' ? `${title} playlist` :
+      entityType === 'genre' ? `${title} music` :
+      title)
+  ).trim();
+
+  return {
+    ...item,
+    kind: entityType,
+    metadata: {
+      entityType,
+      source: String(item?.metadata?.source || source),
+      browseId: item?.metadata?.browseId || item?.id || null,
+      searchQuery,
+      confidence: Number(item?.metadata?.confidence ?? 0.7),
+    },
+  };
+}
+
 function discoverySuggestions(query) {
   const clean = String(query || '').trim().toLowerCase();
   if (!clean) return [];
   return DISCOVERY_TERMS
     .filter(([title]) => title.toLowerCase().includes(clean) || clean.includes(title.toLowerCase()))
     .slice(0, 6)
-    .map(([title, kind]) => ({
+    .map(([title, kind]) => normalizeCatalogItem({
       id: `suggested:${kind}:${title.toLowerCase()}`,
       kind: 'genre',
       title,
       subtitle: kind === 'mood' ? 'Mood' : 'Genre',
       cover: null,
-    }));
+      metadata: {
+        entityType: 'genre',
+        source: 'vitr_discovery',
+        browseId: null,
+        searchQuery: `${title} music`,
+        confidence: 0.72,
+      },
+    }, 'genre', 'vitr_discovery'));
 }
 
 function dedupeCatalogItems(groups) {
   const seen = new Set();
   const output = [];
-  for (const item of groups.flat()) {
+  for (const raw of groups.flat()) {
+    const item = normalizeCatalogItem(raw);
     if (!item?.title) continue;
-    const key = `${item.kind || 'item'}:${item.id || item.title}`;
+    const key = `${item.metadata.entityType}:${item.id || item.title.toLowerCase()}`;
     if (seen.has(key)) continue;
     seen.add(key);
     output.push(item);
   }
   return output;
+}
+
+function trackDerivedArtists(tracks) {
+  const seen = new Set();
+  const output = [];
+  for (const track of tracks || []) {
+    const title = String(track?.artist || '').trim();
+    if (!title || /^unknown artist$/i.test(title)) continue;
+    const key = title.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    output.push(normalizeCatalogItem({
+      id: `artist:derived:${encodeURIComponent(key)}`,
+      kind: 'artist',
+      title,
+      subtitle: 'Artist',
+      cover: track?.cover || track?.artworkUrl || track?.thumbnail || null,
+      metadata: {
+        entityType: 'artist',
+        source: 'track_metadata',
+        browseId: null,
+        searchQuery: title,
+        confidence: 0.68,
+      },
+    }, 'artist', 'track_metadata'));
+  }
+  return output;
+}
+
+function groupedCatalog(items) {
+  const catalog = { artists: [], albums: [], playlists: [], genres: [] };
+  for (const item of items || []) {
+    const type = item?.metadata?.entityType;
+    if (type === 'artist') catalog.artists.push(item);
+    else if (type === 'album') catalog.albums.push(item);
+    else if (type === 'playlist') catalog.playlists.push(item);
+    else if (type === 'genre') catalog.genres.push(item);
+  }
+  return catalog;
 }
 
 export function createBackend({ invoke, listen = null, convertFileSrc = (path) => path }) {
@@ -56,6 +128,7 @@ export function createBackend({ invoke, listen = null, convertFileSrc = (path) =
         ok: true,
         catalog: {
           tracks: Array.isArray(result?.tracks) ? result.tracks : [],
+          items: Array.isArray(result?.items) ? result.items : [],
           artists: Array.isArray(result?.artists) ? result.artists : [],
           albums: Array.isArray(result?.albums) ? result.albums : [],
           playlists: Array.isArray(result?.playlists) ? result.playlists : [],
@@ -63,7 +136,7 @@ export function createBackend({ invoke, listen = null, convertFileSrc = (path) =
         },
       };
     } catch (error) {
-      return { ok: false, error, catalog: { tracks: [], artists: [], albums: [], playlists: [], genres: [] } };
+      return { ok: false, error, catalog: { tracks: [], items: [], artists: [], albums: [], playlists: [], genres: [] } };
     }
   };
 
@@ -100,16 +173,31 @@ export function createBackend({ invoke, listen = null, convertFileSrc = (path) =
       if (!musicCatalog.ok && !webAttempt.ok && !ytdlpAttempt.ok) {
         throw new Error('Search providers are temporarily unavailable. Try again.');
       }
+      const tracks = dedupeTracks([
+        musicCatalog.catalog.tracks,
+        webAttempt.results || [],
+        ytdlpAttempt.results || [],
+      ]);
+      const providerItems = dedupeCatalogItems([
+        musicCatalog.catalog.items || [],
+        musicCatalog.catalog.artists || [],
+        musicCatalog.catalog.albums || [],
+        musicCatalog.catalog.playlists || [],
+        musicCatalog.catalog.genres || [],
+      ]);
+      const items = dedupeCatalogItems([
+        providerItems,
+        trackDerivedArtists(tracks),
+        discoverySuggestions(clean),
+      ]);
+      const grouped = groupedCatalog(items);
       return {
-        tracks: dedupeTracks([
-          musicCatalog.catalog.tracks,
-          webAttempt.results || [],
-          ytdlpAttempt.results || [],
-        ]),
-        artists: dedupeCatalogItems([musicCatalog.catalog.artists]),
-        albums: dedupeCatalogItems([musicCatalog.catalog.albums]),
-        playlists: dedupeCatalogItems([musicCatalog.catalog.playlists]),
-        genres: dedupeCatalogItems([musicCatalog.catalog.genres, discoverySuggestions(clean)]),
+        tracks,
+        items,
+        artists: grouped.artists,
+        albums: grouped.albums,
+        playlists: grouped.playlists,
+        genres: grouped.genres,
       };
     },
 
