@@ -1,8 +1,9 @@
 # Vitr iOS
 
-Native iOS shell for Vitr, version **0.1.0**.
+Native iOS shell for Vitr, version **0.1.0**, published as **Blood**.
 
 - Bundle ID: `com.bloodvitr.vitr`
+- Publisher metadata: **Blood**
 - Minimum iOS: 16.0
 - UI: SwiftUI
 - Player: `WKWebView` loading `https://vitr.nont.me/music`
@@ -10,4 +11,8 @@ Native iOS shell for Vitr, version **0.1.0**.
 - Support: `https://github.com/bloodvitr/vitr`
 - Donation: `https://ko-fi.com/bloodvitr`
 
-GitHub Actions builds both a simulator app archive and an unsigned device IPA. A normal App Store/TestFlight/device-signed IPA still requires Apple signing credentials and a provisioning profile.
+## Sideload IPA
+
+GitHub Actions builds `Vitr-0.1.0-sideload.ipa` using the standard iOS `Payload/Vitr.app` layout with no embedded Apple provisioning profile or stale code signature. It is intended for sideload tools that re-sign the app for the target device, such as AltStore/SideStore/Sideloadly-style workflows.
+
+A directly installable App Store/TestFlight IPA still requires a real Apple-issued signing certificate and provisioning profile; the build does not fake an Apple signing identity.
