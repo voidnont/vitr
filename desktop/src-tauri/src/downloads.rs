@@ -97,6 +97,17 @@ fn parse_progress(line: &str) -> Option<DownloadProgress> {
 }
 
 #[tauri::command]
+pub fn default_download_dir() -> Result<String, String> {
+    let root = dirs::download_dir()
+        .or_else(dirs::audio_dir)
+        .ok_or_else(|| "Could not locate your Downloads or Music folder".to_string())?
+        .join("Vitr");
+    std::fs::create_dir_all(&root)
+        .map_err(|e| format!("Could not create Vitr download folder: {e}"))?;
+    Ok(root.to_string_lossy().into_owned())
+}
+
+#[tauri::command]
 pub async fn scan_downloads(app: AppHandle, dir: String) -> Result<Vec<Track>, String> {
     let root = PathBuf::from(dir);
     if !root.is_dir() { return Ok(Vec::new()); }
