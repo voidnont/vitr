@@ -11,9 +11,6 @@ const SOURCE = {
     'app/src/main/java/com/vitr/music/ui/VitrApp.kt',
     'app/src/main/java/com/vitr/music/ui/screens/NowPlayingScreen.kt',
     'app/src/main/java/com/vitr/music/ui/screens/SearchScreen.kt',
-    'app/src/main/java/com/frxe/music/ui/VitrApp.kt',
-    'app/src/main/java/com/frxe/music/ui/screens/NowPlayingScreen.kt',
-    'app/src/main/java/com/frxe/music/ui/screens/SearchScreen.kt',
   ],
 };
 
