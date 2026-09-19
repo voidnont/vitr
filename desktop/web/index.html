@@ -355,7 +355,7 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
     return {favorites:[],history:[],playlists:[]};
   }
   function saveLists(value){if(persistence)persistence.saveLists(value)}
-  function addHistory(track){if(!track)return;var data=lists(),key=trackKey(track,0);data.history=[track].concat((data.history||[]).filter(function(t){return trackKey(t,0)!==key})).slice(0,120);saveLists(data);renderHomeHistory();renderLibrary()}
+  function addHistory(track){if(!track)return;var data=lists(),key=trackKey(track,0);data.history=[track].concat((data.history||[]).filter(function(t){return trackKey(t,0)!==key})).slice(0,120);saveLists(data);renderHomeHistory();renderLibrary();setTimeout(loadRecommendations,200)}
   function renderHomeHistory(){renderTracks((lists().history||[]).slice(0,6),document.getElementById("homeTracks"),"No recently played music")}
   function renderLibrary(){
     var data=lists(),host=document.getElementById("libraryGrid"),side=document.getElementById("sidebarLibrary"),trackHost=document.getElementById("libraryTracks"),favorites=data.favorites||[],playlists=data.playlists||[],history=data.history||[];
@@ -370,7 +370,7 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
   function favoriteKey(track){return trackKey(track,0)}
   function isFavorite(track){if(!track)return false;return (lists().favorites||[]).some(function(t){return favoriteKey(t)===favoriteKey(track)})}
   function refreshFavoriteButton(){var b=document.getElementById("favoriteToggle");if(!b)return;var liked=isFavorite(currentTrack);b.textContent=liked?"♥":"♡";b.title=liked?"Remove from Liked Songs":"Add to Liked Songs"}
-  function toggleFavorite(){if(!currentTrack)return;var data=lists(),key=favoriteKey(currentTrack),favorites=data.favorites||[],exists=favorites.some(function(t){return favoriteKey(t)===key});data.favorites=exists?favorites.filter(function(t){return favoriteKey(t)!==key}):[currentTrack].concat(favorites);saveLists(data);refreshFavoriteButton();renderLibrary()}
+  function toggleFavorite(){if(!currentTrack)return;var data=lists(),key=favoriteKey(currentTrack),favorites=data.favorites||[],exists=favorites.some(function(t){return favoriteKey(t)===key});data.favorites=exists?favorites.filter(function(t){return favoriteKey(t)!==key}):[currentTrack].concat(favorites);saveLists(data);refreshFavoriteButton();renderLibrary();setTimeout(loadRecommendations,200)}
 
 
   function playerState(){
@@ -568,18 +568,38 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
     downloadTrack.disabled=false;
   });
 
-  async function toggleMini(){
-    if(!invoke)return;var mode=localStorage.getItem("vitr-mini-mode")||"standard",dock=localStorage.getItem("vitr-mini-dock")||"right";
-    try{await invoke("toggle_mini_player",{mode:mode,dock:dock})}catch(e){console.error(e)}
+  function syncMiniUi(){
+    var enabled=localStorage.getItem("vitr-mini-enabled")==="true",mode=localStorage.getItem("vitr-mini-mode")||"standard";
+    localStorage.setItem("vitr-mini-dock","right");
+    if(miniPlayerSetting)miniPlayerSetting.value=enabled?mode:"off";
+    var miniLaunch=document.getElementById("miniLaunch");if(miniLaunch)miniLaunch.textContent=enabled?"Hide mini":"Mini player";
+    if(playerMiniToggle){playerMiniToggle.classList.toggle("active",enabled);playerMiniToggle.textContent=enabled?"Mini on":"Mini popup"}
   }
-  var miniLaunch=document.getElementById("miniLaunch"),miniSettingsLaunch=document.getElementById("miniSettingsLaunch");
-  if(miniLaunch)miniLaunch.addEventListener("click",toggleMini);if(miniSettingsLaunch)miniSettingsLaunch.addEventListener("click",toggleMini);
+  async function setMiniPopup(enabled,mode){
+    mode=mode||localStorage.getItem("vitr-mini-mode")||"standard";
+    if(["standard","lyrics","tiny","ultra"].indexOf(mode)<0)mode="standard";
+    localStorage.setItem("vitr-mini-enabled",enabled?"true":"false");localStorage.setItem("vitr-mini-mode",mode);localStorage.setItem("vitr-mini-dock","right");
+    try{
+      if(backend&&backend.setMiniPlayerEnabled)await backend.setMiniPlayerEnabled(enabled,mode);
+      else if(invoke)await invoke("set_mini_player_enabled",{enabled:enabled,layout:mode});
+    }catch(e){console.error("Mini player update failed",e)}
+    syncMiniUi();
+  }
+  async function toggleMini(){var enabled=localStorage.getItem("vitr-mini-enabled")==="true";await setMiniPopup(!enabled,localStorage.getItem("vitr-mini-mode")||"standard")}
+  var miniLaunch=document.getElementById("miniLaunch");
+  if(miniLaunch)miniLaunch.addEventListener("click",toggleMini);
+  if(miniPlayerSetting)miniPlayerSetting.addEventListener("change",function(){var value=miniPlayerSetting.value;if(value==="off")setMiniPopup(false,localStorage.getItem("vitr-mini-mode")||"standard");else setMiniPopup(true,value)});
+  syncMiniUi();
 
+  function rememberSearch(q){
+    q=String(q||"").trim();if(!q)return;var history=readJson("vitr-search-history",[]);history=[q].concat(history.filter(function(x){return String(x).toLowerCase()!==q.toLowerCase()})).slice(0,30);localStorage.setItem("vitr-search-history",JSON.stringify(history));
+  }
   var searchTimer=0,searchSerial=0;
   async function searchVitr(q){
     q=(q||"").trim();lastSearchQuery=q;
     var trackHost=document.getElementById("searchTracks"),catalogHost=document.getElementById("searchCatalog");
     if(!q){catalogHost.innerHTML="";empty(trackHost,"Search Vitr","Type a song, artist, album, playlist or genre above.");return}
+    rememberSearch(q);
     var serial=++searchSerial;backend=window.vitrPlatformBackend||backend;if(!backend){catalogHost.innerHTML="";empty(trackHost,"Backend unavailable","Restart Vitr and try again.");return}
     catalogHost.innerHTML="";trackHost.innerHTML='<div class="empty-state glass-soft">Searching Vitr…</div>';
     try{
@@ -595,14 +615,34 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
   document.getElementById("globalSearch").addEventListener("input",function(e){switchTab("search");document.getElementById("searchInput").value=e.target.value;queueSearch(e.target.value)});
   document.querySelectorAll("[data-search-kind]").forEach(function(btn){btn.addEventListener("click",function(){setActiveSearchKind(btn.dataset.searchKind);var q=document.getElementById("searchInput").value.trim()||lastSearchQuery||"music";if(!document.getElementById("searchInput").value.trim()){document.getElementById("searchInput").value=q}searchVitr(q)})});
 
+  function recommendationSeeds(){
+    var data=lists(),seeds=[],seen={};
+    function add(value){value=String(value||"").trim();var key=value.toLowerCase();if(!value||seen[key])return;seen[key]=1;seeds.push(value)}
+    (data.favorites||[]).slice(0,6).forEach(function(t){add(t.artist);add(t.album)});
+    (data.history||[]).slice(0,10).forEach(function(t){add(t.artist)});
+    readJson("vitr-search-history",[]).slice(0,5).forEach(add);
+    if(!seeds.length)add("music");
+    return seeds.slice(0,4);
+  }
+  async function loadRecommendations(){
+    var host=document.getElementById("recommendedTracks");if(!host||!backend)return;
+    var seeds=recommendationSeeds(),recent=(lists().history||[]).slice(0,8).map(function(t){return trackKey(t,0)}),batches=[];
+    try{
+      batches=await Promise.all(seeds.map(function(seed){return backend.search(seed+" music").catch(function(){return []})}));
+      var seen={},recommended=[];
+      batches.forEach(function(list){(list||[]).forEach(function(t){var key=trackKey(t,0);if(seen[key]||recent.indexOf(key)>=0)return;seen[key]=1;recommended.push(t)})});
+      if(!recommended.length){recommended=(await backend.search("music discovery").catch(function(){return []})).slice(0,10)}
+      renderCards(recommended.slice(0,10),host);var why=document.getElementById("recommendationWhy");if(why)why.textContent=seeds[0]==="music"?"Fresh discovery":"Because you listen to "+seeds.slice(0,2).join(" · ");
+    }catch(e){empty(host,"Recommendations unavailable","Play, like, or search for music to build your recommendations.")}
+  }
   async function loadDiscovery(){
     backend=window.vitrPlatformBackend||backend;var featured=document.getElementById("featuredTracks");if(!backend){empty(featured,"Backend unavailable","Restart Vitr and try again.");return}
-    try{var results=await backend.search("music");discoveryTracks=(results||[]).slice(0,12);renderCards(discoveryTracks,featured);renderTrending(discoveryTracks);var hero=document.getElementById("heroPlay");hero.disabled=!discoveryTracks.length;hero.onclick=function(){if(discoveryTracks[0])openTrack(discoveryTracks[0],discoveryTracks).catch(function(){})}}catch(error){empty(featured,"Discovery unavailable",error&&error.message||"Backend error");renderTrending([])}
+    try{var results=await backend.search("music");discoveryTracks=(results||[]).slice(0,12);renderCards(discoveryTracks,featured);renderTrending(discoveryTracks);var hero=document.getElementById("heroPlay");hero.disabled=!discoveryTracks.length;hero.onclick=function(){if(discoveryTracks[0])openTrack(discoveryTracks[0],discoveryTracks).catch(function(){})};loadRecommendations()}catch(error){empty(featured,"Discovery unavailable",error&&error.message||"Backend error");renderTrending([])}
   }
 
   function init(){
     backend=window.vitrPlatformBackend||null;persistence=window.vitrPersistence||null;
-    applyLanguage();renderHomeHistory();renderLibrary();document.getElementById("searchCatalog").innerHTML="";empty(document.getElementById("searchTracks"),"Search Vitr","Type a song, artist, album, playlist or genre above.");setPlayerTrack(null);syncVolumeUi();savePlayerState();loadDiscovery();refreshRuntimeStatus();
+    applyLanguage();renderHomeHistory();renderLibrary();document.getElementById("searchCatalog").innerHTML="";empty(document.getElementById("searchTracks"),"Search Vitr","Type a song, artist, album, playlist or genre above.");setPlayerTrack(readJson("vitr-current-track",null));currentLyrics=readJson("vitr-current-lyrics",null);syncVolumeUi();savePlayerState();loadDiscovery();refreshRuntimeStatus();syncMiniUi();
     if(backend&&backend.onDownloadProgress)backend.onDownloadProgress(function(p){if(!p||p.taskId!==window.__vitrDownloadTask)return;downloadStatus.textContent=Math.round(Number(p.percent||0))+"% · "+(p.speed||"")+" · ETA "+(p.eta||"")});
     if(autoUpdateCheck&&autoUpdateCheck.checked)checkUpdates(true);
   }
