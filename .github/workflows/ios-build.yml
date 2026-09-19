@@ -28,6 +28,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Read version
+        id: version
+        shell: bash
+        run: echo "value=$(tr -d '\r\n' < VERSION)" >> "$GITHUB_OUTPUT"
+
+      - name: Sync version
+        run: node scripts/sync-version.mjs
+
       - name: Show Xcode version
         run: xcodebuild -version
 
@@ -54,7 +62,7 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             build
 
-      - name: Verify Vitr 0.1.0 Blood metadata
+      - name: Verify Vitr metadata
         shell: bash
         run: |
           SIM_APP="build/ios-simulator/Build/Products/Release-iphonesimulator/Vitr.app"
@@ -68,7 +76,7 @@ jobs:
             BUILD=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$APP/Info.plist")
             BUNDLE=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist")
             PUBLISHER=$(/usr/libexec/PlistBuddy -c 'Print :VitrPublisher' "$APP/Info.plist")
-            test "$VERSION" = "0.1.0"
+            test "$VERSION" = "${{ steps.version.outputs.value }}"
             test "$BUILD" = "1"
             test "$BUNDLE" = "com.bloodvitr.vitr"
             test "$PUBLISHER" = "Blood"
@@ -82,30 +90,30 @@ jobs:
         run: |
           ditto -c -k --sequesterRsrc --keepParent \
             build/ios-simulator/Build/Products/Release-iphonesimulator/Vitr.app \
-            Vitr-0.1.0-ios-simulator.zip
+            Vitr-${{ steps.version.outputs.value }}-ios-simulator.zip
 
           rm -rf Payload
           mkdir Payload
           cp -R build/ios-device/Build/Products/Release-iphoneos/Vitr.app Payload/
           rm -rf Payload/Vitr.app/_CodeSignature
           rm -f Payload/Vitr.app/embedded.mobileprovision
-          zip -qry Vitr-0.1.0-sideload.ipa Payload
+          zip -qry Vitr-${{ steps.version.outputs.value }}-sideload.ipa Payload
 
-          unzip -l Vitr-0.1.0-sideload.ipa | grep -F 'Payload/Vitr.app/'
-          test -s Vitr-0.1.0-sideload.ipa
+          unzip -l Vitr-${{ steps.version.outputs.value }}-sideload.ipa | grep -F 'Payload/Vitr.app/'
+          test -s Vitr-${{ steps.version.outputs.value }}-sideload.ipa
 
       - name: Upload simulator app
         uses: actions/upload-artifact@v4
         with:
-          name: Vitr-0.1.0-iOS-Simulator
-          path: Vitr-0.1.0-ios-simulator.zip
+          name: Vitr-${{ steps.version.outputs.value }}-iOS-Simulator
+          path: Vitr-${{ steps.version.outputs.value }}-ios-simulator.zip
           if-no-files-found: error
           retention-days: 30
 
       - name: Upload sideload IPA
         uses: actions/upload-artifact@v4
         with:
-          name: Vitr-0.1.0-iOS-Sideload
-          path: Vitr-0.1.0-sideload.ipa
+          name: Vitr-${{ steps.version.outputs.value }}-iOS-Sideload
+          path: Vitr-${{ steps.version.outputs.value }}-sideload.ipa
           if-no-files-found: error
           retention-days: 30
