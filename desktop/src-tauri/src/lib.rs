@@ -1,4 +1,4 @@
-use tauri::{AppHandle, LogicalPosition, LogicalSize, Manager, WebviewUrl, WebviewWindow, WebviewWindowBuilder};
+use tauri::{AppHandle, LogicalPosition, LogicalSize, Manager, WebviewWindow};
 
 fn mini_dimensions(mode: &str) -> (f64, f64, bool) {
     match mode {
@@ -68,39 +68,30 @@ fn clamp_mini_position(window: &WebviewWindow, x: f64, y: f64) -> Result<(f64, f
 fn open_mini_player(app: AppHandle, mode: String, dock: String) -> Result<(), String> {
     let (width, height, resizable) = mini_dimensions(&mode);
 
-    if let Some(window) = app.get_webview_window("mini") {
-        window
-            .set_size(LogicalSize::new(width, height))
-            .map_err(|error| format!("Could not resize mini player: {error}"))?;
-        window
-            .set_resizable(resizable)
-            .map_err(|error| format!("Could not update mini player resize mode: {error}"))?;
-        window
-            .set_always_on_top(true)
-            .map_err(|error| format!("Could not pin mini player: {error}"))?;
-        window
-            .show()
-            .map_err(|error| format!("Could not show mini player: {error}"))?;
-        if dock == "left" || dock == "right" {
-            dock_mini(&window, &dock)?;
-        }
-        return Ok(());
+    let Some(window) = app.get_webview_window("mini") else {
+        return Err("Mini player window is unavailable".to_string());
+    };
+
+    window
+        .set_size(LogicalSize::new(width, height))
+        .map_err(|error| format!("Could not resize mini player: {error}"))?;
+    window
+        .set_resizable(resizable)
+        .map_err(|error| format!("Could not update mini player resize mode: {error}"))?;
+    window
+        .set_always_on_top(true)
+        .map_err(|error| format!("Could not pin mini player: {error}"))?;
+    window
+        .show()
+        .map_err(|error| format!("Could not show mini player: {error}"))?;
+    window
+        .set_focus()
+        .map_err(|error| format!("Could not focus mini player: {error}"))?;
+
+    if dock == "left" || dock == "right" {
+        dock_mini(&window, &dock)?;
     }
 
-    let window = WebviewWindowBuilder::new(&app, "mini", WebviewUrl::App("mini.html".into()))
-        .title("vitr mini player")
-        .inner_size(width, height)
-        .min_inner_size(125.0, 34.0)
-        .resizable(resizable)
-        .decorations(false)
-        .always_on_top(true)
-        .skip_taskbar(true)
-        .shadow(true)
-        .visible(true)
-        .build()
-        .map_err(|error| format!("Could not create mini player: {error}"))?;
-
-    dock_mini(&window, if dock == "left" { "left" } else { "right" })?;
     Ok(())
 }
 
