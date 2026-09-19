@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 object RuntimeHealthStore {
     private const val PREFS_NAME =
-        "frxe_runtime_health"
+        "vitr_runtime_health"
 
     private const val FAILURE_SEPARATOR =
         "\u001F"
