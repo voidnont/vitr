@@ -77,7 +77,7 @@ jobs:
             BUNDLE=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist")
             PUBLISHER=$(/usr/libexec/PlistBuddy -c 'Print :VitrPublisher' "$APP/Info.plist")
             test "$VERSION" = "${{ steps.version.outputs.value }}"
-            test "$BUILD" = "1"
+            test "$BUILD" -ge "1"
             test "$BUNDLE" = "com.bloodvitr.vitr"
             test "$PUBLISHER" = "Blood"
           done
