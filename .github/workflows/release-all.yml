@@ -91,7 +91,15 @@ jobs:
           path: release/*
 
   macos:
-    runs-on: macos-15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            arch: arm64
+          - runner: macos-15-intel
+            arch: x64
+    runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -115,12 +123,12 @@ jobs:
           VERSION=$(tr -d '\r\n' < VERSION)
           APP=$(find desktop/src-tauri/target/release/bundle/macos -maxdepth 1 -type d -name '*.app' | head -1)
           test -n "$APP"
-          ditto -c -k --sequesterRsrc --keepParent "$APP" "release/Vitr-$VERSION-macos-app.zip"
+          ditto -c -k --sequesterRsrc --keepParent "$APP" "release/Vitr-$VERSION-macos-${{ matrix.arch }}-app.zip"
           cp -R "$APP" dmg-root/
-          hdiutil create -volname "Vitr $VERSION" -srcfolder dmg-root -ov -format UDZO "release/Vitr-$VERSION-macos.dmg"
+          hdiutil create -volname "Vitr $VERSION" -srcfolder dmg-root -ov -format UDZO "release/Vitr-$VERSION-macos-${{ matrix.arch }}.dmg"
       - uses: actions/upload-artifact@v4
         with:
-          name: release-macos
+          name: release-macos-${{ matrix.arch }}
           path: release/*
 
   android:
