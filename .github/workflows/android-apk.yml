@@ -50,7 +50,7 @@ jobs:
       - name: Test and build installable release APK
         working-directory: mobile/android
         env:
-          FRXE_CI_RELEASE_DEBUG_SIGNING: '1'
+          VITR_CI_RELEASE_DEBUG_SIGNING: '1'
         run: gradle --no-daemon --stacktrace :app:testDebugUnitTest :app:assembleRelease
 
       - name: Verify Vitr 0.1.0 APK metadata
