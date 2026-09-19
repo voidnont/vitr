@@ -1,4 +1,4 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
 import java.io.File
 
@@ -7,7 +7,7 @@ enum class SaveInputOwnership {
     Caller
 }
 
-object FrxeSaveEnginePolicy {
+object VitrSaveEnginePolicy {
     fun cleanupFiles(
         input: File,
         output: File,

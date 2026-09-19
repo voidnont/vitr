@@ -1,6 +1,6 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
-import com.frxe.music.source.FrxeNewPipeRuntime
+import com.bloodvitr.vitr.source.VitrNewPipeRuntime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.schabi.newpipe.extractor.NewPipe
@@ -24,14 +24,14 @@ internal class NewPipeDownloadResolver {
          * NewPipe should only receive
          * URLs it can actually resolve.
          *
-         * A frxe-catalog:// URI should
+         * A vitr-catalog:// URI should
          * already have been converted
          * into a normal YouTube watch
          * URL by DownloadRouting.kt.
          */
         if (
             normalizedUrl.startsWith(
-                "frxe-catalog://",
+                "vitr-catalog://",
                 ignoreCase = true
             )
         ) {
@@ -41,10 +41,10 @@ internal class NewPipeDownloadResolver {
         runCatching {
 
             /*
-             * Initialize Frxe's custom
+             * Initialize Vitr's custom
              * NewPipe downloader once.
              */
-            FrxeNewPipeRuntime
+            VitrNewPipeRuntime
                 .initialize()
 
             /*

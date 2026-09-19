@@ -1,7 +1,7 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
-import com.frxe.music.ytdlp.YtDlpDownloadRequest
-import com.frxe.music.ytdlp.YtDlpDownloadRequestCodec
+import com.bloodvitr.vitr.ytdlp.YtDlpDownloadRequest
+import com.bloodvitr.vitr.ytdlp.YtDlpDownloadRequestCodec
 import java.net.URI
 
 sealed interface QueuedDownloadRequest {

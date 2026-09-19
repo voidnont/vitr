@@ -1,4 +1,4 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
 import android.content.ContentValues
 import android.content.Context
@@ -9,8 +9,8 @@ import android.os.Environment
 import android.provider.MediaStore
 import com.arthenica.ffmpegkit.FFmpegKit
 import com.arthenica.ffmpegkit.ReturnCode
-import com.frxe.music.BuildConfig
-import com.frxe.music.playback.ResolvedStreamRequestHeaders
+import com.bloodvitr.vitr.BuildConfig
+import com.bloodvitr.vitr.playback.ResolvedStreamRequestHeaders
 import java.io.File
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
@@ -25,7 +25,7 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 
-class FrxeSaveEngine(
+class VitrSaveEngine(
     private val context: Context
 ) {
     @Volatile
@@ -47,7 +47,7 @@ class FrxeSaveEngine(
 
             val input =
                 File.createTempFile(
-                    "frxe-input-",
+                    "vitr-input-",
                     ".media",
                     context.cacheDir
                 )
@@ -125,7 +125,7 @@ class FrxeSaveEngine(
                     request.title,
                     request.format
                 ).let {
-                    "frxe-${System.nanoTime()}-$it"
+                    "vitr-${System.nanoTime()}-$it"
                 }
             )
 
@@ -195,7 +195,7 @@ class FrxeSaveEngine(
             return result
         } finally {
             activeSessionId = null
-            FrxeSaveEnginePolicy
+            VitrSaveEnginePolicy
                 .cleanupFiles(
                     input = input,
                     output = output,

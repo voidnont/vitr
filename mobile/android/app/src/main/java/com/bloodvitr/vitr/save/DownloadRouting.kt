@@ -1,6 +1,6 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
-import com.frxe.music.source.PlaybackStreamResolver
+import com.bloodvitr.vitr.source.PlaybackStreamResolver
 import java.net.URI
 
 enum class DownloadBackend(

@@ -1,4 +1,4 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
 enum class SaveFormat(val extension: String, val mimeType: String, val displayName: String) {
     MP3("mp3", "audio/mpeg", "MP3"),

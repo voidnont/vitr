@@ -1,4 +1,4 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -11,10 +11,10 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.IBinder
 import android.os.PowerManager
-import com.frxe.music.MainActivity
-import com.frxe.music.R
-import com.frxe.music.source.YouTubeChallengeHandler
-import com.frxe.music.ytdlp.YtDlpDownloadRequest
+import com.bloodvitr.vitr.MainActivity
+import com.bloodvitr.vitr.R
+import com.bloodvitr.vitr.source.YouTubeChallengeHandler
+import com.bloodvitr.vitr.ytdlp.YtDlpDownloadRequest
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +25,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-class FrxeDownloadService : Service() {
+class VitrDownloadService : Service() {
 
     private val serviceScope = CoroutineScope(
         SupervisorJob() + Dispatchers.IO
@@ -461,24 +461,24 @@ class FrxeDownloadService : Service() {
     ): PendingIntent = PendingIntent.getService(
         this,
         requestBase + (itemId.hashCode() and 0x7fff),
-        Intent(this, FrxeDownloadService::class.java)
+        Intent(this, VitrDownloadService::class.java)
             .setAction(action)
             .putExtra(EXTRA_ITEM_ID, itemId),
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
     companion object {
-        private const val CHANNEL_ID = "frxe_downloads"
+        private const val CHANNEL_ID = "vitr_downloads"
         private const val NOTIFICATION_ID = 6101
         private const val OPEN_REQUEST_CODE = 6102
         private const val PAUSE_REQUEST_BASE = 6200
         private const val CANCEL_REQUEST_BASE = 7200
         private const val WIFI_RECHECK_MS = 15_000L
 
-        private const val ACTION_KICK = "com.frxe.music.action.DOWNLOAD_QUEUE_KICK"
-        private const val ACTION_PAUSE_ITEM = "com.frxe.music.action.PAUSE_DOWNLOAD_ITEM"
-        private const val ACTION_CANCEL_ITEM = "com.frxe.music.action.CANCEL_DOWNLOAD_ITEM"
-        private const val ACTION_PAUSE_ALL = "com.frxe.music.action.PAUSE_DOWNLOAD_QUEUE"
+        private const val ACTION_KICK = "com.bloodvitr.vitr.action.DOWNLOAD_QUEUE_KICK"
+        private const val ACTION_PAUSE_ITEM = "com.bloodvitr.vitr.action.PAUSE_DOWNLOAD_ITEM"
+        private const val ACTION_CANCEL_ITEM = "com.bloodvitr.vitr.action.CANCEL_DOWNLOAD_ITEM"
+        private const val ACTION_PAUSE_ALL = "com.bloodvitr.vitr.action.PAUSE_DOWNLOAD_QUEUE"
         private const val EXTRA_ITEM_ID = "download_item_id"
 
         fun enqueue(context: Context, request: SaveRequest): DownloadEnqueueResult {
@@ -507,7 +507,7 @@ class FrxeDownloadService : Service() {
             if (!DownloadQueueStore.hasRunnableWork()) return
 
             context.startForegroundService(
-                Intent(context, FrxeDownloadService::class.java)
+                Intent(context, VitrDownloadService::class.java)
                     .setAction(ACTION_KICK)
             )
         }
@@ -515,7 +515,7 @@ class FrxeDownloadService : Service() {
         fun pause(context: Context, itemId: String) {
             DownloadQueueStore.pause(itemId)
             context.startService(
-                Intent(context, FrxeDownloadService::class.java)
+                Intent(context, VitrDownloadService::class.java)
                     .setAction(ACTION_PAUSE_ITEM)
                     .putExtra(EXTRA_ITEM_ID, itemId)
             )
@@ -540,7 +540,7 @@ class FrxeDownloadService : Service() {
         fun cancel(context: Context, itemId: String) {
             DownloadQueueStore.cancel(itemId)
             context.startService(
-                Intent(context, FrxeDownloadService::class.java)
+                Intent(context, VitrDownloadService::class.java)
                     .setAction(ACTION_CANCEL_ITEM)
                     .putExtra(EXTRA_ITEM_ID, itemId)
             )
@@ -558,7 +558,7 @@ class FrxeDownloadService : Service() {
         fun pauseAll(context: Context) {
             DownloadQueueStore.pauseAll()
             context.startService(
-                Intent(context, FrxeDownloadService::class.java)
+                Intent(context, VitrDownloadService::class.java)
                     .setAction(ACTION_PAUSE_ALL)
             )
         }

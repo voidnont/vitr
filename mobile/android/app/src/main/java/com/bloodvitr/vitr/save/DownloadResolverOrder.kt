@@ -1,4 +1,4 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
 enum class DownloadResolverKind {
     InnerTube,

@@ -1,11 +1,11 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
-import com.frxe.music.source.DownloadedTrackRegistry
-import com.frxe.music.ytdlp.YtDlpDownloadRequest
-import com.frxe.music.ytdlp.YtDlpDownloadRequestCodec
+import com.bloodvitr.vitr.source.DownloadedTrackRegistry
+import com.bloodvitr.vitr.ytdlp.YtDlpDownloadRequest
+import com.bloodvitr.vitr.ytdlp.YtDlpDownloadRequestCodec
 import java.io.File
 import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +17,7 @@ data class DownloadEnqueueResult(
 )
 
 object DownloadQueueStore {
-    private const val PREFS = "frxe_download_queue"
+    private const val PREFS = "vitr_download_queue"
     private const val KEY_ITEMS = "items_v1"
     private const val KEY_WIFI_ONLY = "wifi_only"
     private const val MAX_PERSISTED_ITEMS = 200

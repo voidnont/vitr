@@ -1,10 +1,10 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
 import android.content.Context
 import android.os.Environment
 import java.io.File
 
-class FrxeSubtitleSidecarExporter(context: Context) {
+class VitrSubtitleSidecarExporter(context: Context) {
     private val appContext = context.applicationContext
 
     fun export(files: List<File>, title: String): List<File> {
@@ -13,7 +13,7 @@ class FrxeSubtitleSidecarExporter(context: Context) {
 
         val root = appContext.getExternalFilesDir(Environment.DIRECTORY_MUSIC)
             ?: appContext.filesDir
-        val directory = File(root, "Frxe/Subtitles").apply { mkdirs() }
+        val directory = File(root, "Vitr/Subtitles").apply { mkdirs() }
 
         return subtitleFiles.map { source ->
             val destination = File(

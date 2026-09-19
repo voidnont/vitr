@@ -1,10 +1,10 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
-import com.frxe.music.ytdlp.YtDlpDownloadRequest
+import com.bloodvitr.vitr.ytdlp.YtDlpDownloadRequest
 import java.io.File
 
 /**
- * Maps yt-dlp download options to the metadata/artwork that FRXE should apply
+ * Maps yt-dlp download options to the metadata/artwork that VITR should apply
  * when finalizing a native download.
  */
 object NativeDownloadFinalizationPolicy {
