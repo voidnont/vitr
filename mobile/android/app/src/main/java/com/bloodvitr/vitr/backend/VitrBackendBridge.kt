@@ -282,8 +282,8 @@ class VitrBackendBridge(
             true,
             JSONObject()
                 .put("ytDlpVersion", state.ytDlpVersion ?: JSONObject.NULL)
-                .put("lastStatus", state.lastYtDlpUpdateStatus ?: JSONObject.NULL)
-                .put("lastError", state.lastYtDlpUpdateError ?: JSONObject.NULL)
+                .put("lastStatus", state.ytDlpUpdateStatus)
+                .put("lastError", state.ytDlpInitStatus)
         )
     }
 
@@ -297,8 +297,8 @@ class VitrBackendBridge(
                     true,
                     JSONObject()
                         .put("ytDlpVersion", state.ytDlpVersion ?: JSONObject.NULL)
-                        .put("lastStatus", state.lastYtDlpUpdateStatus ?: JSONObject.NULL)
-                        .put("lastError", state.lastYtDlpUpdateError ?: JSONObject.NULL)
+                        .put("lastStatus", state.ytDlpUpdateStatus)
+                        .put("lastError", state.ytDlpInitStatus)
                 )
             } catch (error: Throwable) {
                 replyError(requestId, error)
