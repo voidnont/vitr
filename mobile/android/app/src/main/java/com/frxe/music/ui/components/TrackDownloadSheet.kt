@@ -33,12 +33,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.frxe.music.model.Track
 import com.frxe.music.save.DownloadQueueItemState
 import com.frxe.music.save.DownloadQueuePolicy
 import com.frxe.music.save.DownloadQueueStore
+import com.frxe.music.save.DownloadPreferences
 import com.frxe.music.save.SaveFormat
 import com.frxe.music.save.SaveQuality
 import com.frxe.music.save.SaveUiState
@@ -60,6 +62,7 @@ fun TrackDownloadSheet(
     onCancel.hashCode()
 
     val queue by DownloadQueueStore.items.collectAsState()
+    val context = LocalContext.current
 
     val automaticSource = remember(
         track.id,
@@ -72,15 +75,20 @@ fun TrackDownloadSheet(
         )
     }
 
-    var format by remember(track.id) {
-        mutableStateOf(SaveFormat.MP3)
+    val rememberedFormat = remember(track.id, context) {
+        DownloadPreferences.defaultFormat(context)
     }
 
-    var quality by remember(track.id) {
-        mutableStateOf(defaultQualityFor(SaveFormat.MP3))
+    var format by remember(track.id, rememberedFormat) {
+        mutableStateOf(rememberedFormat)
+    }
+
+    var quality by remember(track.id, rememberedFormat) {
+        mutableStateOf(defaultQualityFor(rememberedFormat))
     }
 
     LaunchedEffect(format) {
+        DownloadPreferences.setDefaultFormat(context, format)
         if (quality !in qualityOptionsFor(format)) {
             quality = defaultQualityFor(format)
         }
