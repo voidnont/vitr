@@ -1,4 +1,4 @@
-package com.frxe.music.core
+package com.bloodvitr.vitr.core
 
 const val STREAMING_CACHE_BYTES: Long = 2L * 1024L * 1024L * 1024L
 

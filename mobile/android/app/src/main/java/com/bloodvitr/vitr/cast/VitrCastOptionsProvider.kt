@@ -1,4 +1,4 @@
-package com.frxe.music.cast
+package com.bloodvitr.vitr.cast
 
 import android.content.Context
 import com.google.android.gms.cast.CastMediaControlIntent
@@ -6,7 +6,7 @@ import com.google.android.gms.cast.framework.CastOptions
 import com.google.android.gms.cast.framework.OptionsProvider
 import com.google.android.gms.cast.framework.SessionProvider
 
-class FrxeCastOptionsProvider : OptionsProvider {
+class VitrCastOptionsProvider : OptionsProvider {
     override fun getCastOptions(context: Context): CastOptions = CastOptions.Builder()
         .setReceiverApplicationId(CastMediaControlIntent.DEFAULT_MEDIA_RECEIVER_APPLICATION_ID)
         .build()

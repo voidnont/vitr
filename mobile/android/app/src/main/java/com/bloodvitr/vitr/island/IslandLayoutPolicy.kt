@@ -1,4 +1,4 @@
-package com.frxe.music.island
+package com.bloodvitr.vitr.island
 
 data class IslandCameraSafeZone(
     val leftPx: Int,

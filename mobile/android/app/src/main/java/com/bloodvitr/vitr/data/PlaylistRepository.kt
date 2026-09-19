@@ -1,18 +1,18 @@
-package com.frxe.music.data
+package com.bloodvitr.vitr.data
 
 import android.content.Context
-import com.frxe.music.model.Track
+import com.bloodvitr.vitr.model.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-data class FrxePlaylist(
+data class VitrPlaylist(
     val id: Long,
     val name: String,
     val createdAt: Long,
     val updatedAt: Long
 )
 
-data class FrxePlaylistTrack(
+data class VitrPlaylistTrack(
     val rowId: Long,
     val position: Int,
     val track: Track
@@ -22,13 +22,13 @@ class PlaylistRepository(
     context: Context
 ) {
     private val dao =
-        FrxeDatabase.get(context).libraryDao()
+        VitrDatabase.get(context).libraryDao()
 
-    val playlists: Flow<List<FrxePlaylist>> =
+    val playlists: Flow<List<VitrPlaylist>> =
         dao.observePlaylists()
             .map { rows ->
                 rows.map { row ->
-                    FrxePlaylist(
+                    VitrPlaylist(
                         id = row.id,
                         name = row.name,
                         createdAt = row.createdAt,
@@ -39,11 +39,11 @@ class PlaylistRepository(
 
     fun tracks(
         playlistId: Long
-    ): Flow<List<FrxePlaylistTrack>> =
+    ): Flow<List<VitrPlaylistTrack>> =
         dao.observePlaylistTracks(playlistId)
             .map { rows ->
                 rows.map { row ->
-                    FrxePlaylistTrack(
+                    VitrPlaylistTrack(
                         rowId = row.rowId,
                         position = row.position,
                         track = row.asTrack()

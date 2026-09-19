@@ -1,4 +1,4 @@
-package com.frxe.music.island
+package com.bloodvitr.vitr.island
 
 import android.content.Context
 import android.provider.Settings

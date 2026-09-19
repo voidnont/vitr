@@ -1,4 +1,4 @@
-package com.frxe.music.data
+package com.bloodvitr.vitr.data
 
 import android.content.Context
 import androidx.room.Dao
@@ -13,7 +13,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.frxe.music.model.Track
+import com.bloodvitr.vitr.model.Track
 import kotlinx.coroutines.flow.Flow
 
 @Entity(tableName = "library_tracks")
@@ -138,7 +138,7 @@ data class PlaylistTrackEntity(
         artworkUrl = artworkUrl,
         downloadUrl = downloadUrl,
         originalStreamUrl = streamUrl.takeIf {
-            it.startsWith("frxe-catalog://", ignoreCase = true)
+            it.startsWith("vitr-catalog://", ignoreCase = true)
         }
     )
 
@@ -256,12 +256,12 @@ interface LibraryDao {
     version = 4,
     exportSchema = false
 )
-abstract class FrxeDatabase : RoomDatabase() {
+abstract class VitrDatabase : RoomDatabase() {
     abstract fun libraryDao(): LibraryDao
 
     companion object {
         @Volatile
-        private var instance: FrxeDatabase? = null
+        private var instance: VitrDatabase? = null
 
         private val migration1To2 = object : Migration(1, 2) {
             override fun migrate(db: SupportSQLiteDatabase) {
@@ -330,12 +330,12 @@ abstract class FrxeDatabase : RoomDatabase() {
             }
         }
 
-        fun get(context: Context): FrxeDatabase =
+        fun get(context: Context): VitrDatabase =
             instance ?: synchronized(this) {
                 instance ?: Room.databaseBuilder(
                     context.applicationContext,
-                    FrxeDatabase::class.java,
-                    "frxe.db"
+                    VitrDatabase::class.java,
+                    "vitr.db"
                 )
                     .addMigrations(
                         migration1To2,

@@ -1,4 +1,4 @@
-package com.frxe.music.island
+package com.bloodvitr.vitr.island
 
 object IslandArtworkPolicy {
     fun normalize(raw: String?): String? {

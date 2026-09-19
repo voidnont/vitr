@@ -1,4 +1,4 @@
-package com.frxe.music.intake
+package com.bloodvitr.vitr.intake
 
 object UrlIntakeParser {
     private val httpUrl =

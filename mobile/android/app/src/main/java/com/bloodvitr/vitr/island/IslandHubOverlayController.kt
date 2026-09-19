@@ -1,4 +1,4 @@
-package com.frxe.music.island
+package com.bloodvitr.vitr.island
 
 import android.animation.ValueAnimator
 import android.app.Dialog
@@ -29,7 +29,7 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.media3.common.Player
-import com.frxe.music.MainActivity
+import com.bloodvitr.vitr.MainActivity
 import java.net.URL
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.abs
@@ -90,7 +90,7 @@ class IslandHubOverlayController(
         val dismissed = dismissedMediaId == currentMediaId
         if (
             !IslandPresentationPolicy.showFloating(
-                isForeground = FrxeAppVisibility.isForeground,
+                isForeground = VitrAppVisibility.isForeground,
                 floatingEnabled = state.floatingEnabled,
                 overlayPermissionGranted = state.overlayPermissionGranted,
                 hasTrack = hasTrack,
@@ -200,7 +200,7 @@ class IslandHubOverlayController(
             background = islandDrawable(expanded = false)
             setOnClickListener {
                 if (!expanded) {
-                    openFrxe()
+                    openVitr()
                 }
             }
             setOnLongClickListener {
@@ -493,7 +493,7 @@ class IslandHubOverlayController(
                 dp(12)
             )
             setOnClickListener {
-                openFrxe()
+                openVitr()
             }
         }
         root.addView(
@@ -844,7 +844,7 @@ class IslandHubOverlayController(
         contentDescription = "Vitr playback control"
     }
 
-    private fun openFrxe() {
+    private fun openVitr() {
         val intent = Intent(
             context,
             MainActivity::class.java

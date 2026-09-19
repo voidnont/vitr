@@ -1,4 +1,4 @@
-package com.frxe.music.downloads
+package com.bloodvitr.vitr.downloads
 
 import android.content.Context
 import androidx.annotation.OptIn
@@ -10,9 +10,9 @@ import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
-import com.frxe.music.core.STREAMING_CACHE_BYTES
-import com.frxe.music.playback.ResolvedStreamRequestHeaders
-import com.frxe.music.source.YOUTUBE_WEB_USER_AGENT
+import com.bloodvitr.vitr.core.STREAMING_CACHE_BYTES
+import com.bloodvitr.vitr.playback.ResolvedStreamRequestHeaders
+import com.bloodvitr.vitr.source.YOUTUBE_WEB_USER_AGENT
 import java.io.File
 
 @OptIn(UnstableApi::class)
