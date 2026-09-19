@@ -1,4 +1,4 @@
-package com.frxe.music.source
+package com.bloodvitr.vitr.source
 
 internal object YtDlpResolverReadinessPolicy {
     fun shouldInitialize(runtimeReady: Boolean): Boolean = !runtimeReady

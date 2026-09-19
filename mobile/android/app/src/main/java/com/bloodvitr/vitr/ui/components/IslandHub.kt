@@ -1,4 +1,4 @@
-package com.frxe.music.ui.components
+package com.bloodvitr.vitr.ui.components
 
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
@@ -59,12 +59,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.frxe.music.island.IslandLayoutPolicy
-import com.frxe.music.island.IslandSwipePolicy
-import com.frxe.music.model.FrxeRepeatMode
-import com.frxe.music.model.PlayerUiState
-import com.frxe.music.playback.PlaybackQueueStore
-import com.frxe.music.playback.QueueRepeatMode
+import com.bloodvitr.vitr.island.IslandLayoutPolicy
+import com.bloodvitr.vitr.island.IslandSwipePolicy
+import com.bloodvitr.vitr.model.VitrRepeatMode
+import com.bloodvitr.vitr.model.PlayerUiState
+import com.bloodvitr.vitr.playback.PlaybackQueueStore
+import com.bloodvitr.vitr.playback.QueueRepeatMode
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -165,9 +165,9 @@ fun IslandHub(
         "${queueState.currentIndex + 1} of ${queueState.entries.size}"
     } ?: "Queue"
     val queueRepeatMode = when (player.repeatMode) {
-        FrxeRepeatMode.All -> QueueRepeatMode.All
-        FrxeRepeatMode.One -> QueueRepeatMode.One
-        FrxeRepeatMode.Off -> QueueRepeatMode.Off
+        VitrRepeatMode.All -> QueueRepeatMode.All
+        VitrRepeatMode.One -> QueueRepeatMode.One
+        VitrRepeatMode.Off -> QueueRepeatMode.Off
     }
 
     val progress = if (player.durationMs > 0L) {
@@ -396,7 +396,7 @@ private fun CameraSafeTopBand(
     cameraWidth: Dp,
     rightWidth: Dp,
     player: PlayerUiState,
-    track: com.frxe.music.model.Track
+    track: com.bloodvitr.vitr.model.Track
 ) {
     Row(
         modifier = Modifier

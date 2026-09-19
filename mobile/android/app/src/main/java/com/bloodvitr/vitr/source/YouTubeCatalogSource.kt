@@ -1,9 +1,9 @@
-package com.frxe.music.source
+package com.bloodvitr.vitr.source
 
 import android.app.Application
-import com.frxe.music.model.HomeSection
-import com.frxe.music.model.Track
-import com.frxe.music.playback.catalogMetadataUri
+import com.bloodvitr.vitr.model.HomeSection
+import com.bloodvitr.vitr.model.Track
+import com.bloodvitr.vitr.playback.catalogMetadataUri
 
 class YouTubeCatalogSource(application: Application) : CatalogSource {
     val enabled: Boolean = true

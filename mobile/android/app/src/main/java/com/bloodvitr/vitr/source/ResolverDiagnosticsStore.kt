@@ -1,7 +1,7 @@
-package com.frxe.music.source
+package com.bloodvitr.vitr.source
 
 import android.content.Context
-import com.frxe.music.updates.RuntimeHealthStore
+import com.bloodvitr.vitr.updates.RuntimeHealthStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

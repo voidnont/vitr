@@ -1,4 +1,4 @@
-package com.frxe.music.source
+package com.bloodvitr.vitr.source
 
 object YtDlpPlaybackRecoveryPolicy {
     const val COOLDOWN_MS: Long = 15L * 60L * 1_000L

@@ -1,6 +1,6 @@
-package com.frxe.music.source
+package com.bloodvitr.vitr.source
 
-import com.frxe.music.BuildConfig
+import com.bloodvitr.vitr.BuildConfig
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -164,7 +164,7 @@ internal object ZexlPlaybackResolver {
                 )
                 setRequestProperty(
                     "User-Agent",
-                    "Frxe/${BuildConfig.VERSION_NAME}"
+                    "Vitr/${BuildConfig.VERSION_NAME}"
                 )
 
                 ZexlPlaybackContract

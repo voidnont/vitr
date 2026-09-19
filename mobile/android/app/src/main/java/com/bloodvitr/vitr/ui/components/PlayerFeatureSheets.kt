@@ -1,4 +1,4 @@
-package com.frxe.music.ui.components
+package com.bloodvitr.vitr.ui.components
 
 import android.content.Context
 import android.content.Intent
@@ -69,26 +69,26 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.frxe.music.audio.AudioControl
-import com.frxe.music.lyrics.LyricsUiState
-import com.frxe.music.model.PlayerUiState
-import com.frxe.music.model.Track
-import com.frxe.music.playback.PlaybackQueueStore
-import com.frxe.music.ui.FrxeViewModel
-import com.frxe.music.ui.PlayerAction
-import com.frxe.music.ui.addToQueue
-import com.frxe.music.ui.addTrackToPlaylist
-import com.frxe.music.ui.createPlaylist
-import com.frxe.music.ui.moveQueueEntry
-import com.frxe.music.ui.playNext
-import com.frxe.music.ui.playQueued
-import com.frxe.music.ui.playbackQueueState
-import com.frxe.music.ui.playlistRepository
-import com.frxe.music.ui.playerActionGrid
-import com.frxe.music.ui.removeQueueEntry
-import com.frxe.music.ui.selectQueueEntry
-import com.frxe.music.social.ListenTogetherManager
-import com.frxe.music.social.ListenTogetherRole
+import com.bloodvitr.vitr.audio.AudioControl
+import com.bloodvitr.vitr.lyrics.LyricsUiState
+import com.bloodvitr.vitr.model.PlayerUiState
+import com.bloodvitr.vitr.model.Track
+import com.bloodvitr.vitr.playback.PlaybackQueueStore
+import com.bloodvitr.vitr.ui.VitrViewModel
+import com.bloodvitr.vitr.ui.PlayerAction
+import com.bloodvitr.vitr.ui.addToQueue
+import com.bloodvitr.vitr.ui.addTrackToPlaylist
+import com.bloodvitr.vitr.ui.createPlaylist
+import com.bloodvitr.vitr.ui.moveQueueEntry
+import com.bloodvitr.vitr.ui.playNext
+import com.bloodvitr.vitr.ui.playQueued
+import com.bloodvitr.vitr.ui.playbackQueueState
+import com.bloodvitr.vitr.ui.playlistRepository
+import com.bloodvitr.vitr.ui.playerActionGrid
+import com.bloodvitr.vitr.ui.removeQueueEntry
+import com.bloodvitr.vitr.ui.selectQueueEntry
+import com.bloodvitr.vitr.social.ListenTogetherManager
+import com.bloodvitr.vitr.social.ListenTogetherRole
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -97,7 +97,7 @@ fun PlayerActionsSheet(
     track: Track,
     isLiked: Boolean,
     isInLibrary: Boolean,
-    viewModel: FrxeViewModel,
+    viewModel: VitrViewModel,
     onDismiss: () -> Unit,
     onShowDetails: () -> Unit,
     onShowArtist: () -> Unit,
@@ -294,7 +294,7 @@ private fun ActionTile(spec: ActionTileSpec, modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QueueSheet(player: PlayerUiState, viewModel: FrxeViewModel, onDismiss: () -> Unit) {
+fun QueueSheet(player: PlayerUiState, viewModel: VitrViewModel, onDismiss: () -> Unit) {
     val queue by viewModel.playbackQueueState.collectAsState()
 
     ModalBottomSheet(onDismissRequest = onDismiss, tonalElevation = 0.dp) {
@@ -365,7 +365,7 @@ fun QueueSheet(player: PlayerUiState, viewModel: FrxeViewModel, onDismiss: () ->
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun AudioSheet(player: PlayerUiState, viewModel: FrxeViewModel, onDismiss: () -> Unit) {
+fun AudioSheet(player: PlayerUiState, viewModel: VitrViewModel, onDismiss: () -> Unit) {
     val context = LocalContext.current
     ModalBottomSheet(onDismissRequest = onDismiss, tonalElevation = 0.dp) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
@@ -400,7 +400,7 @@ fun AudioSheet(player: PlayerUiState, viewModel: FrxeViewModel, onDismiss: () ->
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun SleepTimerSheet(player: PlayerUiState, viewModel: FrxeViewModel, onDismiss: () -> Unit) {
+fun SleepTimerSheet(player: PlayerUiState, viewModel: VitrViewModel, onDismiss: () -> Unit) {
     ModalBottomSheet(onDismissRequest = onDismiss, tonalElevation = 0.dp) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
             Text("Sleep-Timer", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Black)
@@ -476,7 +476,7 @@ private fun DetailRow(label: String, value: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ArtistSheet(artist: String, tracks: List<Track>, viewModel: FrxeViewModel, onDismiss: () -> Unit) {
+fun ArtistSheet(artist: String, tracks: List<Track>, viewModel: VitrViewModel, onDismiss: () -> Unit) {
     ModalBottomSheet(onDismissRequest = onDismiss, tonalElevation = 0.dp) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
             Text(artist, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Black)
@@ -507,7 +507,7 @@ fun ArtistSheet(artist: String, tracks: List<Track>, viewModel: FrxeViewModel, o
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListenTogetherSheet(viewModel: FrxeViewModel, track: Track, onDismiss: () -> Unit) {
+fun ListenTogetherSheet(viewModel: VitrViewModel, track: Track, onDismiss: () -> Unit) {
     val context = LocalContext.current
     val state by viewModel.listenTogetherState.collectAsState()
     var joinCode by remember { mutableStateOf("") }

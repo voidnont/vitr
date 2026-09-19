@@ -1,7 +1,7 @@
-package com.frxe.music.source
+package com.bloodvitr.vitr.source
 
 import android.content.Context
-import com.frxe.music.ytdlp.YtDlpCore
+import com.bloodvitr.vitr.ytdlp.YtDlpCore
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLRequest
 import java.net.HttpURLConnection
@@ -129,7 +129,7 @@ internal object YouTubeAudioResolverRuntime {
         "https://www.youtube.com/watch?v=$videoId"
 
     private fun resolveWithNewPipe(watchUrl: String): ResolvedAudioCandidate? {
-        FrxeNewPipeRuntime.initialize()
+        VitrNewPipeRuntime.initialize()
         val service = NewPipe.getServiceByUrl(watchUrl)
         val extractor = service.getStreamExtractor(watchUrl)
         extractor.fetchPage()

@@ -1,4 +1,4 @@
-package com.frxe.music.source
+package com.bloodvitr.vitr.source
 
 import android.app.Application
 import com.yausername.youtubedl_android.YoutubeDL
@@ -176,7 +176,7 @@ internal class NewPipeSearchProvider : SearchProvider {
             .toList()
     }
 
-    private fun ensureInitialized() = FrxeNewPipeRuntime.initialize()
+    private fun ensureInitialized() = VitrNewPipeRuntime.initialize()
 
     private companion object {
         const val MAX_RESULTS = 18

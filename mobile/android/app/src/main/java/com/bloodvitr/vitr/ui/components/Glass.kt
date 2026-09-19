@@ -1,4 +1,4 @@
-package com.frxe.music.ui.components
+package com.bloodvitr.vitr.ui.components
 
 import android.os.Build
 import androidx.compose.animation.core.Spring
@@ -40,10 +40,10 @@ import com.kyant.backdrop.effects.lens
 import com.kyant.backdrop.effects.vibrancy
 
 /**
- * The backdrop sampled by Frxe glass surfaces. The root scene swaps this between the ambient
+ * The backdrop sampled by Vitr glass surfaces. The root scene swaps this between the ambient
  * artwork layer and the full content layer, so panels never record themselves recursively.
  */
-val LocalFrxeBackdrop = staticCompositionLocalOf<Backdrop?> { null }
+val LocalVitrBackdrop = staticCompositionLocalOf<Backdrop?> { null }
 
 @Composable
 fun GlassPanel(
@@ -56,7 +56,7 @@ fun GlassPanel(
     val shape = RoundedCornerShape(radius)
     Box(
         modifier = modifier
-            .frxeGlassSurface(shape = shape, strong = strong)
+            .vitrGlassSurface(shape = shape, strong = strong)
             .padding(padding)
     ) {
         CompositionLocalProvider(
@@ -93,7 +93,7 @@ fun LiquidIconButton(
                 scaleX = scale
                 scaleY = scale
             }
-            .frxeGlassSurface(shape = shape, strong = emphasized)
+            .vitrGlassSurface(shape = shape, strong = emphasized)
             .clip(shape)
             .clickable(
                 interactionSource = interactionSource,
@@ -130,11 +130,11 @@ fun Modifier.springPress(
 }
 
 @Composable
-private fun Modifier.frxeGlassSurface(
+private fun Modifier.vitrGlassSurface(
     shape: Shape,
     strong: Boolean
 ): Modifier {
-    val backdrop = LocalFrxeBackdrop.current
+    val backdrop = LocalVitrBackdrop.current
     val tint = if (strong) Color(0xFF090B10).copy(alpha = 0.62f) else Color(0xFF0A0C12).copy(alpha = 0.38f)
     val border = if (strong) Color.White.copy(alpha = 0.30f) else Color.White.copy(alpha = 0.18f)
 

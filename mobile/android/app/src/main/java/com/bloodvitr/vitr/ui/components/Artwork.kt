@@ -1,4 +1,4 @@
-package com.frxe.music.ui.components
+package com.bloodvitr.vitr.ui.components
 
 import android.graphics.BitmapFactory
 import androidx.compose.animation.animateColorAsState
@@ -41,8 +41,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.frxe.music.model.CanvasMode
-import com.frxe.music.model.Track
+import com.bloodvitr.vitr.model.CanvasMode
+import com.bloodvitr.vitr.model.Track
 import java.net.URL
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.absoluteValue
@@ -121,10 +121,10 @@ private fun rememberRemoteArtwork(rawUrl: String?): ImageBitmap? {
 }
 
 /**
- * Frxe animated player canvas with local, provider-independent rendering.
+ * Vitr animated player canvas with local, provider-independent rendering.
  */
 @Composable
-fun FrxeAmbientBackground(
+fun VitrAmbientBackground(
     track: Track?,
     isPlaying: Boolean,
     canvasMode: CanvasMode,
@@ -147,7 +147,7 @@ fun FrxeAmbientBackground(
         label = "canvas-energy"
     )
 
-    val motion = rememberInfiniteTransition(label = "frxe-animated-canvas")
+    val motion = rememberInfiniteTransition(label = "vitr-animated-canvas")
     val driftX by motion.animateFloat(
         initialValue = -1f,
         targetValue = 1f,

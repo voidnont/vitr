@@ -1,4 +1,4 @@
-package com.frxe.music.ui.components
+package com.bloodvitr.vitr.ui.components
 
 import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
@@ -22,15 +22,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.frxe.music.audio.AudioControl
-import com.frxe.music.model.PlayerUiState
-import com.frxe.music.ui.FrxeViewModel
+import com.bloodvitr.vitr.audio.AudioControl
+import com.bloodvitr.vitr.model.PlayerUiState
+import com.bloodvitr.vitr.ui.VitrViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun PlayerToolsSheet(
     player: PlayerUiState,
-    viewModel: FrxeViewModel,
+    viewModel: VitrViewModel,
     context: Context,
     onDismiss: () -> Unit
 ) {
