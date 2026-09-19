@@ -3,9 +3,9 @@ use tauri::{AppHandle, LogicalPosition, LogicalSize, Manager, WebviewWindow};
 fn mini_dimensions(mode: &str) -> (f64, f64, bool) {
     match mode {
         "lyrics" => (250.0, 250.0, true),
-        "tiny" => (230.0, 54.0, false),
-        "ultra" => (160.0, 40.0, false),
-        _ => (348.0, 108.0, false),
+        "tiny" => (228.0, 50.0, false),
+        "ultra" => (160.0, 38.0, false),
+        _ => (356.0, 88.0, false),
     }
 }
 
@@ -65,12 +65,23 @@ fn clamp_mini_position(window: &WebviewWindow, x: f64, y: f64) -> Result<(f64, f
 }
 
 #[tauri::command]
-fn open_mini_player(app: AppHandle, mode: String, dock: String) -> Result<(), String> {
+fn toggle_mini_player(app: AppHandle, mode: String, dock: String) -> Result<(), String> {
     let (width, height, resizable) = mini_dimensions(&mode);
 
     let Some(window) = app.get_webview_window("mini") else {
         return Err("Mini player window is unavailable".to_string());
     };
+
+    let is_visible = window
+        .is_visible()
+        .map_err(|error| format!("Could not read mini player visibility: {error}"))?;
+
+    if is_visible {
+        window
+            .hide()
+            .map_err(|error| format!("Could not hide mini player: {error}"))?;
+        return Ok(());
+    }
 
     window
         .set_size(LogicalSize::new(width, height))
@@ -180,7 +191,7 @@ fn show_main_window(app: AppHandle) -> Result<(), String> {
 pub fn run() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
-            open_mini_player,
+            toggle_mini_player,
             set_mini_mode,
             start_mini_drag,
             mini_position,
