@@ -95,7 +95,9 @@ type Tab = 'home' | 'search' | 'library' | 'settings';
 type RepeatMode = 'off' | 'queue' | 'track';
 
 export const VITR_WEB_VERSION = '0.1.0';
-const VITR_REPO = 'https://github.com/voidnont/vitr';
+const VITR_REPO = 'https://github.com/bloodvitr/vitr';
+const VITR_RELEASES = 'https://github.com/bloodvitr/vitr/releases';
+const VITR_DONATE = 'https://ko-fi.com/bloodvitr';
 const LIBRARY_KEY = 'vitr.web.library.v1';
 const LEGACY_VITR_LIBRARY_KEY = 'frxe.web.library.v1';
 const HISTORY_KEY = 'vitr.web.history.v1';
@@ -495,7 +497,7 @@ export default function VitrWebApp() {
           <section className="frxe-screen">
             <header className="frxe-heading frxe069-heading">
               <div className="frxe069-home-brand"><img className="frxe069-brand-icon" src="/vitr-icon.png" alt="" /><div><span className="frxe-kicker">VITR WEB · v{VITR_WEB_VERSION}</span><h1>VITR</h1><p>Home · made around your plays, saves, artists, genres and discovery signals.</p></div></div>
-              <a className="frxe-icon-button" href={VITR_REPO} target="_blank" rel="noreferrer" aria-label="Open VITR source"><ExternalLink size={19} /></a>
+              <a className="frxe-icon-button" href={VITR_REPO} target="_blank" rel="noreferrer" aria-label="Open VITR support"><ExternalLink size={19} /></a>
             </header>
             {generatedPlaylists.length > 0 && <PlaylistShelf title="Made for you" playlists={generatedPlaylists.slice(0, 6)} onPlay={playPlaylist} />}
             {recommendationRows.map((row) => <TrackRail key={row.id} title={row.title} subtitle={row.subtitle} tracks={row.tracks} onPlay={(track) => playTrack(track, row.tracks)} onAdd={setPlaylistPickerTrack} />)}
@@ -539,7 +541,18 @@ export default function VitrWebApp() {
         )}
 
         {tab === 'settings' && (
-          <section className="frxe-screen"><header className="frxe-heading compact frxe069-page-title frxe069-sticky-title"><div><h2>Settings</h2><p>Appearance and local VITR data.</p></div></header><div className="frxe-glass strong frxe069-settings"><button className="frxe069-setting-row" onClick={() => setFinish((value) => value === 'dark' ? 'glass' : 'dark')}><Sparkles size={18} /> Appearance: {finish === 'glass' ? 'Liquid Glass' : 'Modern Dark'}</button><button className="frxe069-setting-row frxe069-reset" onClick={resetWebPlayer}><Trash2 size={18} /> Reset VITR Web</button><p className="frxe069-reset-copy">Clears saved songs, history, playlists, recent searches and player settings from this browser, then starts VITR fresh.</p><div className="frxe069-version"><span>VITR WEB</span><strong>v{VITR_WEB_VERSION}</strong><small>Playback runs directly in the browser with no VITR server token or worker setup.</small></div></div></section>
+          <section className="frxe-screen">
+            <header className="frxe-heading compact frxe069-page-title frxe069-sticky-title"><div><h2>Settings</h2><p>Appearance, support and local VITR data.</p></div></header>
+            <div className="frxe-glass strong frxe069-settings">
+              <button className="frxe069-setting-row" onClick={() => setFinish((value) => value === 'dark' ? 'glass' : 'dark')}><Sparkles size={18} /> Appearance: {finish === 'glass' ? 'Liquid Glass' : 'Modern Dark'}</button>
+              <a className="frxe069-setting-row" href={VITR_REPO} target="_blank" rel="noreferrer"><ExternalLink size={18} /> Support VITR</a>
+              <a className="frxe069-setting-row" href={VITR_RELEASES} target="_blank" rel="noreferrer"><ExternalLink size={18} /> Releases &amp; updates</a>
+              <a className="frxe069-setting-row" href={VITR_DONATE} target="_blank" rel="noreferrer"><ExternalLink size={18} /> Donate on Ko-fi</a>
+              <button className="frxe069-setting-row frxe069-reset" onClick={resetWebPlayer}><Trash2 size={18} /> Reset VITR Web</button>
+              <p className="frxe069-reset-copy">Clears saved songs, history, playlists, recent searches and player settings from this browser, then starts VITR fresh.</p>
+              <div className="frxe069-version"><span>VITR WEB</span><strong>v{VITR_WEB_VERSION}</strong><small>Playback runs directly in the browser with no VITR server token or worker setup.</small></div>
+            </div>
+          </section>
         )}
       </main>
 
