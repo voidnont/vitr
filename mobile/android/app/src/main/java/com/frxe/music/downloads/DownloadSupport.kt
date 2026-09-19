@@ -42,7 +42,7 @@ object DownloadSupport {
             streamCache = SimpleCache(
                 File(
                     appContext.cacheDir,
-                    "frxe_stream_cache"
+                    "vitr_stream_cache"
                 ),
                 LeastRecentlyUsedCacheEvictor(
                     STREAMING_CACHE_BYTES
