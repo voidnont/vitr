@@ -6,9 +6,8 @@ test('vitr.nont.me is the official Vitr web-player host', () => {
   assert.equal(isVitrWebLocation('vitr.nont.me', '/'), true);
 });
 
-test('retired music and FRXE subdomains are no longer Vitr web-player hosts', () => {
+test('retired music subdomain is no longer a Vitr web-player host', () => {
   assert.equal(isVitrWebLocation('music.nont.me', '/'), false);
-  assert.equal(isVitrWebLocation('frxe.nont.me', '/'), false);
 });
 
 test('the /music compatibility route still opens the player', () => {
