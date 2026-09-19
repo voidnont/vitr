@@ -1,0 +1,101 @@
+name: Build Vitr iOS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'mobile/ios/**'
+      - '.github/workflows/ios-build.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'mobile/ios/**'
+      - '.github/workflows/ios-build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vitr-ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-ios:
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Build iOS Simulator app
+        run: |
+          xcodebuild \
+            -project mobile/ios/Vitr.xcodeproj \
+            -scheme Vitr \
+            -configuration Release \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build/ios-simulator \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Build unsigned iOS device app
+        run: |
+          xcodebuild \
+            -project mobile/ios/Vitr.xcodeproj \
+            -scheme Vitr \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build/ios-device \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            build
+
+      - name: Verify Vitr 0.1.0 metadata
+        shell: bash
+        run: |
+          SIM_APP="build/ios-simulator/Build/Products/Release-iphonesimulator/Vitr.app"
+          DEVICE_APP="build/ios-device/Build/Products/Release-iphoneos/Vitr.app"
+
+          test -d "$SIM_APP"
+          test -d "$DEVICE_APP"
+
+          for APP in "$SIM_APP" "$DEVICE_APP"; do
+            VERSION=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$APP/Info.plist")
+            BUILD=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$APP/Info.plist")
+            BUNDLE=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist")
+            test "$VERSION" = "0.1.0"
+            test "$BUILD" = "1"
+            test "$BUNDLE" = "com.bloodvitr.vitr"
+          done
+
+      - name: Package artifacts
+        shell: bash
+        run: |
+          ditto -c -k --sequesterRsrc --keepParent \
+            build/ios-simulator/Build/Products/Release-iphonesimulator/Vitr.app \
+            Vitr-0.1.0-ios-simulator.zip
+
+          rm -rf Payload
+          mkdir Payload
+          cp -R build/ios-device/Build/Products/Release-iphoneos/Vitr.app Payload/
+          zip -qry Vitr-0.1.0-unsigned.ipa Payload
+
+      - name: Upload simulator app
+        uses: actions/upload-artifact@v4
+        with:
+          name: Vitr-0.1.0-iOS-Simulator
+          path: Vitr-0.1.0-ios-simulator.zip
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload unsigned IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Vitr-0.1.0-iOS-Unsigned-IPA
+          path: Vitr-0.1.0-unsigned.ipa
+          if-no-files-found: error
+          retention-days: 30
