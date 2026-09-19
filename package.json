@@ -24,5 +24,6 @@
     "android:build": "gradle -p mobile/android clean :app:assembleRelease",
     "ios:build": "xcodebuild -project mobile/ios/Vitr.xcodeproj -scheme Vitr -configuration Release -sdk iphonesimulator CODE_SIGNING_ALLOWED=NO build"
   },
-  "license": "SEE LICENSE IN LICENSE"
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "Blood"
 }
