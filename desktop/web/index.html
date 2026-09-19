@@ -302,6 +302,9 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
     searchKind=kind||"all";
     document.querySelectorAll("[data-search-kind]").forEach(function(btn){btn.classList.toggle("active",btn.dataset.searchKind===searchKind)});
   }
+  function preferredEntityType(){
+    return searchKind==="artists"?"artist":searchKind==="albums"?"album":searchKind==="playlists"?"playlist":searchKind==="genres"?"genre":searchKind==="songs"?"track":"all";
+  }
   function catalogItemsForKind(catalog,kind){
     if(!catalog)return[];
     var items=Array.isArray(catalog.items)&&catalog.items.length?catalog.items:[].concat(catalog.artists||[],catalog.albums||[],catalog.playlists||[],catalog.genres||[]);
@@ -421,7 +424,7 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
     var serial=++searchSerial;backend=window.vitrPlatformBackend||backend;if(!backend){catalogHost.innerHTML="";empty(trackHost,"Backend unavailable","Restart Vitr and try again.");return}
     catalogHost.innerHTML="";trackHost.innerHTML='<div class="empty-state glass-soft">Searching Vitr…</div>';
     try{
-      var catalog=backend.discover?await backend.discover(q):{tracks:await backend.search(q),items:[],artists:[],albums:[],playlists:[],genres:[]};
+      var catalog=backend.discover?await backend.discover(q,preferredEntityType()):{tracks:await backend.search(q),items:[],artists:[],albums:[],playlists:[],genres:[]};
       if(serial!==searchSerial)return;
       renderSearchResult(catalog);
     }catch(error){
