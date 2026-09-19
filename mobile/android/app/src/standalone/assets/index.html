@@ -356,20 +356,56 @@ window.__vitrApplyDeviceProfile = function(profile){
     side.innerHTML=libraryTracks.length?'<p>Liked Songs · '+libraryTracks.length+'</p>':'<p>Your library is empty.</p>';
     renderTracks(libraryTracks,trackHost,"No liked songs yet");refreshFavorite();
   }
-  async function loadLibrary(){if(!backend)return;try{libraryTracks=await backend.library();renderLibrary()}catch(e){empty(document.getElementById("libraryTracks"),"Library unavailable",e&&e.message||"Backend error")}}
-  async function loadHistory(){if(!backend)return;try{var history=await backend.history();renderTracks((history||[]).slice(0,6),document.getElementById("homeTracks"),"No recently played music")}catch(e){empty(document.getElementById("homeTracks"),"History unavailable",e&&e.message||"Backend error")}}
+  async function loadLibrary(){if(!backend)return;try{libraryTracks=await backend.library();renderLibrary();setTimeout(loadRecommendations,120)}catch(e){empty(document.getElementById("libraryTracks"),"Library unavailable",e&&e.message||"Backend error")}}
+  async function loadHistory(){if(!backend)return;try{historyTracks=await backend.history();renderTracks((historyTracks||[]).slice(0,6),document.getElementById("homeTracks"),"No recently played music");setTimeout(loadRecommendations,120)}catch(e){empty(document.getElementById("homeTracks"),"History unavailable",e&&e.message||"Backend error")}}
 
+  function pillEnabled(){return localStorage.getItem("vitr-pill-enabled")!=="false"}
+  function syncPillSetting(){var enabled=pillEnabled();if(pillPlayerSetting)pillPlayerSetting.value=enabled?"on":"off";if(pillToggle){pillToggle.classList.toggle("active",enabled);pillToggle.textContent=enabled?"Pill on":"Pill off"}if(appPill)appPill.classList.toggle("visible",enabled&&!!currentTrack)}
+  if(pillPlayerSetting)pillPlayerSetting.addEventListener("change",function(){localStorage.setItem("vitr-pill-enabled",pillPlayerSetting.value==="off"?"false":"true");syncPillSetting()});
+  if(pillToggle)pillToggle.addEventListener("click",function(){localStorage.setItem("vitr-pill-enabled",pillEnabled()?"false":"true");syncPillSetting()});
+
+  function renderLyrics(){
+    if(!playerLyrics)return;
+    var lines=currentLyrics&&Array.isArray(currentLyrics.lines)?currentLyrics.lines:[];
+    if(!lines.length){playerLyrics.innerHTML='<div class="lyrics-empty">'+esc(currentLyrics&&currentLyrics.message||"No lyrics available for this track.")+'</div>';return}
+    var position=Number(currentState.positionMs||0),active=-1;
+    for(var i=0;i<lines.length;i++){var row=lines[i]||{},start=Number(row.startMs||-1),end=Number(row.endMs||-1);if(start>=0&&position>=start&&(end<0||position<=end))active=i}
+    var from=active>=0?Math.max(0,active-4):0,to=active>=0?Math.min(lines.length,active+8):Math.min(lines.length,40);
+    playerLyrics.innerHTML=lines.slice(from,to).map(function(row,j){return '<span class="lyric-line '+(from+j===active?'active':'')+'">'+esc(row&&row.text||"♪")+'</span>'}).join("");
+    var activeEl=playerLyrics.querySelector(".active");if(activeEl)activeEl.scrollIntoView({block:"nearest"});
+  }
+  async function loadLyrics(track){
+    if(!backend||!backend.lyrics||!track)return;
+    lastLyricsTrackId=track.id;currentLyrics=null;renderLyrics();
+    try{currentLyrics=await backend.lyrics(track);if(currentTrack&&currentTrack.id===track.id)renderLyrics()}catch(e){currentLyrics={lines:[],message:e&&e.message||"Lyrics unavailable."};renderLyrics()}
+  }
+  function syncPlaybackModes(){
+    var shuffle=!!currentState.shuffle,repeat=String(currentState.repeatMode||"off");
+    if(shuffleToggle){shuffleToggle.classList.toggle("active",shuffle);shuffleToggle.textContent=shuffle?"Shuffle on":"Shuffle"}
+    if(repeatToggle){repeatToggle.classList.toggle("active",repeat!=="off");repeatToggle.textContent=repeat==="one"?"Repeat 1":repeat==="all"?"Repeat playlist":"Repeat off"}
+  }
+  function syncPill(){
+    if(!appPill)return;var has=!!(currentTrack&&currentTrack.title),cover=coverUrl(currentTrack);
+    appPill.classList.toggle("visible",pillEnabled()&&has);pillTitle.textContent=has?currentTrack.title:"Nothing playing";pillArtist.textContent=has?(currentTrack.artist||"Unknown artist"):"Choose a track";pillPlay.textContent=currentState.playing?"❚❚":"▶";
+    if(cover){pillArtwork.src=cover;pillArtwork.alt=currentTrack.title||""}else{pillArtwork.removeAttribute("src");pillArtwork.alt=""}
+  }
   function applyPlayerState(state){
+    var previousId=currentTrack&&currentTrack.id;
     currentState=state||{};currentTrack=currentState.track||null;
     pt.textContent=currentTrack&&currentTrack.title?currentTrack.title:"Nothing playing";pa.textContent=currentTrack&&currentTrack.artist?currentTrack.artist:"Choose a track";
     var cover=coverUrl(currentTrack);art.classList.toggle("empty",!cover);if(cover){artImg.src=cover;artImg.alt=currentTrack.title||""}else{artImg.removeAttribute("src");artImg.alt=""}
     playToggle.textContent=currentState.playing?"❚❚":"▶";
     var pct=currentState.durationMs?Math.max(0,Math.min(100,Number(currentState.positionMs||0)/Number(currentState.durationMs)*100)):0;var bar=overlay.querySelector(".progress i");if(bar)bar.style.width=pct+"%";
     var spans=overlay.querySelectorAll(".times span");if(spans[0])spans[0].textContent=clock(currentState.positionMs);if(spans[1])spans[1].textContent=clock(currentState.durationMs);
-    var volume=Math.max(0,Math.min(1,Number(currentState.volume==null?1:currentState.volume)));if(volumeSlider)volumeSlider.value=String(Math.round(volume*100));if(volumeValue)volumeValue.textContent=Math.round(volume*100)+"%";if(volumeIcon)volumeIcon.textContent=volume===0?"🔇":volume<.45?"🔉":"🔊";localStorage.setItem("vitr-player-state",JSON.stringify({track:currentTrack,playing:!!currentState.playing,positionSeconds:Number(currentState.positionMs||0)/1000,durationSeconds:Number(currentState.durationMs||0)/1000,volume:volume,artwork:cover}));
-    if(currentTrack)localStorage.setItem("vitr-current-track",JSON.stringify(currentTrack));else localStorage.removeItem("vitr-current-track");localStorage.setItem("vitr-playing",currentState.playing?"true":"false");refreshFavorite();
+    var volume=Math.max(0,Math.min(1,Number(currentState.volume==null?1:currentState.volume)));if(volumeSlider)volumeSlider.value=String(Math.round(volume*100));if(volumeValue)volumeValue.textContent=Math.round(volume*100)+"%";if(volumeIcon)volumeIcon.textContent=volume===0?"🔇":volume<.45?"🔉":"🔊";localStorage.setItem("vitr-player-state",JSON.stringify({track:currentTrack,playing:!!currentState.playing,positionSeconds:Number(currentState.positionMs||0)/1000,durationSeconds:Number(currentState.durationMs||0)/1000,volume:volume,artwork:cover,shuffle:!!currentState.shuffle,repeatMode:currentState.repeatMode||"off"}));
+    if(currentTrack)localStorage.setItem("vitr-current-track",JSON.stringify(currentTrack));else localStorage.removeItem("vitr-current-track");localStorage.setItem("vitr-playing",currentState.playing?"true":"false");refreshFavorite();syncPlaybackModes();syncPill();renderLyrics();
+    if(currentTrack&&currentTrack.id!==previousId&&currentTrack.id!==lastLyricsTrackId)loadLyrics(currentTrack);
   }
-  async function openTrack(track,queue){if(!backend||!track||!track.id)return;currentQueue=Array.isArray(queue)&&queue.length?queue:[track];overlay.classList.add("open");try{await backend.play(track,currentQueue);setTimeout(loadHistory,1200)}catch(error){console.error("Vitr Android playback failed",error)}}
+  async function openTrack(track,queue){
+    if(!backend||!track||!track.id)return;currentQueue=Array.isArray(queue)&&queue.length?queue:[track];overlay.classList.add("open");
+    if(currentTrack&&currentTrack.id===track.id){return}
+    try{await backend.play(track,currentQueue);setTimeout(loadHistory,1200)}catch(error){console.error("Vitr Android playback failed",error)}
+  }
   function bindPlayers(root){(root||document).querySelectorAll("[data-track-key]").forEach(function(el){if(el.dataset.bound==="1")return;el.dataset.bound="1";el.addEventListener("click",function(){var track=trackRegistry.get(el.getAttribute("data-track-key"));var queue=el.closest("#searchTracks")?Array.from(el.parentElement.querySelectorAll("[data-track-key]")).map(function(x){return trackRegistry.get(x.getAttribute("data-track-key"))}).filter(Boolean):discoveryTracks;openTrack(track,queue)})})}
 
   document.getElementById("closePlayer").addEventListener("click",function(){overlay.classList.remove("open")});overlay.addEventListener("click",function(e){if(e.target===overlay)overlay.classList.remove("open")});
@@ -379,9 +415,15 @@ window.__vitrApplyDeviceProfile = function(profile){
   document.getElementById("rewind10").addEventListener("click",function(){if(backend)backend.seek(Math.max(0,Number(currentState.positionMs||0)-10000))});
   document.getElementById("forward10").addEventListener("click",function(){if(backend)backend.seek(Math.min(Number(currentState.durationMs||Infinity),Number(currentState.positionMs||0)+10000))});
   document.getElementById("favoriteToggle").addEventListener("click",async function(){if(!backend||!currentTrack)return;try{await backend.toggleFavorite(currentTrack);await loadLibrary()}catch(e){}});
+  if(shuffleToggle)shuffleToggle.addEventListener("click",function(){if(backend&&backend.setShuffle)backend.setShuffle(!currentState.shuffle)});
+  if(repeatToggle)repeatToggle.addEventListener("click",function(){if(!backend||!backend.setRepeat)return;var current=String(currentState.repeatMode||"off"),next=current==="off"?"all":current==="all"?"one":"off";backend.setRepeat(next)});
   progress.addEventListener("click",function(e){if(!backend||!currentState.durationMs)return;var r=progress.getBoundingClientRect(),ratio=(e.clientX-r.left)/Math.max(1,r.width);backend.seek(Math.max(0,Math.min(Number(currentState.durationMs),ratio*Number(currentState.durationMs))))});
   if(volumeSlider)volumeSlider.addEventListener("input",function(){if(!backend)return;var value=Math.max(0,Math.min(1,Number(volumeSlider.value)/100));localStorage.setItem("vitr-volume",String(value));backend.setVolume(value)});
   if(volumeIcon)volumeIcon.addEventListener("click",function(){if(!backend)return;var current=Math.max(0,Math.min(1,Number(currentState.volume==null?1:currentState.volume)));var before=Number(localStorage.getItem("vitr-volume-before-mute")||.72);if(current>0){localStorage.setItem("vitr-volume-before-mute",String(current));backend.setVolume(0)}else backend.setVolume(Math.max(.05,Math.min(1,before)))});
+  if(appPill){appPill.addEventListener("click",function(){if(currentTrack)overlay.classList.add("open")});appPill.querySelectorAll("button").forEach(function(button){button.addEventListener("click",function(e){e.stopPropagation()})})}
+  document.getElementById("pillPrev").addEventListener("click",function(){if(backend)backend.previous()});
+  pillPlay.addEventListener("click",function(){if(backend)backend.togglePlay()});
+  document.getElementById("pillNext").addEventListener("click",function(){if(backend)backend.next()});
   window.addEventListener("vitr-player-state",function(e){applyPlayerState(e.detail)});
 
   function detectedLanguage(){var raw=(navigator.languages&&navigator.languages[0])||navigator.language||"en";return String(raw).toLowerCase().split("-")[0]||"en"}
