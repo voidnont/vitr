@@ -1,4 +1,4 @@
-package com.frxe.music.ytdlp
+package com.bloodvitr.vitr.ytdlp
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
