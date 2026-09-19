@@ -82,7 +82,7 @@ body.normal .toggle-indicator{transform:translateX(100%)}
 .section{margin-top:28px}.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:12px}.section-head h2{margin:3px 0 0;font-size:21px;letter-spacing:-.035em}.section-head small{color:var(--muted)}
 .cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.card{border-radius:20px;padding:10px;min-width:0;transition:transform .22s ease,border-color .22s ease,background .22s ease}
 .card:hover{transform:translateY(-4px);border-color:rgba(242,47,93,.34)}.cover{aspect-ratio:1;border-radius:15px;position:relative;overflow:hidden;background:#17171d}
-.cover:before,.cover:after{content:"";position:absolute;border-radius:50%;filter:blur(2px)}.cover:before{width:120%;height:70%;left:-24%;bottom:-25%;background:linear-gradient(30deg,#1b1016,#f22f5d);transform:rotate(-14deg)}.cover:after{width:55%;height:55%;right:-12%;top:-7%;background:radial-gradient(circle at 30% 30%,#ffadc0,#db2454 26%,#41101f 70%);box-shadow:0 0 44px rgba(242,47,93,.28)}
+.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:3}.cover:before,.cover:after{content:"";position:absolute;border-radius:50%;filter:blur(2px)}.cover:before{width:120%;height:70%;left:-24%;bottom:-25%;background:linear-gradient(30deg,#1b1016,#f22f5d);transform:rotate(-14deg)}.cover:after{width:55%;height:55%;right:-12%;top:-7%;background:radial-gradient(circle at 30% 30%,#ffadc0,#db2454 26%,#41101f 70%);box-shadow:0 0 44px rgba(242,47,93,.28)}
 .card:nth-child(2) .cover:before{background:linear-gradient(30deg,#10121b,#7659ff)}.card:nth-child(3) .cover:before{background:linear-gradient(30deg,#0f1213,#24b3b9)}.card:nth-child(4) .cover:before{background:linear-gradient(30deg,#161113,#ff8743)}.card:nth-child(5) .cover:before{background:linear-gradient(30deg,#111116,#d432a5)}
 .card strong,.card small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card strong{font-size:12px;margin-top:10px}.card small{font-size:10px;color:var(--muted);margin-top:4px}
 .track-list{display:grid;gap:7px}.track{height:64px;border-radius:18px;padding:8px 10px;display:grid;grid-template-columns:46px minmax(0,1fr) auto;align-items:center;gap:10px;transition:transform .2s ease,background .2s ease}
@@ -97,10 +97,10 @@ body.normal .toggle-indicator{transform:translateX(100%)}
 .big-search{margin:22px 0;display:flex;align-items:center;height:58px;border-radius:20px;padding:0 16px}.big-search input{flex:1;background:transparent;border:0;outline:0;color:#fff;font-size:14px}.big-search span{color:var(--muted);margin-right:10px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}.chip{border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.045);height:34px;border-radius:999px;padding:0 12px;font-size:10px;color:var(--muted)}.chip.active{background:rgba(242,47,93,.16);border-color:rgba(242,47,93,.35);color:#fff}
 .library-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin-top:22px}.library-tile{min-height:136px;border-radius:22px;padding:16px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}.library-tile:before{content:"";position:absolute;width:100px;height:100px;border-radius:50%;right:-25px;top:-25px;background:radial-gradient(circle,#ff6f8f,#a81740 50%,transparent 70%);opacity:.75}.library-tile strong{font-size:15px}.library-tile small{font-size:10px;color:var(--muted);margin-top:4px}
-.settings-panel{display:grid;gap:14px;align-content:start}.setting-row{border-radius:20px;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:14px}.setting-row h3{font-size:13px;margin:0}.setting-row p{font-size:10px;color:var(--muted);margin:4px 0 0}.setting-links{display:flex;gap:8px;flex-wrap:wrap}.link-pill{border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);padding:10px 12px;border-radius:13px;font-size:10px}
+.settings-panel{display:grid;gap:14px;align-content:start}.setting-row{border-radius:20px;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:14px}.setting-row h3{font-size:13px;margin:0}.setting-row p{font-size:10px;color:var(--muted);margin:4px 0 0}.setting-links{display:flex;gap:8px;flex-wrap:wrap}.link-pill{border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);padding:10px 12px;border-radius:13px;font-size:10px}.empty-state{border-radius:18px;padding:16px;color:var(--muted);font-size:11px;line-height:1.55}.card[data-track-key]{cursor:pointer}.player .progress{cursor:pointer}
 .now-playing{position:fixed;z-index:50;inset:0;background:rgba(4,4,6,.74);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);display:grid;place-items:center;padding:18px;opacity:0;pointer-events:none;transition:opacity .3s ease}
 .now-playing.open{opacity:1;pointer-events:auto}.player{width:min(920px,96vw);max-height:92vh;overflow:auto;border-radius:32px;padding:22px;display:grid;grid-template-columns:minmax(250px,.8fr) 1.2fr;gap:24px;transform:scale(.94) translateY(15px);transition:transform .35s cubic-bezier(.2,.9,.2,1)}
-.now-playing.open .player{transform:none}.player-art{aspect-ratio:1;border-radius:28px;background:radial-gradient(circle at 26% 22%,#ff9cb0,#d92550 12%,#4b1122 42%,#08080a 72%);position:relative;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.44)}.player-art:after{content:"";position:absolute;inset:18% 22%;border-radius:50%;background:rgba(255,255,255,.09);box-shadow:0 0 70px rgba(242,47,93,.4)}
+.now-playing.open .player{transform:none}.player-art{aspect-ratio:1;border-radius:28px;background:#111116;position:relative;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.44)}.player-art img{width:100%;height:100%;object-fit:cover;display:block}.player-art.empty:before{content:"♪";position:absolute;inset:0;display:grid;place-items:center;font-size:72px;color:#6e6874}.player-art.empty img{display:none}
 .player-info{display:flex;flex-direction:column;justify-content:center}.player-info h2{font-size:34px;letter-spacing:-.05em;margin:7px 0 2px}.player-info>p{color:var(--muted);margin:0}.progress{height:5px;background:rgba(255,255,255,.08);border-radius:99px;margin:25px 0 8px;overflow:hidden}.progress i{display:block;width:38%;height:100%;background:linear-gradient(90deg,var(--red),#ff839d);border-radius:inherit}.times{display:flex;justify-content:space-between;font-size:9px;color:var(--muted)}.controls{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:20px}.controls button{width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.07)}.controls .main-play{width:62px;height:62px;background:linear-gradient(135deg,var(--red2),var(--red));font-size:21px}.close{position:absolute;top:18px;right:18px;width:42px;height:42px;border:0;border-radius:50%;background:rgba(255,255,255,.08)}
 .bottom-nav{display:none}
 @media(max-width:1100px){
@@ -176,7 +176,7 @@ body[data-window-class="wide"] .library-grid{grid-template-columns:repeat(4,minm
       <button data-tab="library"><i class="nav-dot"></i>Your Library</button>
       <button data-tab="settings"><i class="nav-dot"></i>Settings</button>
     </nav>
-    <div class="playlist-mini"><div class="eyebrow">PLAYLISTS</div><p>Liked Songs</p><p>Midnight Thoughts</p><p>Neon Dreams</p><p>Higher Ground</p><p>Fragments</p></div>
+    <div class="playlist-mini"><div class="eyebrow">LIBRARY</div><div id="sidebarLibrary"><p>Your saved music will appear here.</p></div></div>
   </aside>
   <main class="main">
     <section id="home" class="screen active">
@@ -185,18 +185,12 @@ body[data-window-class="wide"] .library-grid{grid-template-columns:repeat(4,minm
           <div class="eyebrow">VITR · BY BLOOD</div>
           <h1>Music in <em>motion.</em></h1>
           <p>Vitr’s native music backend is built into this interface for search, playback, lyrics and runtime services.</p>
-          <div class="cta-row"><button class="primary" data-player="Red Light|Novae">▶ Play now</button><button class="ghost" data-tab="library">Your library</button></div>
+          <div class="cta-row"><button class="primary" id="heroPlay" type="button" disabled>▶ Play discovery</button><button class="ghost" data-tab="library">Your library</button></div>
         </div>
         <div class="hero-art"><div class="disc"></div></div>
       </article>
-      <section class="section"><div class="section-head"><div><div class="eyebrow">FOR YOU</div><h2>Featured playlists</h2></div><small>Feel every drop</small></div>
-        <div class="cards">
-          <article class="card glass-soft" data-player="Midnight Thoughts|Vitr Mix"><div class="cover"></div><strong>Midnight Thoughts</strong><small>Dark pop · 42 tracks</small></article>
-          <article class="card glass-soft" data-player="Neon Dreams|Vitr Mix"><div class="cover"></div><strong>Neon Dreams</strong><small>Electronic · 36 tracks</small></article>
-          <article class="card glass-soft" data-player="Bloodlines|Vitr Mix"><div class="cover"></div><strong>Bloodlines</strong><small>Alternative · 28 tracks</small></article>
-          <article class="card glass-soft" data-player="Higher Ground|Vitr Mix"><div class="cover"></div><strong>Higher Ground</strong><small>Indie · 40 tracks</small></article>
-          <article class="card glass-soft" data-player="Fragments|Vitr Mix"><div class="cover"></div><strong>Fragments</strong><small>Pop · 37 tracks</small></article>
-        </div>
+      <section class="section"><div class="section-head"><div><div class="eyebrow">DISCOVER</div><h2>From Vitr</h2></div><small>Live results</small></div>
+        <div id="featuredTracks" class="cards"></div>
       </section>
       <section class="section"><div class="section-head"><div><div class="eyebrow">RECENT</div><h2>Recently played</h2></div><small>Recent</small></div><div id="homeTracks" class="track-list"></div></section>
     </section>
@@ -211,14 +205,7 @@ body[data-window-class="wide"] .library-grid{grid-template-columns:repeat(4,minm
     <section id="library" class="screen">
       <div class="library-panel glass">
         <div class="page-title"><div class="eyebrow">COLLECTION</div><h1>Your Library</h1><p>Saved music, playlists and albums.</p></div>
-        <div class="library-grid">
-          <div class="library-tile glass-soft"><strong>Liked Songs</strong><small>327 songs</small></div>
-          <div class="library-tile glass-soft"><strong>Midnight Thoughts</strong><small>42 tracks</small></div>
-          <div class="library-tile glass-soft"><strong>Workout</strong><small>28 tracks</small></div>
-          <div class="library-tile glass-soft"><strong>Focus</strong><small>56 tracks</small></div>
-          <div class="library-tile glass-soft"><strong>Road Trip</strong><small>64 tracks</small></div>
-          <div class="library-tile glass-soft"><strong>Fragments</strong><small>37 tracks</small></div>
-        </div>
+        <div id="libraryGrid" class="library-grid"></div><div id="libraryTracks" class="track-list" style="margin-top:16px"></div>
       </div>
     </section>
     <section id="settings" class="screen">
@@ -226,7 +213,7 @@ body[data-window-class="wide"] .library-grid{grid-template-columns:repeat(4,minm
         <div class="page-title"><div class="eyebrow">VITR</div><h1>Settings</h1><p>Appearance and project identity.</p></div>
         <div class="setting-row glass-soft"><div><h3>Interface finish</h3><p>Use the toggle above to switch between Liquid Glass and Normal UI.</p></div><strong id="modeLabel">Liquid Glass</strong></div>
         <div class="setting-row glass-soft"><div><h3>Floating mini player</h3><p>Show or hide a draggable Vitr popup that follows your saved Normal / Liquid Glass appearance.</p></div><button id="miniSettingsLaunch" class="link-pill" type="button">Open mini player</button></div>
-        <div class="setting-row glass-soft"><div><h3>Version</h3><p>Native backend build</p></div><strong>0.2.0</strong></div>
+        <div class="setting-row glass-soft"><div><h3>Version</h3><p>Native backend build</p></div><strong>0.2.1</strong></div>
         <div class="setting-row glass-soft"><div><h3>Blood</h3><p>Creator and maintainer of Vitr.</p></div><div class="setting-links"><a class="link-pill" href="https://github.com/bloodvitr" target="_blank" rel="noreferrer">github.com/bloodvitr</a><a class="link-pill" href="https://ko-fi.com/bloodvitr" target="_blank" rel="noreferrer">ko-fi.com/bloodvitr</a></div></div>
       </div>
     </section>
@@ -244,10 +231,10 @@ body[data-window-class="wide"] .library-grid{grid-template-columns:repeat(4,minm
 <div id="playerOverlay" class="now-playing">
   <button class="close" id="closePlayer">×</button>
   <section class="player glass">
-    <div class="player-art"></div>
-    <div class="player-info"><div class="eyebrow">NOW PLAYING · VITR</div><h2 id="playerTitle">Red Light</h2><p id="playerArtist">Novae</p>
-      <div class="progress"><i></i></div><div class="times"><span>1:24</span><span>3:56</span></div>
-      <div class="controls"><button>↶</button><button>◀</button><button class="main-play" id="playToggle">❚❚</button><button>▶</button><button>↻</button></div>
+    <div class="player-art empty" id="playerArt"><img id="playerArtwork" alt=""></div>
+    <div class="player-info"><div class="eyebrow">NOW PLAYING · VITR</div><h2 id="playerTitle">Nothing playing</h2><p id="playerArtist">Choose a track</p>
+      <div class="progress" id="playerProgress"><i></i></div><div class="times"><span>0:00</span><span>0:00</span></div>
+      <div class="controls"><button id="rewind10" title="Back 10 seconds">↶</button><button id="playerPrev" title="Previous">◀</button><button class="main-play" id="playToggle">▶</button><button id="playerNext" title="Next">▶</button><button id="forward10" title="Forward 10 seconds">↻</button><button id="favoriteToggle" title="Like track">♡</button></div>
     </div>
   </section>
 </div>
@@ -271,140 +258,135 @@ window.addEventListener("resize",applyWindowsLayout,{passive:true});
 if(window.visualViewport){window.visualViewport.addEventListener("resize",applyWindowsLayout,{passive:true});}
 
 (function(){
-  var tracks=[
-    {title:"Red Light",artist:"Novae"},{title:"Velvet Skies",artist:"Lume"},{title:"Hollow",artist:"SYN"},
-    {title:"Better Days",artist:"Kairo"},{title:"Let Go",artist:"Tahl"},{title:"Still Here",artist:"Fayren"},
-    {title:"Fading",artist:"Kairo"},{title:"A Quieter Tomorrow",artist:"Vitr"}
-  ];
-  var body=document.body, liquidBtn=document.getElementById("liquidBtn"), normalBtn=document.getElementById("normalBtn"), modeLabel=document.getElementById("modeLabel");
+  var body=document.body,liquidBtn=document.getElementById("liquidBtn"),normalBtn=document.getElementById("normalBtn"),modeLabel=document.getElementById("modeLabel");
   var invoke=window.__TAURI__&&window.__TAURI__.core&&window.__TAURI__.core.invoke;
-  function setMode(mode){
-    var normal=mode==="normal"; body.classList.toggle("normal",normal);
-    liquidBtn.classList.toggle("active",!normal); normalBtn.classList.toggle("active",normal);
-    if(modeLabel) modeLabel.textContent=normal?"Normal":"Liquid Glass";
-    localStorage.setItem("vitr-ui-mode",normal?"normal":"liquid");
-  }
-  setMode(localStorage.getItem("vitr-ui-mode")==="normal"?"normal":"liquid");
-  if(!localStorage.getItem("vitr-current-track"))rememberTrack("Red Light","Novae");
-  liquidBtn.addEventListener("click",function(){setMode("liquid")}); normalBtn.addEventListener("click",function(){setMode("normal")});
+  var backend=null,persistence=null,trackRegistry=new Map(),discoveryTracks=[],playbackQueue=[],currentIndex=-1,currentTrack=null;
+  var overlay=document.getElementById("playerOverlay"),pt=document.getElementById("playerTitle"),pa=document.getElementById("playerArtist"),audio=document.getElementById("vitrAudio"),playToggle=document.getElementById("playToggle"),art=document.getElementById("playerArt"),artImg=document.getElementById("playerArtwork"),progress=document.getElementById("playerProgress");
 
-  var trackRegistry=new Map();
-  function esc(value){return String(value==null?"":value).replace(/[&<>"']/g,function(ch){return({"&":"&amp;","<":"&lt;",">":"&gt;",'\"':"&quot;","'":"&#39;"})[ch]})}
+  function esc(value){return String(value==null?"":value).replace(/[&<>"']/g,function(ch){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[ch]})}
+  function clock(value){value=Math.max(0,Math.floor(Number(value)||0));return Math.floor(value/60)+":"+String(value%60).padStart(2,"0")}
+  function coverUrl(t){return t&&(t.cover||t.artworkUrl||t.thumbnail)||""}
   function trackKey(t,i){return String(t&&t.id?t.id:"track-"+i+"-"+(t&&t.title||"unknown"))}
+  function readJson(key,fallback){try{return JSON.parse(localStorage.getItem(key))||fallback}catch(e){return fallback}}
+  function setMode(mode){var normal=mode==="normal";body.classList.toggle("normal",normal);liquidBtn.classList.toggle("active",!normal);normalBtn.classList.toggle("active",normal);if(modeLabel)modeLabel.textContent=normal?"Normal":"Liquid Glass";localStorage.setItem("vitr-ui-mode",normal?"normal":"liquid")}
+  setMode(localStorage.getItem("vitr-ui-mode")==="normal"?"normal":"liquid");
+  liquidBtn.addEventListener("click",function(){setMode("liquid")});normalBtn.addEventListener("click",function(){setMode("normal")});
+
+  function empty(target,title,detail){target.innerHTML='<div class="empty-state glass-soft"><strong>'+esc(title)+'</strong>'+(detail?'<div>'+esc(detail)+'</div>':"")+'</div>'}
   function trackMarkup(t,i){
-    var key=trackKey(t,i);trackRegistry.set(key,t);
-    var source=t&&t.source?" · "+t.source:"";
-    var cover=t&&(t.cover||t.artworkUrl||t.thumbnail);
+    var key=trackKey(t,i);trackRegistry.set(key,t);var cover=coverUrl(t),source=t&&t.source?" · "+t.source:"";
     return '<article class="track glass-soft" data-track-key="'+esc(key)+'"><div class="thumb">'+(cover?'<img src="'+esc(cover)+'" alt="">':"")+'</div><div class="track-copy"><strong>'+esc(t&&t.title||"Unknown track")+'</strong><small>'+esc(t&&t.artist||"Unknown artist")+esc(source)+'</small></div><button class="play-pill" type="button">▶</button></article>';
   }
-  function renderTracks(list,target){target.innerHTML=list.map(trackMarkup).join("");bindPlayers(target)}
-  renderTracks(tracks.slice(0,6),document.getElementById("homeTracks")); renderTracks(tracks,document.getElementById("searchTracks"));
-  document.getElementById("trendingList").innerHTML=tracks.slice(0,5).map(function(t,i){return '<div class="trend"><span>0'+(i+1)+'</span><div class="thumb"></div><div><strong>'+t.title+'</strong><small>'+t.artist+'</small></div></div>'}).join("");
-
-  function switchTab(id){
-    document.querySelectorAll(".screen").forEach(function(x){x.classList.toggle("active",x.id===id)});
-    document.querySelectorAll("[data-tab]").forEach(function(x){x.classList.toggle("active",x.getAttribute("data-tab")===id)});
-    window.scrollTo({top:0,behavior:"smooth"});
+  function cardMarkup(t,i){
+    var key=trackKey(t,"card"+i);trackRegistry.set(key,t);var cover=coverUrl(t);
+    return '<article class="card glass-soft" data-track-key="'+esc(key)+'"><div class="cover">'+(cover?'<img src="'+esc(cover)+'" alt="">':"")+'</div><strong>'+esc(t&&t.title||"Unknown track")+'</strong><small>'+esc(t&&t.artist||"Unknown artist")+'</small></article>';
   }
+  function renderTracks(list,target,emptyTitle){list=Array.isArray(list)?list:[];if(!list.length){empty(target,emptyTitle||"Nothing here yet","Play or save music and it will appear here.");return}target.innerHTML=list.map(trackMarkup).join("");bindPlayers(target)}
+  function renderCards(list,target){list=Array.isArray(list)?list:[];if(!list.length){empty(target,"No discovery results yet","Search for music to fill this section.");return}target.innerHTML=list.slice(0,5).map(cardMarkup).join("");bindPlayers(target)}
+  function renderTrending(list){var host=document.getElementById("trendingList");list=Array.isArray(list)?list:[];if(!list.length){host.innerHTML='<div class="empty-state">No live results yet.</div>';return}host.innerHTML=list.slice(0,5).map(function(t,i){var key=trackKey(t,"trend"+i);trackRegistry.set(key,t);var cover=coverUrl(t);return '<div class="trend" data-track-key="'+esc(key)+'"><span>'+String(i+1).padStart(2,"0")+'</span><div class="thumb">'+(cover?'<img src="'+esc(cover)+'" alt="">':"")+'</div><div><strong>'+esc(t.title||"Unknown track")+'</strong><small>'+esc(t.artist||"Unknown artist")+'</small></div></div>'}).join("");bindPlayers(host)}
+
+  function switchTab(id){document.querySelectorAll(".screen").forEach(function(x){x.classList.toggle("active",x.id===id)});document.querySelectorAll("[data-tab]").forEach(function(x){x.classList.toggle("active",x.getAttribute("data-tab")===id)});window.scrollTo({top:0,behavior:"smooth"});if(id==="library")renderLibrary()}
   document.querySelectorAll("[data-tab]").forEach(function(b){b.addEventListener("click",function(){switchTab(b.getAttribute("data-tab"))})});
 
-  var overlay=document.getElementById("playerOverlay"),pt=document.getElementById("playerTitle"),pa=document.getElementById("playerArtist"),audio=document.getElementById("vitrAudio"),playToggle=document.getElementById("playToggle");
-  function rememberTrack(track){
-    var value=track||{title:"Red Light",artist:"Vitr"};
-    localStorage.setItem("vitr-current-track",JSON.stringify(value));
+  function lists(){
+    if(persistence)return persistence.loadLists();
+    return {favorites:[],history:[],playlists:[]};
   }
-  async function openTrack(track){
-    if(!track)return;
-    pt.textContent=track.title||"Unknown track";
-    pa.textContent=track.artist||"Unknown artist";
-    rememberTrack(track);
-    overlay.classList.add("open");
-    var backend=window.vitrPlatformBackend;
-    if(!backend||!track.id)return;
-    try{
-      var src=await backend.resolveTrack(track);
-      if(src){
-        audio.src=src;
-        await audio.play();
-      }
-      backend.lyrics(track).then(function(value){
-        localStorage.setItem("vitr-current-lyrics",JSON.stringify(value||null));
-      }).catch(function(){});
-    }catch(error){
-      console.error("Vitr playback failed",error);
-    }
+  function saveLists(value){if(persistence)persistence.saveLists(value)}
+  function addHistory(track){if(!track)return;var data=lists(),key=trackKey(track,0);data.history=[track].concat((data.history||[]).filter(function(t){return trackKey(t,0)!==key})).slice(0,120);saveLists(data);renderHomeHistory();renderLibrary()}
+  function renderHomeHistory(){renderTracks((lists().history||[]).slice(0,6),document.getElementById("homeTracks"),"No recently played music")}
+  function renderLibrary(){
+    var data=lists(),host=document.getElementById("libraryGrid"),side=document.getElementById("sidebarLibrary"),trackHost=document.getElementById("libraryTracks"),favorites=data.favorites||[],playlists=data.playlists||[],history=data.history||[];
+    var tiles=[];
+    tiles.push('<div class="library-tile glass-soft"><strong>Liked Songs</strong><small>'+favorites.length+' saved</small></div>');
+    tiles.push('<div class="library-tile glass-soft"><strong>Recently Played</strong><small>'+history.length+' tracks</small></div>');
+    playlists.forEach(function(p){tiles.push('<div class="library-tile glass-soft"><strong>'+esc(p.name||"Playlist")+'</strong><small>'+((p.tracks||[]).length)+' tracks</small></div>')});
+    host.innerHTML=tiles.join("");
+    side.innerHTML=favorites.length||playlists.length?'<p>Liked Songs · '+favorites.length+'</p>'+playlists.slice(0,4).map(function(p){return '<p>'+esc(p.name||"Playlist")+'</p>'}).join(""):'<p>Your library is empty.</p>';
+    renderTracks(favorites,trackHost,"No liked songs yet");
   }
-  function openPlayer(raw){var p=raw.split("|");openTrack({title:p[0]||"Red Light",artist:p[1]||"Vitr"})}
-  function bindPlayers(root){
-    (root||document).querySelectorAll("[data-track-key]").forEach(function(el){
-      if(el.dataset.bound==="1")return;el.dataset.bound="1";
-      el.addEventListener("click",function(){openTrack(trackRegistry.get(el.getAttribute("data-track-key")))});
-    });
-    (root||document).querySelectorAll("[data-player]").forEach(function(el){
-      if(el.dataset.bound==="1")return;el.dataset.bound="1";
-      el.addEventListener("click",function(){openPlayer(el.getAttribute("data-player"))});
-    });
+  function favoriteKey(track){return trackKey(track,0)}
+  function isFavorite(track){if(!track)return false;return (lists().favorites||[]).some(function(t){return favoriteKey(t)===favoriteKey(track)})}
+  function refreshFavoriteButton(){var b=document.getElementById("favoriteToggle");if(!b)return;var liked=isFavorite(currentTrack);b.textContent=liked?"♥":"♡";b.title=liked?"Remove from Liked Songs":"Add to Liked Songs"}
+  function toggleFavorite(){if(!currentTrack)return;var data=lists(),key=favoriteKey(currentTrack),favorites=data.favorites||[],exists=favorites.some(function(t){return favoriteKey(t)===key});data.favorites=exists?favorites.filter(function(t){return favoriteKey(t)!==key}):[currentTrack].concat(favorites);saveLists(data);refreshFavoriteButton();renderLibrary()}
+
+
+  function playerState(){
+    return {track:currentTrack,playing:!!(audio.src&&!audio.paused&&!audio.ended),positionSeconds:Number(audio.currentTime||0),durationSeconds:Number(audio.duration||0),volume:Number(audio.volume||0),artwork:coverUrl(currentTrack)};
   }
-  bindPlayers(document);
+  function savePlayerState(){
+    var state=playerState();
+    localStorage.setItem("vitr-player-state",JSON.stringify(state));
+    localStorage.setItem("vitr-playing",state.playing?"true":"false");
+    if(state.track)localStorage.setItem("vitr-current-track",JSON.stringify(state.track));else localStorage.removeItem("vitr-current-track");
+    if(playToggle)playToggle.textContent=state.playing?"❚❚":"▶";
+    var bar=overlay.querySelector(".progress i");if(bar)bar.style.width=(state.durationSeconds?Math.max(0,Math.min(100,state.positionSeconds/state.durationSeconds*100)):0)+"%";
+    var spans=overlay.querySelectorAll(".times span");if(spans[0])spans[0].textContent=clock(state.positionSeconds);if(spans[1])spans[1].textContent=clock(state.durationSeconds);
+    if(backend&&backend.updateMediaControls&&state.track){backend.updateMediaControls({track:state.track,isPlaying:state.playing,position:state.positionSeconds,duration:state.durationSeconds}).catch(function(){})}
+  }
+  function setPlayerTrack(track){
+    currentTrack=track||null;
+    pt.textContent=currentTrack&&currentTrack.title?currentTrack.title:"Nothing playing";
+    pa.textContent=currentTrack&&currentTrack.artist?currentTrack.artist:"Choose a track";
+    var cover=coverUrl(currentTrack);art.classList.toggle("empty",!cover);if(cover){artImg.src=cover;artImg.alt=currentTrack.title||""}else{artImg.removeAttribute("src");artImg.alt=""}
+    refreshFavoriteButton();
+    savePlayerState();
+  }
+  async function fetchLyrics(track){localStorage.removeItem("vitr-current-lyrics");if(!backend||!backend.lyrics||!track)return;try{var value=await backend.lyrics(track);localStorage.setItem("vitr-current-lyrics",JSON.stringify(value||null))}catch(e){localStorage.removeItem("vitr-current-lyrics")}}
+  async function openTrack(track,queue){
+    if(!track||!track.id)return;
+    backend=window.vitrPlatformBackend||backend;if(!backend)throw new Error("Vitr backend is unavailable.");
+    playbackQueue=Array.isArray(queue)&&queue.length?queue:[track];currentIndex=Math.max(0,playbackQueue.findIndex(function(t){return trackKey(t,0)===trackKey(track,0)}));if(currentIndex<0)currentIndex=0;
+    setPlayerTrack(track);overlay.classList.add("open");
+    try{var src=await backend.resolveTrack(track);audio.src=src;await audio.play();addHistory(track);fetchLyrics(track);savePlayerState()}catch(error){console.error("Vitr playback failed",error);audio.removeAttribute("src");audio.load();savePlayerState();throw error}
+  }
+  function bindPlayers(root){(root||document).querySelectorAll("[data-track-key]").forEach(function(el){if(el.dataset.bound==="1")return;el.dataset.bound="1";el.addEventListener("click",function(){var track=trackRegistry.get(el.getAttribute("data-track-key"));var queue=el.closest("#searchTracks")?Array.from(el.parentElement.querySelectorAll("[data-track-key]")).map(function(x){return trackRegistry.get(x.getAttribute("data-track-key"))}).filter(Boolean):discoveryTracks;openTrack(track,queue).catch(function(){})})})}
+  async function moveQueue(delta){if(!playbackQueue.length)return;var next=currentIndex+delta;if(next<0||next>=playbackQueue.length)return;currentIndex=next;await openTrack(playbackQueue[currentIndex],playbackQueue)}
+  window.vitrPlayerAction=function(action){if(action==="toggle"){if(!audio.src)return;if(audio.paused)audio.play().catch(function(){});else audio.pause()}else if(action==="next")moveQueue(1).catch(function(){});else if(action==="previous")moveQueue(-1).catch(function(){});else if(action==="forward")audio.currentTime=Math.min(Number(audio.duration||Infinity),Number(audio.currentTime||0)+10);else if(action==="rewind")audio.currentTime=Math.max(0,Number(audio.currentTime||0)-10);savePlayerState()};
+  window.vitrPlayerAdjustVolume=function(delta){audio.volume=Math.max(0,Math.min(1,Number(audio.volume||0)+Number(delta||0)));localStorage.setItem("vitr-volume",String(audio.volume));savePlayerState()};
+
   document.getElementById("closePlayer").addEventListener("click",function(){overlay.classList.remove("open")});
   overlay.addEventListener("click",function(e){if(e.target===overlay)overlay.classList.remove("open")});
-  function syncPlaying(){
-    var playing=!audio.paused&&!audio.ended;
-    localStorage.setItem("vitr-playing",playing?"true":"false");
-    playToggle.textContent=playing?"❚❚":"▶";
-  }
-  playToggle.addEventListener("click",function(){
-    if(!audio.src)return;
-    if(audio.paused)audio.play().catch(function(){});else audio.pause();
-  });
-  audio.addEventListener("play",syncPlaying);
-  audio.addEventListener("pause",syncPlaying);
-  audio.addEventListener("ended",syncPlaying);
-  audio.addEventListener("timeupdate",function(){
-    var pct=audio.duration?Math.max(0,Math.min(100,(audio.currentTime/audio.duration)*100)):0;
-    var bar=overlay.querySelector(".progress i");if(bar)bar.style.width=pct+"%";
-    var spans=overlay.querySelectorAll(".times span");
-    function clock(value){value=Math.max(0,Math.floor(value||0));return Math.floor(value/60)+":"+String(value%60).padStart(2,"0")}
-    if(spans[0])spans[0].textContent=clock(audio.currentTime);
-    if(spans[1])spans[1].textContent=clock(audio.duration);
-  });
-  syncPlaying();
+  playToggle.addEventListener("click",function(){window.vitrPlayerAction("toggle")});
+  document.getElementById("playerPrev").addEventListener("click",function(){window.vitrPlayerAction("previous")});
+  document.getElementById("playerNext").addEventListener("click",function(){window.vitrPlayerAction("next")});
+  document.getElementById("rewind10").addEventListener("click",function(){window.vitrPlayerAction("rewind")});
+  document.getElementById("forward10").addEventListener("click",function(){window.vitrPlayerAction("forward")});
+  document.getElementById("favoriteToggle").addEventListener("click",toggleFavorite);
+  progress.addEventListener("click",function(e){if(!audio.duration)return;var r=progress.getBoundingClientRect();audio.currentTime=Math.max(0,Math.min(audio.duration,(e.clientX-r.left)/Math.max(1,r.width)*audio.duration))});
+  ["play","pause","ended","loadedmetadata","durationchange","volumechange"].forEach(function(name){audio.addEventListener(name,savePlayerState)});
+  audio.addEventListener("timeupdate",savePlayerState);
+  audio.addEventListener("ended",function(){moveQueue(1).catch(function(){})});
+  audio.volume=Math.max(0,Math.min(1,Number(localStorage.getItem("vitr-volume")||.72)));
+
   async function toggleMini(){
-    if(!invoke)return;
-    var mode=localStorage.getItem("vitr-mini-mode")||"standard";
-    var dock=localStorage.getItem("vitr-mini-dock")||"right";
-    try{await invoke("toggle_mini_player",{mode:mode,dock:dock});}catch(e){console.error(e);}
+    if(!invoke)return;var mode=localStorage.getItem("vitr-mini-mode")||"standard",dock=localStorage.getItem("vitr-mini-dock")||"right";
+    try{await invoke("toggle_mini_player",{mode:mode,dock:dock})}catch(e){console.error(e)}
   }
-  var miniLaunch=document.getElementById("miniLaunch");
-  var miniSettingsLaunch=document.getElementById("miniSettingsLaunch");
-  if(miniLaunch)miniLaunch.addEventListener("click",toggleMini);
-  if(miniSettingsLaunch)miniSettingsLaunch.addEventListener("click",toggleMini);
+  var miniLaunch=document.getElementById("miniLaunch"),miniSettingsLaunch=document.getElementById("miniSettingsLaunch");
+  if(miniLaunch)miniLaunch.addEventListener("click",toggleMini);if(miniSettingsLaunch)miniSettingsLaunch.addEventListener("click",toggleMini);
 
   var searchTimer=0,searchSerial=0;
   async function searchVitr(q){
-    q=(q||"").trim();
-    var target=document.getElementById("searchTracks");
-    if(!q){renderTracks(tracks,target);return}
-    var serial=++searchSerial;
-    var backend=window.vitrPlatformBackend;
-    if(!backend){
-      var local=tracks.filter(function(t){return (t.title+" "+t.artist).toLowerCase().indexOf(q.toLowerCase())>=0});
-      renderTracks(local,target);return;
-    }
-    target.innerHTML='<div class="track glass-soft"><div class="track-copy"><strong>Searching Vitr…</strong><small>Native providers</small></div></div>';
-    try{
-      var results=await backend.search(q);
-      if(serial!==searchSerial)return;
-      renderTracks(results||[],target);
-      if(!results||!results.length)target.innerHTML='<div class="track glass-soft"><div class="track-copy"><strong>No results</strong><small>Try another search</small></div></div>';
-    }catch(error){
-      if(serial!==searchSerial)return;
-      target.innerHTML='<div class="track glass-soft"><div class="track-copy"><strong>Search unavailable</strong><small>'+esc(error&&error.message||"Backend error")+'</small></div></div>';
-    }
+    q=(q||"").trim();var target=document.getElementById("searchTracks");if(!q){empty(target,"Search Vitr","Type a song or artist above.");return}
+    var serial=++searchSerial;backend=window.vitrPlatformBackend||backend;if(!backend){empty(target,"Backend unavailable","Restart Vitr and try again.");return}
+    target.innerHTML='<div class="empty-state glass-soft">Searching Vitr…</div>';
+    try{var results=await backend.search(q);if(serial!==searchSerial)return;renderTracks(results,target,"No results");}catch(error){if(serial!==searchSerial)return;empty(target,"Search unavailable",error&&error.message||"Backend error")}
   }
   function queueSearch(value){clearTimeout(searchTimer);searchTimer=setTimeout(function(){searchVitr(value)},320)}
   document.getElementById("searchInput").addEventListener("input",function(e){queueSearch(e.target.value)});
   document.getElementById("globalSearch").addEventListener("input",function(e){switchTab("search");document.getElementById("searchInput").value=e.target.value;queueSearch(e.target.value)});
+
+  async function loadDiscovery(){
+    backend=window.vitrPlatformBackend||backend;var featured=document.getElementById("featuredTracks");if(!backend){empty(featured,"Backend unavailable","Restart Vitr and try again.");return}
+    try{var results=await backend.search("music");discoveryTracks=(results||[]).slice(0,12);renderCards(discoveryTracks,featured);renderTrending(discoveryTracks);var hero=document.getElementById("heroPlay");hero.disabled=!discoveryTracks.length;hero.onclick=function(){if(discoveryTracks[0])openTrack(discoveryTracks[0],discoveryTracks).catch(function(){})}}catch(error){empty(featured,"Discovery unavailable",error&&error.message||"Backend error");renderTrending([])}
+  }
+
+  function init(){
+    backend=window.vitrPlatformBackend||null;persistence=window.vitrPersistence||null;
+    renderHomeHistory();renderLibrary();empty(document.getElementById("searchTracks"),"Search Vitr","Type a song or artist above.");setPlayerTrack(null);savePlayerState();loadDiscovery();
+  }
+  if(window.vitrPlatformBackend)init();else window.addEventListener("vitr-backend-ready",init,{once:true});
 })();
 </script>
 </body>

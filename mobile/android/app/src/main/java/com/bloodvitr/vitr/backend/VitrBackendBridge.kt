@@ -1,70 +1,92 @@
 package com.bloodvitr.vitr.backend
 
-import android.app.Activity
+import android.content.ComponentName
+import android.os.Handler
+import android.os.Looper
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
-import androidx.annotation.OptIn
 import androidx.media3.common.Player
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
-import com.frxe.music.downloads.DownloadSupport
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
+import com.frxe.music.data.FrxeDatabase
+import com.frxe.music.data.TrackEntity
 import com.frxe.music.model.Track
-import com.frxe.music.source.PlaybackStreamResolver
+import com.frxe.music.playback.FrxePlaybackService
+import com.frxe.music.playback.PlaybackQueueStore
+import com.frxe.music.playback.QueueRepeatMode
 import com.frxe.music.source.YouTubeCatalogSource
+import java.util.concurrent.Executor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 
-@OptIn(UnstableApi::class)
 class VitrBackendBridge(
-    private val activity: Activity,
+    private val activity: android.app.Activity,
     private val webView: WebView
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private val source = YouTubeCatalogSource(activity.application)
-    private val resolver = PlaybackStreamResolver()
-    private var currentTrack: Track? = null
+    private val dao = FrxeDatabase.get(activity.applicationContext).libraryDao()
+    private var controller: MediaController? = null
 
-    private val player: ExoPlayer = ExoPlayer.Builder(activity)
-        .setMediaSourceFactory(
-            DefaultMediaSourceFactory(activity)
-                .setDataSourceFactory(DownloadSupport.dataSourceFactory(activity))
-        )
-        .build()
-        .also { instance ->
-            instance.addListener(
-                object : Player.Listener {
-                    override fun onEvents(player: Player, events: Player.Events) {
-                        emitPlayerState()
-                    }
-
-                    override fun onIsPlayingChanged(isPlaying: Boolean) {
-                        emitPlayerState()
-                    }
-
-                    override fun onPlaybackStateChanged(playbackState: Int) {
-                        emitPlayerState()
-                    }
-                }
+    private val controllerFuture =
+        MediaController.Builder(
+            activity,
+            SessionToken(
+                activity,
+                ComponentName(
+                    activity,
+                    FrxePlaybackService::class.java
+                )
             )
+        ).buildAsync()
+
+    private val mainExecutor = Executor { command ->
+        Handler(Looper.getMainLooper()).post(command)
+    }
+
+    private val playerListener = object : Player.Listener {
+        override fun onEvents(player: Player, events: Player.Events) {
+            emitPlayerState()
         }
+
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+            emitPlayerState()
+        }
+
+        override fun onMediaItemTransition(mediaItem: androidx.media3.common.MediaItem?, reason: Int) {
+            emitPlayerState()
+        }
+
+        override fun onPlaybackStateChanged(playbackState: Int) {
+            emitPlayerState()
+        }
+    }
+
+    init {
+        controllerFuture.addListener(
+            {
+                controller = runCatching { controllerFuture.get() }
+                    .getOrNull()
+                    ?.also { it.addListener(playerListener) }
+                emitPlayerState()
+            },
+            mainExecutor
+        )
+    }
 
     @JavascriptInterface
     fun search(query: String, requestId: String) {
         scope.launch {
             try {
-                val tracks = withContext(Dispatchers.IO) {
-                    source.search(query)
-                }
-                val array = JSONArray()
-                tracks.forEach { array.put(trackJson(it)) }
-                reply(requestId, true, array)
+                val tracks = withContext(Dispatchers.IO) { source.search(query) }
+                reply(requestId, true, tracksJson(tracks))
             } catch (error: Throwable) {
                 replyError(requestId, error)
             }
@@ -72,19 +94,24 @@ class VitrBackendBridge(
     }
 
     @JavascriptInterface
-    fun play(trackJson: String, requestId: String) {
+    fun play(trackJson: String, queueJson: String, requestId: String) {
         scope.launch {
             try {
-                val requested = parseTrack(JSONObject(trackJson))
-                val resolved = resolver.resolve(requested)
-                    ?: throw IllegalStateException("Vitr could not resolve this track.")
+                val selected = parseTrack(JSONObject(trackJson))
+                val requestedQueue = parseTracks(queueJson)
+                val queue = if (requestedQueue.any { it.id == selected.id }) {
+                    requestedQueue
+                } else {
+                    listOf(selected) + requestedQueue
+                }.ifEmpty { listOf(selected) }
 
-                currentTrack = resolved
-                player.setMediaItem(resolved.toMediaItem())
-                player.prepare()
-                player.play()
+                PlaybackQueueStore.replaceAndRequestPlay(
+                    tracks = queue,
+                    currentTrackId = selected.id
+                )
+                controller?.play()
 
-                reply(requestId, true, trackJson(resolved))
+                reply(requestId, true, trackJson(selected))
                 emitPlayerState()
             } catch (error: Throwable) {
                 replyError(requestId, error)
@@ -94,38 +121,116 @@ class VitrBackendBridge(
 
     @JavascriptInterface
     fun togglePlay() {
-        scope.launch {
-            if (player.isPlaying) {
-                player.pause()
-            } else if (player.mediaItemCount > 0) {
-                player.play()
-            }
-            emitPlayerState()
+        controller?.let {
+            if (it.isPlaying) it.pause() else it.play()
         }
+        emitPlayerState()
     }
 
     @JavascriptInterface
     fun pause() {
-        scope.launch {
-            player.pause()
-            emitPlayerState()
-        }
+        controller?.pause()
+        emitPlayerState()
+    }
+
+    @JavascriptInterface
+    fun next() {
+        val next = PlaybackQueueStore.advance(
+            repeatMode = QueueRepeatMode.Off,
+            shuffle = controller?.shuffleModeEnabled == true
+        )
+        next?.current?.entryId?.let(PlaybackQueueStore::selectAndRequestPlay)
+        controller?.play()
+        emitPlayerState()
+    }
+
+    @JavascriptInterface
+    fun previous() {
+        val previous = PlaybackQueueStore.previous(QueueRepeatMode.Off)
+        previous?.current?.entryId?.let(PlaybackQueueStore::selectAndRequestPlay)
+        controller?.play()
+        emitPlayerState()
     }
 
     @JavascriptInterface
     fun seek(positionMs: Double) {
-        scope.launch {
-            player.seekTo(positionMs.toLong().coerceAtLeast(0L))
-            emitPlayerState()
-        }
+        controller?.seekTo(positionMs.toLong().coerceAtLeast(0L))
+        emitPlayerState()
+    }
+
+    @JavascriptInterface
+    fun setVolume(volume: Double) {
+        controller?.volume = volume.toFloat().coerceIn(0f, 1f)
+        emitPlayerState()
     }
 
     @JavascriptInterface
     fun state(requestId: String) {
+        reply(requestId, true, playerStateJson())
+    }
+
+    @JavascriptInterface
+    fun library(requestId: String) {
         scope.launch {
-            reply(requestId, true, playerStateJson())
+            try {
+                val tracks = withContext(Dispatchers.IO) {
+                    dao.observeAll().first().map(TrackEntity::asTrack)
+                }
+                reply(requestId, true, tracksJson(tracks))
+            } catch (error: Throwable) {
+                replyError(requestId, error)
+            }
         }
     }
+
+    @JavascriptInterface
+    fun history(requestId: String) {
+        scope.launch {
+            try {
+                val tracks = withContext(Dispatchers.IO) {
+                    dao.observeHistory()
+                        .first()
+                        .map { it.asTrack() }
+                        .distinctBy(Track::id)
+                }
+                reply(requestId, true, tracksJson(tracks))
+            } catch (error: Throwable) {
+                replyError(requestId, error)
+            }
+        }
+    }
+
+    @JavascriptInterface
+    fun toggleFavorite(trackJson: String, requestId: String) {
+        scope.launch {
+            try {
+                val track = parseTrack(JSONObject(trackJson))
+                val liked = withContext(Dispatchers.IO) {
+                    if (dao.contains(track.id)) {
+                        dao.remove(track.id)
+                        false
+                    } else {
+                        dao.save(TrackEntity.from(track))
+                        true
+                    }
+                }
+                reply(requestId, true, JSONObject().put("liked", liked))
+            } catch (error: Throwable) {
+                replyError(requestId, error)
+            }
+        }
+    }
+
+    private fun parseTracks(raw: String): List<Track> =
+        runCatching {
+            val array = JSONArray(raw)
+            buildList {
+                for (index in 0 until array.length()) {
+                    val item = array.optJSONObject(index) ?: continue
+                    add(parseTrack(item))
+                }
+            }
+        }.getOrDefault(emptyList())
 
     private fun parseTrack(json: JSONObject): Track {
         val id = json.optString("id").ifBlank {
@@ -163,17 +268,25 @@ class VitrBackendBridge(
         .put("originalStreamUrl", track.originalStreamUrl ?: JSONObject.NULL)
         .put("source", "Vitr Android")
 
-    private fun playerStateJson(): JSONObject = JSONObject()
-        .put("track", currentTrack?.let(::trackJson) ?: JSONObject.NULL)
-        .put("playing", player.isPlaying)
-        .put("positionMs", player.currentPosition.coerceAtLeast(0L))
-        .put(
-            "durationMs",
-            player.duration.takeIf { it > 0L }
-                ?: currentTrack?.durationMs
-                ?: 0L
-        )
-        .put("bufferedPercent", player.bufferedPercentage)
+    private fun tracksJson(tracks: List<Track>): JSONArray =
+        JSONArray().also { array -> tracks.forEach { array.put(trackJson(it)) } }
+
+    private fun playerStateJson(): JSONObject {
+        val player = controller
+        val track = PlaybackQueueStore.currentTrack()
+        return JSONObject()
+            .put("track", track?.let(::trackJson) ?: JSONObject.NULL)
+            .put("playing", player?.isPlaying == true)
+            .put("positionMs", player?.currentPosition?.coerceAtLeast(0L) ?: 0L)
+            .put(
+                "durationMs",
+                player?.duration?.takeIf { it > 0L }
+                    ?: track?.durationMs
+                    ?: 0L
+            )
+            .put("bufferedPercent", player?.bufferedPercentage ?: 0)
+            .put("volume", player?.volume ?: 1f)
+    }
 
     private fun reply(requestId: String, ok: Boolean, payload: Any) {
         val request = JSONObject.quote(requestId)
@@ -187,8 +300,10 @@ class VitrBackendBridge(
     }
 
     private fun replyError(requestId: String, error: Throwable) {
-        val payload = JSONObject()
-            .put(
+        reply(
+            requestId,
+            false,
+            JSONObject().put(
                 "message",
                 error.message
                     ?.lineSequence()
@@ -196,7 +311,7 @@ class VitrBackendBridge(
                     ?.take(240)
                     ?: "Android backend error"
             )
-        reply(requestId, false, payload)
+        )
     }
 
     private fun emitPlayerState() {
@@ -210,7 +325,9 @@ class VitrBackendBridge(
     }
 
     fun release() {
+        controller?.removeListener(playerListener)
+        MediaController.releaseFuture(controllerFuture)
+        controller = null
         scope.cancel()
-        player.release()
     }
 }

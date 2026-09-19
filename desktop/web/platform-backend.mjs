@@ -1,6 +1,9 @@
+import { createPersistence } from './persistence.mjs';
 import { createBackend } from './backend.mjs';
 
 const tauri = window.__TAURI__;
+
+window.vitrPersistence = createPersistence(window.localStorage);
 
 if (tauri?.core?.invoke) {
   window.vitrPlatformBackend = createBackend({

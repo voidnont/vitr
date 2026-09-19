@@ -1,5 +1,5 @@
 (function(){
-  var pending=new Map(), sequence=0;
+  var pending=new Map(),sequence=0;
 
   function call(method,args){
     return new Promise(function(resolve,reject){
@@ -32,11 +32,22 @@
 
   window.vitrPlatformBackend={
     search:function(query){return call("search",[String(query||"")])},
-    play:function(track){return call("play",[JSON.stringify(track||{})])},
+    play:function(track,queue){
+      return call("play",[
+        JSON.stringify(track||{}),
+        JSON.stringify(Array.isArray(queue)&&queue.length?queue:[track].filter(Boolean))
+      ]);
+    },
     state:function(){return call("state",[])},
-    togglePlay:function(){window.VitrNative&&window.VitrNative.togglePlay()},
-    pause:function(){window.VitrNative&&window.VitrNative.pause()},
-    seek:function(positionMs){window.VitrNative&&window.VitrNative.seek(Number(positionMs)||0)}
+    library:function(){return call("library",[])},
+    history:function(){return call("history",[])},
+    toggleFavorite:function(track){return call("toggleFavorite",[JSON.stringify(track||{})])},
+    togglePlay:function(){if(window.VitrNative)window.VitrNative.togglePlay()},
+    pause:function(){if(window.VitrNative)window.VitrNative.pause()},
+    next:function(){if(window.VitrNative)window.VitrNative.next()},
+    previous:function(){if(window.VitrNative)window.VitrNative.previous()},
+    seek:function(positionMs){if(window.VitrNative)window.VitrNative.seek(Number(positionMs)||0)},
+    setVolume:function(volume){if(window.VitrNative)window.VitrNative.setVolume(Math.max(0,Math.min(1,Number(volume)||0)))}
   };
 
   window.dispatchEvent(new CustomEvent("vitr-backend-ready"));

@@ -177,7 +177,13 @@ fn dock_mini_player(window: WebviewWindow, side: String) -> Result<(), String> {
 }
 
 #[tauri::command]
-fn hide_mini_player(window: WebviewWindow) -> Result<(), String> {
+fn hide_mini_player(app: AppHandle, window: WebviewWindow) -> Result<(), String> {
+    if let Some(main) = app.get_webview_window("main") {
+        if !main.is_visible().unwrap_or(true) {
+            let _ = main.show();
+            let _ = main.set_focus();
+        }
+    }
     window
         .hide()
         .map_err(|error| format!("Could not hide mini player: {error}"))
@@ -196,6 +202,31 @@ fn show_main_window(app: AppHandle) -> Result<(), String> {
         .map_err(|error| format!("Could not focus vitr: {error}"))
 }
 
+#[tauri::command]
+fn mini_player_action(app: AppHandle, action: String) -> Result<(), String> {
+    let Some(main) = app.get_webview_window("main") else {
+        return Err("Main vitr window is unavailable".to_string());
+    };
+    let action_json = serde_json::to_string(&action)
+        .map_err(|error| format!("Could not encode player action: {error}"))?;
+    main.eval(&format!(
+        "window.vitrPlayerAction&&window.vitrPlayerAction({action_json});"
+    ))
+    .map_err(|error| format!("Could not control Vitr player: {error}"))
+}
+
+#[tauri::command]
+fn mini_player_volume(app: AppHandle, delta: f64) -> Result<(), String> {
+    let Some(main) = app.get_webview_window("main") else {
+        return Err("Main vitr window is unavailable".to_string());
+    };
+    let safe_delta = delta.clamp(-1.0, 1.0);
+    main.eval(&format!(
+        "window.vitrPlayerAdjustVolume&&window.vitrPlayerAdjustVolume({safe_delta});"
+    ))
+    .map_err(|error| format!("Could not change Vitr volume: {error}"))
+}
+
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
@@ -208,6 +239,22 @@ pub fn run() {
                 eprintln!("vitr native media controls unavailable: {error}");
             }
             Ok(())
+        })
+        .on_window_event(|window, event| {
+            if window.label() != "main" {
+                return;
+            }
+            if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+                let app = window.app_handle();
+                if let Some(mini) = app.get_webview_window("mini") {
+                    if mini.is_visible().unwrap_or(false) {
+                        api.prevent_close();
+                        let _ = window.hide();
+                    } else {
+                        let _ = mini.close();
+                    }
+                }
+            }
         })
         .invoke_handler(tauri::generate_handler![
             search::innertube_search,
@@ -234,7 +281,9 @@ pub fn run() {
             set_mini_always_on_top,
             dock_mini_player,
             hide_mini_player,
-            show_main_window
+            show_main_window,
+            mini_player_action,
+            mini_player_volume
         ])
         .run(tauri::generate_context!())
         .expect("vitr failed to start");
