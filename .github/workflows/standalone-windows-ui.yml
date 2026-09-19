@@ -22,6 +22,16 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@stable
 
+      - name: Read version
+        id: version
+        shell: pwsh
+        run: |
+          $version = (Get-Content VERSION -Raw).Trim()
+          "value=$version" >> $env:GITHUB_OUTPUT
+
+      - name: Sync version
+        run: node scripts/sync-version.mjs
+
       - name: Install desktop dependencies
         working-directory: desktop
         run: npm ci
@@ -33,7 +43,7 @@ jobs:
       - name: Generate installer art
         working-directory: desktop
         shell: powershell
-        run: powershell -NoProfile -ExecutionPolicy Bypass -File platforms/windows/generate-installer-art.ps1 -Version 0.1.0
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File platforms/windows/generate-installer-art.ps1
 
       - name: Build Windows installers
         working-directory: desktop
@@ -50,6 +60,6 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: vitr-0.1.0-windows-installers
+          name: vitr-${{ steps.version.outputs.value }}-windows-installers
           path: out/*
           if-no-files-found: error
