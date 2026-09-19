@@ -1,4 +1,4 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
 sealed interface AndroidAutoBrowseTarget {
     data object Root : AndroidAutoBrowseTarget
@@ -12,15 +12,15 @@ sealed interface AndroidAutoBrowseTarget {
 }
 
 object AndroidAutoBrowsePolicy {
-    const val ROOT = "frxe:auto:root"
-    const val LIBRARY = "frxe:auto:library"
-    const val RECENT = "frxe:auto:recent"
-    const val PLAYLISTS = "frxe:auto:playlists"
-    const val QUEUE = "frxe:auto:queue"
+    const val ROOT = "vitr:auto:root"
+    const val LIBRARY = "vitr:auto:library"
+    const val RECENT = "vitr:auto:recent"
+    const val PLAYLISTS = "vitr:auto:playlists"
+    const val QUEUE = "vitr:auto:queue"
 
-    private const val PLAYLIST_PREFIX = "frxe:auto:playlist:"
-    private const val TRACK_PREFIX = "frxe:auto:track:"
-    private const val QUEUE_ITEM_PREFIX = "frxe:auto:queue-item:"
+    private const val PLAYLIST_PREFIX = "vitr:auto:playlist:"
+    private const val TRACK_PREFIX = "vitr:auto:track:"
+    private const val QUEUE_ITEM_PREFIX = "vitr:auto:queue-item:"
 
     val rootCategoryIds = listOf(
         LIBRARY,

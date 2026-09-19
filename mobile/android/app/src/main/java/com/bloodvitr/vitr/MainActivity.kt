@@ -1,4 +1,4 @@
-package com.frxe.music
+package com.bloodvitr.vitr
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,16 +6,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import com.frxe.music.island.FrxeAppVisibility
-import com.frxe.music.island.IslandHubPreferences
-import com.frxe.music.save.FrxeDownloadService
-import com.frxe.music.ui.FrxeApp
-import com.frxe.music.ui.FrxeViewModel
-import com.frxe.music.ui.acceptSharedText
-import com.frxe.music.ui.theme.FrxeTheme
+import com.bloodvitr.vitr.island.VitrAppVisibility
+import com.bloodvitr.vitr.island.IslandHubPreferences
+import com.bloodvitr.vitr.save.VitrDownloadService
+import com.bloodvitr.vitr.ui.VitrApp
+import com.bloodvitr.vitr.ui.VitrViewModel
+import com.bloodvitr.vitr.ui.acceptSharedText
+import com.bloodvitr.vitr.ui.theme.VitrTheme
 
 class MainActivity : ComponentActivity() {
-    private val viewModel: FrxeViewModel by viewModels()
+    private val viewModel: VitrViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,8 +23,8 @@ class MainActivity : ComponentActivity() {
         handleShareIntent(intent)
 
         setContent {
-            FrxeTheme {
-                FrxeApp(viewModel)
+            VitrTheme {
+                VitrApp(viewModel)
             }
         }
     }
@@ -37,13 +37,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        FrxeAppVisibility.isForeground = true
+        VitrAppVisibility.isForeground = true
         IslandHubPreferences.refreshFloatingOverlay(this)
-        FrxeDownloadService.kick(this)
+        VitrDownloadService.kick(this)
     }
 
     override fun onPause() {
-        FrxeAppVisibility.isForeground = false
+        VitrAppVisibility.isForeground = false
         IslandHubPreferences.refreshFloatingOverlay(this)
         super.onPause()
     }

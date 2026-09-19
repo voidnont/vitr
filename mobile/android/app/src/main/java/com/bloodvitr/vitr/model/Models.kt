@@ -1,4 +1,4 @@
-package com.frxe.music.model
+package com.bloodvitr.vitr.model
 
 import android.net.Uri
 import android.os.Bundle
@@ -8,7 +8,7 @@ import androidx.media3.common.MediaMetadata
 
 enum class CanvasMode { Liquid, Pulse, Minimal }
 
-enum class FrxeRepeatMode { Off, All, One }
+enum class VitrRepeatMode { Off, All, One }
 
 data class Track(
     val id: String,
@@ -76,13 +76,13 @@ data class PlayerUiState(
     val playbackSpeed: Float = 1f,
     val playbackPitch: Float = 1f,
     val shuffleEnabled: Boolean = false,
-    val repeatMode: FrxeRepeatMode = FrxeRepeatMode.Off,
+    val repeatMode: VitrRepeatMode = VitrRepeatMode.Off,
     val sleepTimerRemainingMs: Long = 0L,
     val canvasMode: CanvasMode = CanvasMode.Liquid,
     val autoDjEnabled: Boolean = true
 )
 
-const val EXTRA_DURATION_MS = "frxe.duration_ms"
-const val EXTRA_ARTWORK_SEED = "frxe.artwork_seed"
-const val EXTRA_DOWNLOAD_URL = "frxe.download_url"
-const val EXTRA_ORIGINAL_STREAM_URL = "frxe.original_stream_url"
+const val EXTRA_DURATION_MS = "vitr.duration_ms"
+const val EXTRA_ARTWORK_SEED = "vitr.artwork_seed"
+const val EXTRA_DOWNLOAD_URL = "vitr.download_url"
+const val EXTRA_ORIGINAL_STREAM_URL = "vitr.original_stream_url"

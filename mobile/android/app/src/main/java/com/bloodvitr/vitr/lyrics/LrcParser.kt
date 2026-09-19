@@ -1,4 +1,4 @@
-package com.frxe.music.lyrics
+package com.bloodvitr.vitr.lyrics
 
 data class ParsedLyricLine(
     val startMs: Long,

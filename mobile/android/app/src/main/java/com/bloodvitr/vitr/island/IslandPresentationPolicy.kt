@@ -1,4 +1,4 @@
-package com.frxe.music.island
+package com.bloodvitr.vitr.island
 
 object IslandPresentationPolicy {
     const val showInApp: Boolean = false

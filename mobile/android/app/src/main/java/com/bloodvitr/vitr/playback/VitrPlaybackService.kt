@@ -1,4 +1,4 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
 import android.app.PendingIntent
 import android.content.Intent
@@ -22,15 +22,15 @@ import androidx.media3.session.MediaLibraryService.LibraryParams
 import androidx.media3.session.MediaLibraryService.MediaLibrarySession
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionError
-import com.frxe.music.MainActivity
-import com.frxe.music.data.FrxeDatabase
-import com.frxe.music.data.PlaybackHistoryEntity
-import com.frxe.music.downloads.DownloadSupport
-import com.frxe.music.island.IslandHubOverlayController
-import com.frxe.music.island.IslandHubPreferences
-import com.frxe.music.model.Track
-import com.frxe.music.source.PlaybackResolutionMonitor
-import com.frxe.music.source.PlaybackStreamResolver
+import com.bloodvitr.vitr.MainActivity
+import com.bloodvitr.vitr.data.VitrDatabase
+import com.bloodvitr.vitr.data.PlaybackHistoryEntity
+import com.bloodvitr.vitr.downloads.DownloadSupport
+import com.bloodvitr.vitr.island.IslandHubOverlayController
+import com.bloodvitr.vitr.island.IslandHubPreferences
+import com.bloodvitr.vitr.model.Track
+import com.bloodvitr.vitr.source.PlaybackResolutionMonitor
+import com.bloodvitr.vitr.source.PlaybackStreamResolver
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
@@ -44,10 +44,10 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 @OptIn(UnstableApi::class)
-class FrxePlaybackService : MediaLibraryService() {
+class VitrPlaybackService : MediaLibraryService() {
     private var mediaSession: MediaLibrarySession? = null
     private lateinit var player: ExoPlayer
-    private lateinit var systemMediaPlayer: FrxeSystemMediaPlayer
+    private lateinit var systemMediaPlayer: VitrSystemMediaPlayer
     private lateinit var playbackStore: PlaybackStateStore
     private lateinit var androidAutoLibrary: AndroidAutoLibrary
     private var islandOverlay: IslandHubOverlayController? = null
@@ -452,7 +452,7 @@ class FrxePlaybackService : MediaLibraryService() {
                 it.addListener(playerListener)
             }
 
-        systemMediaPlayer = FrxeSystemMediaPlayer(
+        systemMediaPlayer = VitrSystemMediaPlayer(
             player = player,
             queueAvailability = {
                 SystemMediaQueuePolicy.availability(
@@ -730,7 +730,7 @@ class FrxePlaybackService : MediaLibraryService() {
         lastRecordedHistoryEntryId = currentEntry.entryId
 
         serviceScope.launch(Dispatchers.IO) {
-            FrxeDatabase.get(applicationContext)
+            VitrDatabase.get(applicationContext)
                 .libraryDao()
                 .addHistory(
                     PlaybackHistoryEntity.from(track)

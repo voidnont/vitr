@@ -1,9 +1,9 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
 import java.net.URI
 
 private const val CATALOG_YOUTUBE_PREFIX =
-    "frxe-catalog://youtube/"
+    "vitr-catalog://youtube/"
 
 /*
  * Stable internal identifier for a
@@ -43,7 +43,7 @@ object AudioOnlyPlaybackPolicy {
         }
 
         /*
-         * Frxe's catalog URI is NOT an
+         * Vitr's catalog URI is NOT an
          * actual media URL.
          *
          * PlaybackStreamResolver must

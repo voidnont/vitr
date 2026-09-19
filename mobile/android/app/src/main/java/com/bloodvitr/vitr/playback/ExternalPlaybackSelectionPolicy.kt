@@ -1,4 +1,4 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
 object ExternalPlaybackSelectionPolicy {
     fun shouldMirror(

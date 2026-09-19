@@ -1,11 +1,11 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
 import android.content.Context
 import android.net.Uri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
-import com.frxe.music.data.FrxeDatabase
-import com.frxe.music.model.Track
+import com.bloodvitr.vitr.data.VitrDatabase
+import com.bloodvitr.vitr.model.Track
 import kotlinx.coroutines.flow.first
 
 class AndroidAutoLibrary(
@@ -13,7 +13,7 @@ class AndroidAutoLibrary(
 ) {
     private val applicationContext = context.applicationContext
     private val dao
-        get() = FrxeDatabase.get(applicationContext).libraryDao()
+        get() = VitrDatabase.get(applicationContext).libraryDao()
 
     fun rootItem(): MediaItem =
         browsableItem(

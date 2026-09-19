@@ -1,8 +1,8 @@
-package com.frxe.music.lyrics
+package com.bloodvitr.vitr.lyrics
 
-import com.frxe.music.BuildConfig
-import com.frxe.music.model.TimedLyric
-import com.frxe.music.model.Track
+import com.bloodvitr.vitr.BuildConfig
+import com.bloodvitr.vitr.model.TimedLyric
+import com.bloodvitr.vitr.model.Track
 import java.net.URLEncoder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
