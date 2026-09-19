@@ -49,6 +49,8 @@ body.normal .liquid-orb{display:none}
 .brand-copy{display:grid;line-height:1}.brand-copy strong{font-size:23px;letter-spacing:-.06em}.brand-copy small{margin-top:4px;color:var(--muted);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
 .top-search{height:48px;flex:1;max-width:620px;margin-left:auto;display:flex;align-items:center;gap:10px;border-radius:18px;padding:0 15px}
 .top-search svg{width:18px;color:var(--muted)}.top-search input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:#fff;font-size:13px}
+.mini-launch{height:42px;border-radius:16px;padding:0 14px;border:1px solid rgba(255,255,255,.08);font-size:11px;font-weight:750;cursor:pointer;white-space:nowrap}
+.mini-launch:hover{border-color:rgba(242,47,93,.38);transform:translateY(-1px)}
 .mode-toggle{display:flex;align-items:center;position:relative;height:42px;padding:4px;border-radius:16px;min-width:190px}
 .mode-toggle button{position:relative;z-index:2;flex:1;height:34px;border:0;background:transparent;color:var(--muted);font-size:11px;font-weight:750;letter-spacing:.02em}
 .mode-toggle button.active{color:#fff}.toggle-indicator{position:absolute;z-index:1;top:4px;bottom:4px;width:calc(50% - 4px);left:4px;border-radius:12px;background:linear-gradient(135deg,rgba(242,47,93,.84),rgba(155,18,56,.72));transition:transform .35s cubic-bezier(.2,.9,.2,1)}
@@ -124,7 +126,7 @@ body[data-window-class="compact"] .hero{min-height:300px;padding:22px;grid-templ
 body[data-window-class="compact"] .hero h1{font-size:44px}
 body[data-window-class="compact"] .disc{width:190px;height:190px}
 body[data-window-class="compact"] .cards{grid-template-columns:repeat(3,minmax(0,1fr))}
-body[data-window-class="compact"] .mode-toggle{min-width:165px}
+body[data-window-class="compact"] .mini-launch{font-size:0;width:42px;padding:0}\nbody[data-window-class="compact"] .mini-launch:after{content:"♪";font-size:17px}\nbody[data-window-class="compact"] .mode-toggle{min-width:165px}
 body[data-window-class="compact"] .top-search{max-width:420px}
 
 body[data-window-class="normal"] .shell{grid-template-columns:210px minmax(0,1fr) 240px}
@@ -155,7 +157,7 @@ body[data-window-class="wide"] .library-grid{grid-template-columns:repeat(4,minm
 <header class="topbar">
   <div class="brand"><div class="drop"></div><div class="brand-copy"><strong>vitr</strong><small>by blood</small></div></div>
   <label class="top-search glass-soft"><span>⌕</span><input id="globalSearch" placeholder="Search the Vitr demo…" autocomplete="off"></label>
-  <div class="mode-toggle glass-soft" aria-label="Appearance">
+  <button id="miniLaunch" class="mini-launch glass-soft" type="button">Mini player</button>\n  <div class="mode-toggle glass-soft" aria-label="Appearance">
     <div class="toggle-indicator"></div>
     <button id="liquidBtn" class="active" type="button">Liquid Glass</button>
     <button id="normalBtn" type="button">Normal</button>
@@ -219,6 +221,7 @@ body[data-window-class="wide"] .library-grid{grid-template-columns:repeat(4,minm
       <div class="settings-panel glass">
         <div class="page-title"><div class="eyebrow">VITR</div><h1>Settings</h1><p>Appearance and project identity.</p></div>
         <div class="setting-row glass-soft"><div><h3>Interface finish</h3><p>Use the toggle above to switch between Liquid Glass and Normal UI.</p></div><strong id="modeLabel">Liquid Glass</strong></div>
+        <div class="setting-row glass-soft"><div><h3>Floating mini player</h3><p>Open a draggable Vitr popup that follows your saved Normal / Liquid Glass appearance.</p></div><button id="miniSettingsLaunch" class="link-pill" type="button">Open mini player</button></div>
         <div class="setting-row glass-soft"><div><h3>Version</h3><p>Standalone UI build</p></div><strong>0.1.0</strong></div>
         <div class="setting-row glass-soft"><div><h3>Blood</h3><p>Creator and maintainer of Vitr.</p></div><div class="setting-links"><a class="link-pill" href="https://github.com/bloodvitr" target="_blank" rel="noreferrer">github.com/bloodvitr</a><a class="link-pill" href="https://ko-fi.com/bloodvitr" target="_blank" rel="noreferrer">ko-fi.com/bloodvitr</a></div></div>
       </div>
@@ -275,7 +278,7 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
     if(modeLabel) modeLabel.textContent=normal?"Normal":"Liquid Glass";
     localStorage.setItem("vitr-ui-mode",normal?"normal":"liquid");
   }
-  setMode(localStorage.getItem("vitr-ui-mode")==="normal"?"normal":"liquid");
+  setMode(localStorage.getItem("vitr-ui-mode")==="normal"?"normal":"liquid");\n  if(!localStorage.getItem("vitr-current-track"))rememberTrack("Red Light","Novae");
   liquidBtn.addEventListener("click",function(){setMode("liquid")}); normalBtn.addEventListener("click",function(){setMode("normal")});
 
   function trackMarkup(t,i){
@@ -293,12 +296,27 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
   document.querySelectorAll("[data-tab]").forEach(function(b){b.addEventListener("click",function(){switchTab(b.getAttribute("data-tab"))})});
 
   var overlay=document.getElementById("playerOverlay"),pt=document.getElementById("playerTitle"),pa=document.getElementById("playerArtist");
-  function openPlayer(raw){var p=raw.split("|");pt.textContent=p[0]||"Red Light";pa.textContent=p[1]||"Vitr";overlay.classList.add("open")}
+  function rememberTrack(title,artist){
+    localStorage.setItem("vitr-current-track",JSON.stringify({title:title||"Red Light",artist:artist||"Vitr"}));
+  }
+  function openPlayer(raw){var p=raw.split("|");pt.textContent=p[0]||"Red Light";pa.textContent=p[1]||"Vitr";rememberTrack(pt.textContent,pa.textContent);overlay.classList.add("open")}
   function bindPlayers(root){(root||document).querySelectorAll("[data-player]").forEach(function(el){el.addEventListener("click",function(){openPlayer(el.getAttribute("data-player"))})})}
   bindPlayers(document);
   document.getElementById("closePlayer").addEventListener("click",function(){overlay.classList.remove("open")});
   overlay.addEventListener("click",function(e){if(e.target===overlay)overlay.classList.remove("open")});
-  var playing=true;document.getElementById("playToggle").addEventListener("click",function(e){playing=!playing;e.currentTarget.textContent=playing?"❚❚":"▶"});
+  var playing=localStorage.getItem("vitr-playing")!=="false";
+  localStorage.setItem("vitr-playing",playing?"true":"false");
+  document.getElementById("playToggle").addEventListener("click",function(e){playing=!playing;localStorage.setItem("vitr-playing",playing?"true":"false");e.currentTarget.textContent=playing?"❚❚":"▶"});
+  async function openMini(){
+    if(!invoke)return;
+    var mode=localStorage.getItem("vitr-mini-mode")||"standard";
+    var dock=localStorage.getItem("vitr-mini-dock")||"right";
+    try{await invoke("open_mini_player",{mode:mode,dock:dock});}catch(e){console.error(e);}
+  }
+  var miniLaunch=document.getElementById("miniLaunch");
+  var miniSettingsLaunch=document.getElementById("miniSettingsLaunch");
+  if(miniLaunch)miniLaunch.addEventListener("click",openMini);
+  if(miniSettingsLaunch)miniSettingsLaunch.addEventListener("click",openMini);
 
   function filter(q){q=(q||"").toLowerCase().trim();var list=!q?tracks:tracks.filter(function(t){return (t.title+" "+t.artist).toLowerCase().indexOf(q)>=0});renderTracks(list,document.getElementById("searchTracks"))}
   document.getElementById("searchInput").addEventListener("input",function(e){filter(e.target.value)});

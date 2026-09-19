@@ -1,30 +1,240 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="color-scheme" content="dark" />
-  <title>vitr mini player</title>
-  <link rel="icon" href="./vitr-icon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="./mini-player.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>vitr mini player</title>
+<style>
+:root{
+  --red:#f22f5d;--red2:#ff5578;--bg:#050507;--panel:rgba(18,17,23,.74);
+  --panel2:rgba(31,28,36,.62);--text:#f9f8fb;--muted:#aaa5b0;--line:rgba(255,255,255,.12);
+  --shadow:0 22px 55px rgba(0,0,0,.42)
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent;color:var(--text);
+font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;user-select:none}
+button{font:inherit;color:inherit}
+.shell{width:100%;height:100%;position:relative;border-radius:22px;overflow:hidden;
+ background:
+ radial-gradient(circle at 14% 4%,rgba(255,78,112,.24),transparent 26%),
+ linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.025) 40%,rgba(6,5,8,.74)),
+ var(--panel);
+ border:1px solid var(--line);box-shadow:inset 0 1px rgba(255,255,255,.14),var(--shadow);
+ -webkit-backdrop-filter:blur(28px) saturate(1.5);backdrop-filter:blur(28px) saturate(1.5)}
+body.normal .shell{background:#111116;border-color:#292730;box-shadow:0 18px 40px rgba(0,0,0,.36);-webkit-backdrop-filter:none;backdrop-filter:none}
+.shell:before{content:"";position:absolute;width:150px;height:150px;border-radius:50%;right:-70px;top:-80px;
+ background:radial-gradient(circle,#ff6685 0,#bd183f 32%,transparent 68%);opacity:.38;filter:blur(12px);pointer-events:none}
+body.normal .shell:before{opacity:.12}
+.drag{position:absolute;inset:0;z-index:1;cursor:grab}
+.content{position:relative;z-index:2;width:100%;height:100%;pointer-events:none}
+button,.menu,.menu *{pointer-events:auto}
+.cover{position:relative;overflow:hidden;background:
+ linear-gradient(145deg,#12090e,#4b1022 58%,#ef2d5c);
+ box-shadow:inset 0 0 24px rgba(255,255,255,.08),0 8px 20px rgba(0,0,0,.26)}
+.cover:before{content:"";position:absolute;width:72%;height:72%;border-radius:50%;left:-18%;bottom:-22%;background:#f43161;filter:blur(7px);opacity:.75}
+.cover:after{content:"";position:absolute;width:40%;height:40%;border-radius:50%;right:3%;top:4%;background:#ff7996;filter:blur(8px);opacity:.7}
+.title{font-weight:800;letter-spacing:-.025em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.artist{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.icon-btn{border:0;background:rgba(255,255,255,.07);display:grid;place-items:center;cursor:pointer;transition:.2s ease}
+.icon-btn:hover{background:rgba(242,47,93,.18);transform:translateY(-1px)}
+.play{background:linear-gradient(135deg,var(--red2),var(--red));box-shadow:0 7px 18px rgba(242,47,93,.3)}
+.top-actions{display:flex;gap:6px;align-items:center}
+.progress{height:4px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden}.progress i{display:block;width:38%;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--red),#ff8aa2)}
+.standard{display:none;padding:10px 11px;grid-template-columns:72px minmax(0,1fr) auto;gap:10px;align-items:center}
+body[data-mode="standard"] .standard{display:grid;height:100%}
+.standard .cover{width:72px;height:72px;border-radius:16px}
+.standard .title{font-size:14px}.standard .artist{font-size:10px;margin-top:2px}
+.standard .track{min-width:0}.standard .progress{margin-top:10px}.standard .time{display:flex;justify-content:space-between;color:#827d88;font-size:8px;margin-top:3px}
+.standard .controls{display:grid;grid-template-columns:repeat(3,32px);gap:5px}.standard .icon-btn{width:32px;height:32px;border-radius:50%;font-size:11px}.standard .play{font-size:13px}
+.standard .mode{position:absolute;right:8px;top:7px;width:24px;height:24px;border-radius:9px;background:rgba(255,255,255,.06);border:0;cursor:pointer}
+.lyrics{display:none;padding:11px;grid-template-rows:auto 1fr auto;gap:7px;height:100%}
+body[data-mode="lyrics"] .lyrics{display:grid}
+.lyrics-head{display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:8px;align-items:center}
+.lyrics-head .cover{width:38px;height:38px;border-radius:11px}
+.lyrics-head .title{font-size:11px}.lyrics-head .artist{font-size:8px}
+.lyrics-lines{display:grid;place-content:center;gap:5px;text-align:center;padding:4px 8px}
+.lyrics-lines span{font-size:12px;color:#8f8a95;transition:.25s ease}
+.lyrics-lines .active{font-size:15px;color:#ff4168;font-weight:850;text-shadow:0 0 20px rgba(242,47,93,.26)}
+.lyrics-foot .progress{margin-bottom:8px}
+.lyrics-controls{display:flex;justify-content:center;gap:9px}.lyrics-controls .icon-btn{width:31px;height:31px;border-radius:50%;font-size:10px}.lyrics-controls .play{width:38px;height:38px}
+.tiny,.ultra{display:none;height:100%;align-items:center;padding:6px 8px;gap:8px}
+body[data-mode="tiny"] .tiny{display:grid;grid-template-columns:42px minmax(0,1fr) auto}
+body[data-mode="ultra"] .ultra{display:flex;padding:4px 10px}
+.tiny .cover{width:42px;height:42px;border-radius:12px}.tiny .title{font-size:11px}.tiny .artist{font-size:8px;margin-top:1px}
+.tiny .icon-btn{width:32px;height:32px;border-radius:50%}
+.ultra .dot{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 12px rgba(242,47,93,.6);flex:0 0 auto}
+.ultra .title{font-size:10px;flex:1;min-width:0}
+.ultra .icon-btn{width:26px;height:26px;border-radius:50%;font-size:9px}
+.menu{display:none;position:absolute;z-index:20;right:8px;top:8px;min-width:154px;padding:7px;border-radius:14px;
+ background:rgba(15,14,19,.96);border:1px solid rgba(255,255,255,.1);box-shadow:0 16px 38px rgba(0,0,0,.48)}
+body.normal .menu{background:#17171d}
+.menu.open{display:grid;gap:3px}
+.menu button{height:30px;border:0;border-radius:9px;background:transparent;text-align:left;padding:0 9px;color:#d9d5dd;font-size:10px;cursor:pointer}
+.menu button:hover{background:rgba(255,255,255,.07)}
+.menu .danger{color:#ff7893}.menu hr{width:100%;border:0;border-top:1px solid rgba(255,255,255,.08);margin:3px 0}
+.badge{position:absolute;z-index:5;left:8px;bottom:7px;font-size:8px;color:#9d98a4;opacity:0;transition:.2s}.shell:hover .badge{opacity:1}
+body[data-mode="ultra"] .badge,body[data-mode="tiny"] .badge{display:none}
+</style>
 </head>
-<body>
-  <main id="mini-player" class="mini-shell" data-vitr-drag-region data-tauri-drag-region>
-    <div class="mini-art" data-vitr-drag-region data-tauri-drag-region>
-      <img id="mini-cover" src="./vitr-icon.svg" alt="" draggable="false" />
-    </div>
-    <div class="mini-copy" data-vitr-drag-region data-tauri-drag-region>
-      <strong id="mini-title">Nothing playing</strong>
-      <span id="mini-artist">vitr</span>
-      <div class="mini-progress" aria-hidden="true"><i id="mini-progress-bar"></i></div>
-    </div>
-    <div class="mini-controls">
-      <button data-action="previous" aria-label="Previous">‹</button>
-      <button class="mini-play" data-action="toggle-play" aria-label="Play"><span id="mini-play-icon">▶</span></button>
-      <button data-action="next" aria-label="Next">›</button>
-      <button class="mini-close" data-action="disable" aria-label="Disable floating mini player">×</button>
-    </div>
-  </main>
-  <script type="module" src="./mini-player.mjs"></script>
+<body data-mode="standard">
+<div class="shell" id="shell">
+  <div class="drag" data-drag></div>
+  <div class="content">
+    <section class="standard">
+      <div class="cover"></div>
+      <div class="track">
+        <div class="title" data-title>Red Light</div>
+        <div class="artist" data-artist>Novae</div>
+        <div class="progress"><i></i></div>
+        <div class="time"><span>1:24</span><span>3:56</span></div>
+      </div>
+      <div class="controls">
+        <button class="icon-btn" data-prev>◀</button>
+        <button class="icon-btn play" data-play>❚❚</button>
+        <button class="icon-btn" data-next>▶</button>
+      </div>
+      <button class="mode" data-menu-button>•••</button>
+    </section>
+
+    <section class="lyrics">
+      <div class="lyrics-head">
+        <div class="cover"></div>
+        <div><div class="title" data-title>Red Light</div><div class="artist" data-artist>Novae</div></div>
+        <div class="top-actions"><button class="icon-btn" data-menu-button style="width:28px;height:28px;border-radius:9px">•••</button></div>
+      </div>
+      <div class="lyrics-lines">
+        <span>In the silence</span>
+        <span>I find a different me</span>
+        <span class="active">Same human<br>different frequencies</span>
+        <span>Lost in sound</span>
+        <span>but I feel alive</span>
+      </div>
+      <div class="lyrics-foot">
+        <div class="progress"><i></i></div>
+        <div class="lyrics-controls">
+          <button class="icon-btn" data-prev>◀</button>
+          <button class="icon-btn play" data-play>❚❚</button>
+          <button class="icon-btn" data-next>▶</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="tiny">
+      <div class="cover"></div>
+      <div><div class="title" data-title>Red Light</div><div class="artist" data-artist>Novae</div></div>
+      <button class="icon-btn play" data-play>❚❚</button>
+    </section>
+
+    <section class="ultra">
+      <div class="dot"></div>
+      <div class="title" data-title>Red Light</div>
+      <button class="icon-btn play" data-play>❚❚</button>
+    </section>
+  </div>
+
+  <div class="menu" id="menu">
+    <button data-mode-item="standard">Standard mini</button>
+    <button data-mode-item="lyrics">Lyrics 1×1</button>
+    <button data-mode-item="tiny">Tiny</button>
+    <button data-mode-item="ultra">Ultra tiny</button>
+    <hr>
+    <button data-pin>Always on top ✓</button>
+    <button data-dock="left">Dock bottom left</button>
+    <button data-dock="right">Dock bottom right</button>
+    <hr>
+    <button data-open-main>Open Vitr</button>
+    <button class="danger" data-hide>Hide mini player</button>
+  </div>
+  <div class="badge">drag anywhere · right-click for modes</div>
+</div>
+
+<script>
+(function(){
+  var invoke=window.__TAURI__&&window.__TAURI__.core&&window.__TAURI__.core.invoke;
+  var body=document.body,menu=document.getElementById("menu");
+  var modes=["standard","lyrics","tiny","ultra"];
+  var pinned=localStorage.getItem("vitr-mini-on-top")!=="false";
+  var playing=localStorage.getItem("vitr-playing")!=="false";
+  var saveTick=0;
+
+  function syncTheme(){
+    body.classList.toggle("normal",localStorage.getItem("vitr-ui-mode")==="normal");
+  }
+  function syncTrack(){
+    var track={title:"Red Light",artist:"Novae"};
+    try{track=JSON.parse(localStorage.getItem("vitr-current-track"))||track}catch(e){}
+    document.querySelectorAll("[data-title]").forEach(function(el){el.textContent=track.title||"Red Light"});
+    document.querySelectorAll("[data-artist]").forEach(function(el){el.textContent=track.artist||"Vitr"});
+  }
+  function syncPlaying(){
+    playing=localStorage.getItem("vitr-playing")!=="false";
+    document.querySelectorAll("[data-play]").forEach(function(el){el.textContent=playing?"❚❚":"▶"});
+  }
+  async function setMode(mode){
+    if(modes.indexOf(mode)<0)mode="standard";
+    body.dataset.mode=mode;
+    localStorage.setItem("vitr-mini-mode",mode);
+    menu.classList.remove("open");
+    if(invoke){try{await invoke("set_mini_mode",{mode:mode});}catch(e){console.error(e)}}
+  }
+  async function savePosition(){
+    if(!invoke)return;
+    try{
+      var p=await invoke("mini_position");
+      if(Array.isArray(p)&&p.length===2)localStorage.setItem("vitr-mini-position",JSON.stringify(p));
+    }catch(e){}
+  }
+  async function restorePosition(){
+    if(!invoke)return;
+    var saved=null;
+    try{saved=JSON.parse(localStorage.getItem("vitr-mini-position"))}catch(e){}
+    if(Array.isArray(saved)&&saved.length===2){
+      try{await invoke("set_mini_position",{x:Number(saved[0]),y:Number(saved[1])});return;}catch(e){}
+    }
+    var dock=localStorage.getItem("vitr-mini-dock")||"right";
+    try{await invoke("dock_mini_player",{side:dock});}catch(e){}
+  }
+  function togglePlay(){
+    playing=!playing;
+    localStorage.setItem("vitr-playing",playing?"true":"false");
+    syncPlaying();
+  }
+
+  document.querySelectorAll("[data-play]").forEach(function(el){el.addEventListener("click",function(e){e.stopPropagation();togglePlay()})});
+  document.querySelectorAll("[data-menu-button]").forEach(function(el){el.addEventListener("click",function(e){e.stopPropagation();menu.classList.toggle("open")})});
+  document.querySelectorAll("[data-mode-item]").forEach(function(el){el.addEventListener("click",function(){setMode(el.dataset.modeItem)})});
+  document.querySelectorAll("[data-dock]").forEach(function(el){el.addEventListener("click",async function(){
+    var side=el.dataset.dock;localStorage.setItem("vitr-mini-dock",side);menu.classList.remove("open");
+    if(invoke){try{await invoke("dock_mini_player",{side:side});await savePosition();}catch(e){}}
+  })});
+  document.querySelector("[data-pin]").addEventListener("click",async function(e){
+    pinned=!pinned;localStorage.setItem("vitr-mini-on-top",pinned?"true":"false");e.currentTarget.textContent="Always on top "+(pinned?"✓":"");
+    if(invoke){try{await invoke("set_mini_always_on_top",{enabled:pinned});}catch(err){}}
+  });
+  document.querySelector("[data-open-main]").addEventListener("click",async function(){menu.classList.remove("open");if(invoke){try{await invoke("show_main_window")}catch(e){}}});
+  document.querySelector("[data-hide]").addEventListener("click",async function(){menu.classList.remove("open");if(invoke){try{await invoke("hide_mini_player")}catch(e){}}});
+
+  document.querySelector("[data-drag]").addEventListener("pointerdown",async function(e){
+    if(e.button!==0||!invoke)return;
+    try{await invoke("start_mini_drag");setTimeout(savePosition,250)}catch(err){}
+  });
+  document.addEventListener("contextmenu",function(e){e.preventDefault();menu.classList.add("open")});
+  document.addEventListener("click",function(e){if(!menu.contains(e.target)&&!e.target.closest("[data-menu-button]"))menu.classList.remove("open")});
+  document.getElementById("shell").addEventListener("dblclick",function(e){if(e.target.closest("button"))return;if(invoke)invoke("show_main_window").catch(function(){})});
+
+  document.addEventListener("wheel",function(e){
+    if(Math.abs(e.deltaY)<1)return;
+    var v=Number(localStorage.getItem("vitr-volume")||70);
+    v=Math.max(0,Math.min(100,v+(e.deltaY<0?4:-4)));
+    localStorage.setItem("vitr-volume",String(v));
+  },{passive:true});
+
+  syncTheme();syncTrack();syncPlaying();
+  document.querySelector("[data-pin]").textContent="Always on top "+(pinned?"✓":"");
+  setMode(localStorage.getItem("vitr-mini-mode")||"standard").then(restorePosition);
+  if(invoke)invoke("set_mini_always_on_top",{enabled:pinned}).catch(function(){});
+  setInterval(function(){syncTheme();syncTrack();syncPlaying();if(++saveTick%4===0)savePosition()},500);
+})();
+</script>
 </body>
 </html>
