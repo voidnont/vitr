@@ -5,33 +5,26 @@ plugins {
 }
 
 val bloodKeystore = providers.environmentVariable("BLOOD_KEYSTORE").orNull
-    ?: providers.environmentVariable("VOID_KEYSTORE").orNull
 val bloodStorePassword = providers.environmentVariable("BLOOD_STORE_PASSWORD").orNull
-    ?: providers.environmentVariable("VOID_STORE_PASSWORD").orNull
-val bloodKeyAlias = providers.environmentVariable("BLOOD_KEY_ALIAS").orNull
-    ?: providers.environmentVariable("VOID_KEY_ALIAS").orNull
-    ?: "blood"
+val bloodKeyAlias = providers.environmentVariable("BLOOD_KEY_ALIAS").orNull ?: "blood"
 val bloodKeyPassword = providers.environmentVariable("BLOOD_KEY_PASSWORD").orNull
-    ?: providers.environmentVariable("VOID_KEY_PASSWORD").orNull
 val hasBloodSigning = listOf(bloodKeystore, bloodStorePassword, bloodKeyPassword).all { !it.isNullOrBlank() }
 val ciReleaseDebugSigning =
-    providers.environmentVariable("VITR_CI_RELEASE_DEBUG_SIGNING").orNull == "1" ||
-        providers.environmentVariable("FRXE_CI_RELEASE_DEBUG_SIGNING").orNull == "1"
+    providers.environmentVariable("VITR_CI_RELEASE_DEBUG_SIGNING").orNull == "1"
 val ciArm64Release =
-    providers.environmentVariable("VITR_CI_ARM64_RELEASE").orNull == "1" ||
-        providers.environmentVariable("FRXE_CI_ARM64_RELEASE").orNull == "1"
+    providers.environmentVariable("VITR_CI_ARM64_RELEASE").orNull == "1"
 
-val zexlBaseUrl = providers.gradleProperty("FRXE_ZEXL_BASE_URL").orNull
-    ?: providers.environmentVariable("FRXE_ZEXL_BASE_URL").orNull
+val zexlBaseUrl = providers.gradleProperty("VITR_ZEXL_BASE_URL").orNull
+    ?: providers.environmentVariable("VITR_ZEXL_BASE_URL").orNull
     ?: "https://zexl.onrender.com"
-val zexlApiKey = providers.gradleProperty("FRXE_ZEXL_API_KEY").orNull
-    ?: providers.environmentVariable("FRXE_ZEXL_API_KEY").orNull
+val zexlApiKey = providers.gradleProperty("VITR_ZEXL_API_KEY").orNull
+    ?: providers.environmentVariable("VITR_ZEXL_API_KEY").orNull
     ?: ""
-val cobaltBaseUrl = providers.gradleProperty("FRXE_COBALT_BASE_URL").orNull
-    ?: providers.environmentVariable("FRXE_COBALT_BASE_URL").orNull
+val cobaltBaseUrl = providers.gradleProperty("VITR_COBALT_BASE_URL").orNull
+    ?: providers.environmentVariable("VITR_COBALT_BASE_URL").orNull
     ?: ""
-val cobaltApiKey = providers.gradleProperty("FRXE_COBALT_API_KEY").orNull
-    ?: providers.environmentVariable("FRXE_COBALT_API_KEY").orNull
+val cobaltApiKey = providers.gradleProperty("VITR_COBALT_API_KEY").orNull
+    ?: providers.environmentVariable("VITR_COBALT_API_KEY").orNull
     ?: ""
 fun buildConfigString(value: String): String = "\"" + value.replace("\\", "\\\\").replace("\"", "\\\"") + "\""
 
@@ -40,7 +33,7 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.frxe.music"
+        applicationId = "com.bloodvitr.vitr"
         minSdk = 26
         targetSdk = 37
         versionCode = 1
