@@ -23,6 +23,25 @@
         "center": true,
         "shadow": true,
         "backgroundColor": "#050507"
+      },
+      {
+        "label": "mini",
+        "title": "vitr mini player",
+        "url": "mini.html",
+        "width": 348,
+        "height": 108,
+        "minWidth": 125,
+        "minHeight": 34,
+        "decorations": false,
+        "transparent": false,
+        "resizable": false,
+        "fullscreen": false,
+        "center": false,
+        "shadow": true,
+        "visible": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "backgroundColor": "#111116"
       }
     ],
     "security": {
