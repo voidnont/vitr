@@ -21,7 +21,8 @@
     "desktop:build:windows": "npm --prefix desktop run tauri:build:windows",
     "desktop:build:linux": "npm --prefix desktop run tauri:build:linux",
     "desktop:build:macos": "npm --prefix desktop run tauri:build:macos",
-    "android:build": "gradle -p mobile/android clean :app:assembleRelease"
+    "android:build": "gradle -p mobile/android clean :app:assembleRelease",
+    "ios:build": "xcodebuild -project mobile/ios/Vitr.xcodeproj -scheme Vitr -configuration Release -sdk iphonesimulator CODE_SIGNING_ALLOWED=NO build"
   },
   "license": "SEE LICENSE IN LICENSE"
 }
