@@ -1,4 +1,4 @@
-package com.frxe.music.ytdlp
+package com.bloodvitr.vitr.ytdlp
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -8,7 +8,7 @@ import org.junit.Test
 class YtDlpDownloadCommandPolicyTest {
 
     @Test
-    fun `single audio download uses only frxe owned output and safe defaults`() {
+    fun `single audio download uses only vitr owned output and safe defaults`() {
         val request = YtDlpDownloadRequest(
             sourceUrl = "https://example.com/watch?v=1",
             title = "Track",
@@ -23,7 +23,7 @@ class YtDlpDownloadCommandPolicyTest {
 
         val options = YtDlpDownloadCommandPolicy.arguments(
             request = request,
-            outputTemplate = "/data/user/0/com.frxe.music/cache/native/%(id)s.%(ext)s",
+            outputTemplate = "/data/user/0/com.bloodvitr.vitr/cache/native/%(id)s.%(ext)s",
             useAria2c = false
         )
 
@@ -34,7 +34,7 @@ class YtDlpDownloadCommandPolicyTest {
             listOf(
                 YtDlpOption(
                     "--output",
-                    "/data/user/0/com.frxe.music/cache/native/%(id)s.%(ext)s"
+                    "/data/user/0/com.bloodvitr.vitr/cache/native/%(id)s.%(ext)s"
                 )
             ),
             options.filter { it.option == "--output" }

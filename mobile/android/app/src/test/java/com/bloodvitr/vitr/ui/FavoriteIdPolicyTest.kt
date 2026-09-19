@@ -1,4 +1,4 @@
-package com.frxe.music.ui
+package com.bloodvitr.vitr.ui
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

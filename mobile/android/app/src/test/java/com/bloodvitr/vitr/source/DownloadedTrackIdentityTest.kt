@@ -1,4 +1,4 @@
-package com.frxe.music.source
+package com.bloodvitr.vitr.source
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -21,7 +21,7 @@ class DownloadedTrackIdentityTest {
         assertEquals(
             "yt-dQw4w9WgXcQ",
             DownloadedTrackIdentity.trackIdForSource(
-                "frxe-catalog://youtube/dQw4w9WgXcQ"
+                "vitr-catalog://youtube/dQw4w9WgXcQ"
             )
         )
     }
