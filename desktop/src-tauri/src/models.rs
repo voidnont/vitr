@@ -73,3 +73,13 @@ pub struct DownloadProgress {
     pub eta: String,
     pub item_title: String,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[serde(rename_all = "camelCase")]
+pub struct ClientUpdateStatus {
+    pub current_version: String,
+    pub latest_version: String,
+    pub update_available: bool,
+    pub release_url: String,
+    pub notes: String,
+}
