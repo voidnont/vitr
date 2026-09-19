@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "description": "vitr for Windows, Linux and macOS",
-  "author": "blood",
+  "author": "Blood",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
     "release:check": "node tools/release-metadata.mjs check",
