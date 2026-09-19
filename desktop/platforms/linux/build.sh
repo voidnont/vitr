@@ -12,7 +12,7 @@ npm ci
 VITR_VERSION="$(node tools/release-metadata.mjs version)"
 [[ -n "$VITR_VERSION" ]] || { echo "Could not determine vitr version." >&2; exit 1; }
 
-npx --no-install tauri icon web/vitr-icon.svg --output src-tauri/icons
+npx --no-install tauri icon web/vitr-icon.png --output src-tauri/icons
 npm run check
 npx --no-install tauri build --bundles deb,appimage
 
