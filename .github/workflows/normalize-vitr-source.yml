@@ -174,3 +174,5 @@ jobs:
           fi
           git commit -m "refactor: normalize Vitr source identity"
           git push origin HEAD:main
+
+# semantic-cleanup retry
