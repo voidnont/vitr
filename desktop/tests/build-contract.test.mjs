@@ -35,7 +35,7 @@ test('desktop builds are self-contained and platform entry points are separated'
   assert.match(pkg, /tauri:build:windows/);
   assert.match(pkg, /tauri:build:linux/);
   assert.match(pkg, /tauri:build:macos/);
-  assert.match(pkg, /tauri icon web\/vitr-icon\.svg/);
+  assert.match(pkg, /tauri icon web\/vitr-icon\.png/);
   assert.match(windowsWorkflow, /platforms[\\/]windows[\\/]build\.bat/i);
   assert.match(linuxWorkflow, /platforms\/linux\/build\.sh/);
   assert.match(macWorkflow, /platforms\/macos\/build\.sh/);

@@ -210,3 +210,30 @@ test('Clear search removes the query and results without reloading Vitr Web', as
   await expect(page.getByText(/Search for anything/)).toBeVisible();
   expect(new URL(page.url()).pathname).toBe('/music');
 });
+
+
+test('Now Playing keeps previous and next controls visible in a short resizable window', async ({ page }) => {
+  await page.setViewportSize({ width: 900, height: 560 });
+  await page.goto('/music');
+  await page.locator('.frxe-nav').getByRole('button', { name: 'Search' }).click();
+  await page.getByRole('textbox', { name: 'Search VITR' }).fill('Signal');
+  await page.getByRole('button', { name: 'Search music' }).click();
+  await page.getByRole('button', { name: 'Play Signal', exact: true }).first().click();
+  await page.locator('.frxe-mini-main').click();
+  await expect(page.getByRole('button', { name: 'Previous track' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Next track' })).toBeVisible();
+  for (const name of ['Previous track', 'Next track']) {
+    const box = await page.getByRole('button', { name }).boundingBox();
+    expect(box).not.toBeNull();
+    expect(box.y + box.height).toBeLessThanOrEqual(560);
+  }
+});
+
+test('Settings only contains non-playback settings', async ({ page }) => {
+  await page.goto('/music');
+  await page.locator('.frxe-nav').getByRole('button', { name: 'Settings' }).click();
+  await expect(page.getByRole('button', { name: /Appearance:/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Reset VITR Web' })).toBeVisible();
+  await expect(page.getByText(/^Volume /)).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /Mute|Unmute|Shuffle:|Repeat:/ })).toHaveCount(0);
+});

@@ -22,13 +22,11 @@ const webOnlyUnit = read('tests/unit/web-player-only.test.mjs');
 const ci = read('../.github/workflows/ci.yml');
 const vercel = read('vercel.json');
 const index = read('index.html');
-const vitrIcon = read('public/vitr-icon.svg');
 
 expect(pkg.version === versionFile, `package.json (${pkg.version}) and VERSION (${versionFile}) must match`);
 expect(index.includes('<title>Vitr</title>'), 'public HTML title must remain Vitr');
-expect(index.includes('href="/vitr-icon.svg"'), 'Vitr favicon must remain local');
-expect(fs.existsSync('public/vitr-icon.svg'), 'Vitr favicon must exist');
-expect(vitrIcon.includes('viewBox="0 0 512 512"'), 'Vitr logo viewport must remain intact');
+expect(index.includes('href="/vitr-icon.png"'), 'Vitr favicon must remain local');
+expect(fs.existsSync('public/vitr-icon.png'), 'Vitr favicon must exist');
 
 expect(main.includes("import('./music/VitrWebApp.tsx')"), 'Vitr routes must load the web player');
 expect(main.includes("import('./App.jsx')"), 'nont.me root must load the standalone release page');

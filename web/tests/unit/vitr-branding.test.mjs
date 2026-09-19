@@ -16,7 +16,7 @@ test('public brand is Vitr by Blood', () => {
   }
 
   assert.match(index, /<title>Vitr<\/title>/);
-  assert.match(index, /\/vitr-icon\.svg/);
+  assert.match(index, /\/vitr-icon\.png/);
   assert.match(app, /github\.com\/bloodvitr/);
   assert.match(app, /ko-fi\.com\/bloodvitr/);
   assert.match(music, /github\.com\/voidnont\/vitr/);
@@ -24,7 +24,7 @@ test('public brand is Vitr by Blood', () => {
 });
 
 test('Vitr logo asset exists', () => {
-  assert.equal(existsSync(new URL('../../public/vitr-icon.svg', import.meta.url)), true);
+  assert.equal(existsSync(new URL('../../public/vitr-icon.png', import.meta.url)), true);
 });
 
 

@@ -95,12 +95,16 @@ test('web player exposes v0.1.0 and a real clear-search control', () => {
   assert.match(app, /https:\/\/github\.com\/voidnont\/vitr/);
 });
 
-test('web and desktop use the same supplied droplet icon source', () => {
-  const webIcon = read('public/vitr-icon.svg').trim();
-  const desktopIcon = read('../desktop/web/vitr-icon.svg').trim();
-  assert.equal(webIcon, desktopIcon);
-  assert.match(webIcon, /#5b5b5b/i);
-  assert.match(webIcon, /#e91f4f/i);
+test('web and desktop use only the supplied PNG icon asset', () => {
+  const app = read('src/music/VitrWebApp.tsx');
+  const index = read('index.html');
+  const landing = read('src/App.jsx');
+  const desktopPackage = read('../desktop/package.json');
+  assert.match(app, /\/vitr-icon\.png/);
+  assert.match(index, /\/vitr-icon\.png/);
+  assert.match(landing, /\/vitr-icon\.png/);
+  assert.match(desktopPackage, /tauri icon web\/vitr-icon\.png/);
+  assert.doesNotMatch(app + index + landing + desktopPackage, /vitr-icon\.svg/);
 });
 
 
@@ -109,4 +113,21 @@ test('source adapter cannot overwrite the canonical 0.1.0 version', () => {
   assert.match(adapter, /const RELEASE_VERSION = '0\.1\.0'/);
   assert.match(adapter, /version:\s*RELEASE_VERSION/);
   assert.doesNotMatch(adapter, /version:\s*parseVitrVersion\(gradleText\)/);
+});
+
+
+test('Now Playing scales artwork against both viewport width and height', () => {
+  const css = read('src/music/vitr-web.css');
+  assert.match(css, /calc\(100dvh - 340px\)/);
+  assert.match(css, /@media\(max-height:720px\)/);
+  assert.match(css, /@media\(max-height:560px\)/);
+  assert.match(css, /grid-template-columns:repeat\(5,minmax\(44px,1fr\)\)/);
+});
+
+test('Settings does not duplicate playback controls already present in the player', () => {
+  const app = read('src/music/VitrWebApp.tsx');
+  const settings = app.slice(app.indexOf('<h2>Settings</h2>'), app.indexOf('</section>', app.indexOf('<h2>Settings</h2>')));
+  assert.doesNotMatch(settings, /Volume|Mute|Unmute|Shuffle:|Repeat:/);
+  assert.match(settings, /Appearance:/);
+  assert.match(settings, /Reset VITR Web/);
 });

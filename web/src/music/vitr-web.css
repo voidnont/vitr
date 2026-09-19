@@ -220,3 +220,164 @@
   .frxe069-search-bar .frxe-search-clear{width:32px;height:32px}
   .frxe069-search-bar .frxe-search-submit{width:38px;height:38px}
 }
+
+
+/* Exact supplied Vitr icon + viewport-responsive Now Playing */
+.frxe069-home-brand{
+  display:flex;
+  align-items:center;
+  gap:clamp(12px,2vw,18px);
+  min-width:0;
+}
+.frxe069-home-brand>div{min-width:0}
+.frxe069-brand-icon{
+  width:clamp(54px,6vw,76px);
+  height:clamp(54px,6vw,76px);
+  flex:0 0 auto;
+  object-fit:cover;
+  border-radius:18px;
+}
+.frxe069-app .frxe-nav::before{display:none!important;content:none!important}
+.frxe-nav-brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  height:74px;
+  flex:0 0 74px;
+  margin:0 4px 18px;
+  padding:0 12px;
+  border-bottom:1px solid var(--frxe-line);
+}
+.frxe-nav-brand img{
+  width:42px;
+  height:42px;
+  object-fit:cover;
+  border-radius:13px;
+  flex:0 0 auto;
+}
+.frxe-nav-brand span,.frxe-nav-brand strong,.frxe-nav-brand small{display:block}
+.frxe-nav-brand strong{font-size:20px;line-height:1;letter-spacing:-.04em}
+.frxe-nav-brand small{margin-top:3px;color:var(--frxe-muted);font-size:9px;letter-spacing:.12em;text-transform:uppercase}
+.frxe-player-heading{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  min-width:0;
+}
+.frxe-player-logo{
+  width:34px;
+  height:34px;
+  object-fit:cover;
+  border-radius:10px;
+  flex:0 0 auto;
+}
+.frxe069-player{
+  width:min(100%,1120px);
+  min-height:100dvh;
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  padding:
+    max(12px,env(safe-area-inset-top))
+    clamp(12px,2.4vw,28px)
+    max(18px,env(safe-area-inset-bottom));
+}
+.frxe069-player .frxe-player-top{
+  flex:0 0 auto;
+  margin-bottom:clamp(8px,1.8dvh,22px);
+}
+.frxe069-player-main{
+  width:min(100%,680px);
+  min-width:0;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+}
+.frxe069-player .frxe-player-art,
+.frxe069-player .frxe069-art{
+  width:min(520px,72vw,calc(100dvh - 340px));
+  max-width:100%;
+  max-height:min(520px,calc(100dvh - 340px));
+  min-width:min(150px,60vw);
+  min-height:min(150px,60vw);
+  margin-inline:auto;
+  aspect-ratio:1;
+  flex:0 1 auto;
+}
+.frxe069-player .frxe-player-meta{
+  width:100%;
+  margin:clamp(10px,1.8dvh,20px) auto clamp(8px,1.4dvh,16px);
+  min-width:0;
+}
+.frxe069-player .frxe-player-meta h2{
+  font-size:clamp(22px,4vw,42px);
+  line-height:1.05;
+  overflow-wrap:anywhere;
+}
+.frxe069-player .frxe-player-meta p{
+  font-size:clamp(13px,2vw,16px);
+}
+.frxe069-player .frxe-progress{
+  width:100%;
+  min-width:0;
+}
+.frxe069-player .frxe-player-controls{
+  width:min(100%,560px);
+  grid-template-columns:repeat(5,minmax(44px,1fr));
+  gap:clamp(2px,1vw,12px);
+  margin:clamp(10px,1.8dvh,18px) auto;
+}
+.frxe069-player .frxe-player-controls button{
+  width:clamp(42px,7vw,52px);
+  height:clamp(42px,7vw,52px);
+}
+.frxe069-player .frxe-player-controls button.main{
+  width:clamp(60px,10vw,80px);
+  height:clamp(60px,10vw,80px);
+}
+.frxe069-player-actions{
+  width:100%;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:8px;
+}
+@media(max-height:720px){
+  .frxe069-player{
+    padding-top:8px;
+    padding-bottom:10px;
+  }
+  .frxe069-player .frxe-player-top{margin-bottom:6px}
+  .frxe069-player .frxe-player-art,
+  .frxe069-player .frxe069-art{
+    width:min(400px,62vw,calc(100dvh - 300px));
+    max-height:calc(100dvh - 300px);
+  }
+  .frxe069-player .frxe-player-meta{margin:8px auto 6px}
+  .frxe069-player .frxe-player-controls{margin:8px auto}
+}
+@media(max-height:560px){
+  .frxe069-player .frxe-player-art,
+  .frxe069-player .frxe069-art{
+    width:min(260px,42vw,calc(100dvh - 250px));
+    max-height:calc(100dvh - 250px);
+  }
+  .frxe069-player .frxe-player-meta h2{font-size:clamp(18px,3vw,28px)}
+  .frxe069-player-actions{display:none}
+}
+@media(max-width:640px){
+  .frxe069-home-brand{align-items:flex-start}
+  .frxe069-brand-icon{width:52px;height:52px;border-radius:15px}
+  .frxe-nav-brand{display:none}
+  .frxe069-player .frxe-player-art,
+  .frxe069-player .frxe069-art{
+    width:min(86vw,calc(100dvh - 330px));
+    max-height:calc(100dvh - 330px);
+  }
+  .frxe069-player .frxe-player-controls{
+    grid-template-columns:repeat(5,minmax(40px,1fr));
+    gap:0;
+  }
+}

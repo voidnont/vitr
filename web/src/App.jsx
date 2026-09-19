@@ -221,7 +221,7 @@ export default function App() {
     <div className="site-ambient" aria-hidden="true"><span /><span /></div>
 
     <header className="site-header">
-      <a className="brand" href="/" aria-label="Vitr home"><img src="/vitr-icon.svg" alt="" /><span><strong>vitr</strong><small>by blood</small></span></a>
+      <a className="brand" href="/" aria-label="Vitr home"><img src="/vitr-icon.png" alt="" /><span><strong>vitr</strong><small>by blood</small></span></a>
       <nav className="site-nav" aria-label="Primary navigation">
         <a href="#experience">Experience</a>
         <a href="#downloads">Downloads</a>
@@ -255,7 +255,7 @@ export default function App() {
           <div className="hero-surface-glow" aria-hidden="true" />
           <div className="hero-window glass-panel">
             <div className="hero-window-top">
-              <div className="hero-window-brand"><img src="/vitr-icon.svg" alt="" /><span><strong>vitr</strong><small>web</small></span></div>
+              <div className="hero-window-brand"><img src="/vitr-icon.png" alt="" /><span><strong>vitr</strong><small>web</small></span></div>
               <span className="live-pill"><i /> LIVE</span>
             </div>
             <div className="hero-now">
@@ -340,7 +340,7 @@ export default function App() {
     </main>
 
     <footer className="site-footer">
-      <div className="footer-brand"><img src="/vitr-icon.svg" alt="" /><span><strong>vitr</strong><small>by blood</small></span></div>
+      <div className="footer-brand"><img src="/vitr-icon.png" alt="" /><span><strong>vitr</strong><small>by blood</small></span></div>
       <p>Your music. Your space.</p>
       <div className="footer-links">
         <a href="https://vitr.nont.me">Web Player</a>
