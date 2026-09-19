@@ -27,7 +27,7 @@ button,.menu,.menu *{pointer-events:auto}
 body[data-mode="standard"] .standard{display:grid;height:100%}
 .standard .cover{width:68px;height:68px;border-radius:50%}
 .standard .title{font-size:14px}.standard .artist{font-size:10px;margin-top:2px}
-.standard .track{min-width:0}.standard .progress{margin-top:8px}.standard .time{display:flex;justify-content:space-between;color:#827d88;font-size:8px;margin-top:3px}
+.standard .track{min-width:0}.standard .progress{margin-top:8px}.standard .time{display:grid;grid-template-columns:auto minmax(52px,1fr) auto;align-items:center;gap:6px;color:#827d88;font-size:8px;margin-top:3px}.standard .time input[type="range"]{width:100%;height:10px;accent-color:var(--red);cursor:pointer}
 .standard .controls{display:grid;grid-template-columns:repeat(3,34px);gap:5px;padding-right:2px}.standard .icon-btn{width:34px;height:34px;border-radius:50%;font-size:11px}.standard .play{font-size:13px}
 .standard .mode{position:absolute;right:5px;top:4px;width:23px;height:23px;border-radius:50%;background:rgba(255,255,255,.055);border:0;cursor:pointer}
 .lyrics{display:none;padding:11px;grid-template-rows:auto 1fr auto;gap:7px;height:100%}
@@ -51,7 +51,7 @@ body.normal .menu{background:#17171d}.menu.open{display:grid;gap:3px}.menu butto
   <div class="content">
     <section class="standard">
       <div class="cover empty" data-cover></div>
-      <div class="track"><div class="title" data-title>Nothing playing</div><div class="artist" data-artist>Open Vitr and play a track</div><div class="progress"><i></i></div><div class="time"><span>0:00</span><span>0:00</span></div></div>
+      <div class="track"><div class="title" data-title>Nothing playing</div><div class="artist" data-artist>Open Vitr and play a track</div><div class="progress"><i></i></div><div class="time"><span>0:00</span><input data-mini-volume type="range" min="0" max="100" value="70" aria-label="Volume"><span>0:00</span></div></div>
       <div class="controls"><button class="icon-btn" data-prev>◀</button><button class="icon-btn play" data-play>▶</button><button class="icon-btn" data-next>▶</button></div>
       <button class="mode" data-menu-button>•••</button>
     </section>
@@ -107,7 +107,7 @@ body.normal .menu{background:#17171d}.menu.open{display:grid;gap:3px}.menu butto
     var state=currentState(),track=state.track||null,has=!!(track&&track.title),art=coverUrl(track),pct=state.durationSeconds?Math.max(0,Math.min(100,state.positionSeconds/state.durationSeconds*100)):0;
     document.querySelectorAll("[data-title]").forEach(function(el){el.textContent=has?track.title:"Nothing playing"});
     document.querySelectorAll("[data-artist]").forEach(function(el){el.textContent=has?(track.artist||"Unknown artist"):"Open Vitr and play a track"});
-    document.querySelectorAll("[data-play]").forEach(function(el){el.textContent=state.playing?"❚❚":"▶"});
+    document.querySelectorAll("[data-play]").forEach(function(el){el.textContent=state.playing?"❚❚":"▶"});document.querySelectorAll("[data-mini-volume]").forEach(function(el){el.value=String(Math.round(Math.max(0,Math.min(1,Number(state.volume==null?.7:state.volume)))*100))});
     document.querySelectorAll(".progress i").forEach(function(el){el.style.width=pct+"%"});
     document.querySelectorAll(".time").forEach(function(el){var spans=el.querySelectorAll("span");if(spans[0])spans[0].textContent=clock(state.positionSeconds);if(spans[1])spans[1].textContent=clock(state.durationSeconds)});
     document.querySelectorAll("[data-cover]").forEach(function(el){el.classList.toggle("empty",!art);el.style.backgroundImage=art?'url("'+String(art).replace(/"/g,"%22")+'")':""});
@@ -120,6 +120,7 @@ body.normal .menu{background:#17171d}.menu.open{display:grid;gap:3px}.menu butto
   function action(name){if(invoke)invoke("mini_player_action",{action:name}).catch(function(){})}
 
   document.querySelectorAll("[data-play]").forEach(function(el){el.addEventListener("click",function(e){e.stopPropagation();action("toggle")})});
+  document.querySelectorAll("[data-mini-volume]").forEach(function(el){el.addEventListener("input",function(e){e.stopPropagation();if(!invoke)return;var state=currentState(),target=Math.max(0,Math.min(1,Number(el.value)/100)),current=Math.max(0,Math.min(1,Number(state.volume==null?.7:state.volume)));invoke("mini_player_volume",{delta:target-current}).catch(function(){})})});
   document.querySelectorAll("[data-prev]").forEach(function(el){el.addEventListener("click",function(e){e.stopPropagation();action("previous")})});
   document.querySelectorAll("[data-next]").forEach(function(el){el.addEventListener("click",function(e){e.stopPropagation();action("next")})});
   document.querySelectorAll("[data-menu-button]").forEach(function(el){el.addEventListener("click",function(e){e.stopPropagation();menu.classList.toggle("open")})});
