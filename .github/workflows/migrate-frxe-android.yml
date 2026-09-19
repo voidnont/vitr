@@ -50,7 +50,6 @@ jobs:
           set -euo pipefail
           rm -rf /tmp/frxe
           git clone --depth 1 https://github.com/voidnont/frxe.git /tmp/frxe
-
           rm -rf mobile/android
           mkdir -p mobile/android
           rsync -a --delete --exclude '.git' --exclude '.github' /tmp/frxe/ mobile/android/
@@ -74,64 +73,46 @@ jobs:
 
           update_repo = root / "app/src/main/java/com/frxe/music/updates/FrxeUpdateRepository.kt"
           text = update_repo.read_text()
-          text = text.replace(
-              "https://api.github.com/repos/voidnont/frxe/releases?per_page=10",
-              "https://api.github.com/repos/voidnont/vitr/releases?per_page=10",
-          )
-          text = text.replace(
-              "https://github.com/voidnont/frxe/releases",
-              "https://github.com/voidnont/vitr/releases",
-          )
+          text = text.replace("https://api.github.com/repos/voidnont/frxe/releases?per_page=10", "https://api.github.com/repos/voidnont/vitr/releases?per_page=10")
+          text = text.replace("https://github.com/voidnont/frxe/releases", "https://github.com/voidnont/vitr/releases")
           update_repo.write_text(text)
 
           support = root / "app/src/main/java/com/frxe/music/updates/RuntimeUpdatePolicy.kt"
-          text = support.read_text().replace(
-              "https://github.com/bloodvitr/vitr",
-              "https://github.com/voidnont/vitr",
-          )
+          text = support.read_text().replace("https://github.com/bloodvitr/vitr", "https://github.com/voidnont/vitr")
           support.write_text(text)
 
           readme = root / "README.md"
-          readme.write_text("""# Vitr Android
-
-This is the native Android app migrated from `voidnont/frxe` into the Vitr monorepo.
-
-- Vitr version: **0.1.0**
-- Android versionCode: **1**
-- Application ID: `com.frxe.music`
-- Minimum SDK: 26
-- Target/compile SDK: 37
-- Java: 21
-- Gradle: 9.6.0
-
-The internal `com.frxe.music` package/class names are intentionally retained to preserve app compatibility and native functionality while the product branding is Vitr.
-
-Build from the repository root with:
-
-```sh
-npm run android:build
-```
-""")
+          readme.write_text(
+              "# Vitr Android\n\n"
+              "This is the full native Android app migrated from `voidnont/frxe` into the Vitr monorepo.\n\n"
+              "- Vitr version: **0.1.0**\n"
+              "- Android versionCode: **1**\n"
+              "- Application ID: `com.frxe.music`\n"
+              "- Minimum SDK: 26\n"
+              "- Target/compile SDK: 37\n"
+              "- Java: 21\n"
+              "- Gradle: 9.6.0\n\n"
+              "The internal `com.frxe.music` package/class names are retained to preserve compatibility and native functionality while the product branding is Vitr.\n\n"
+              "Build from the repository root with `npm run android:build`.\n"
+          )
 
           package_path = Path("package.json")
           package = json.loads(package_path.read_text())
           package["version"] = "0.1.0"
-          package.setdefault("scripts", {})["android:build"] = (
-              "gradle -p mobile/android clean :app:assembleRelease"
-          )
+          package.setdefault("scripts", {})["android:build"] = "gradle -p mobile/android clean :app:assembleRelease"
           package_path.write_text(json.dumps(package, indent=2) + "\n")
 
           repo_readme = Path("README.md")
-          repo_text = repo_readme.read_text()
-          repo_text = repo_text.replace(
-              "- `android/` — native Android shell for the Vitr web player, including installable APK build configuration.",
-              "- `mobile/android/` — full native Android Vitr app migrated from `voidnont/frxe`, including playback, downloads, Android Auto, persistence, resolver logic and tests.",
-          )
-          repo_text = repo_text.replace(
-              "- `npm run android:build` — build the installable Android debug APK with a local Gradle 8.11.1+ installation.",
-              "- `npm run android:build` — build the native Android Vitr 0.1.0 APK.",
-          )
-          repo_readme.write_text(repo_text)
+          lines = repo_readme.read_text().splitlines()
+          out = []
+          for line in lines:
+              if line.startswith("- `android/`") or line.startswith("- `mobile/android/`"):
+                  out.append("- `mobile/android/` — full native Android Vitr app migrated from `voidnont/frxe`, including playback, downloads, Android Auto, persistence, resolver logic and tests.")
+              elif line.startswith("- `npm run android:build`"):
+                  out.append("- `npm run android:build` — build the native Android Vitr 0.1.0 APK.")
+              else:
+                  out.append(line)
+          repo_readme.write_text("\n".join(out) + "\n")
           PY
 
       - name: Install final Android APK workflow
