@@ -38,7 +38,7 @@
 .frxe069-reset:hover{background:#ff2b63!important;color:#fff!important}
 .frxe069-reset-copy{margin:-4px 0 4px;color:#7f8da2;font:600 10px/1.55 Inter,ui-sans-serif,system-ui,sans-serif;text-transform:none}
 .frxe069-create-row input:focus,.frxe069-save input:focus,.frxe069-save select:focus{border-color:rgba(255,91,134,.44);outline:none}
-.frxe069-setting-row{justify-content:flex-start}
+.frxe069-setting-row{justify-content:flex-start;text-decoration:none}
 .frxe069-settings{background:linear-gradient(145deg,rgba(20,31,49,.72),rgba(9,16,28,.76))}
 .frxe069-version{border-color:rgba(184,202,229,.12)}
 .frxe069-version strong{color:#fff}
