@@ -1,23 +1,33 @@
-name: Build Vitr
+name: Build Vitr Web
 
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - 'desktop/**'
-      - '.github/workflows/desktop-*.yml'
+    paths:
+      - 'web/**'
+      - 'api/**'
+      - 'package.json'
+      - 'vercel.json'
+      - '.github/workflows/ci.yml'
   pull_request:
     branches: [main]
-    paths-ignore:
-      - 'desktop/**'
-      - '.github/workflows/desktop-*.yml'
+    paths:
+      - 'web/**'
+      - 'api/**'
+      - 'package.json'
+      - 'vercel.json'
+      - '.github/workflows/ci.yml'
 
 permissions:
   contents: read
 
 concurrency:
-  group: vitr-${{ github.ref }}
+  group: vitr-web-${{ github.ref }}
   cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: web
 
 jobs:
   build:
@@ -32,7 +42,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: package.json
+          cache-dependency-path: web/package.json
 
       - name: Install dependencies
         run: npm install --no-audit --no-fund
@@ -57,6 +67,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
-          path: playwright-report/
+          path: web/playwright-report/
           if-no-files-found: ignore
           retention-days: 7

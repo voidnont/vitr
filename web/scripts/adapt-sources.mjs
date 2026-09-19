@@ -7,7 +7,6 @@ const RELEASE_VERSION = '0.1.0';
 const SOURCE = {
   repo: 'bloodvitr/vitr',
   kind: 'vitr',
-  versionPath: 'app/build.gradle.kts',
   appSourcePaths: [
     'app/src/main/java/com/vitr/music/ui/VitrApp.kt',
     'app/src/main/java/com/vitr/music/ui/screens/NowPlayingScreen.kt',
@@ -43,19 +42,14 @@ async function raw(repo, branch, sourcePath) {
   });
 }
 
-function parseVitrVersion(gradleText) {
-  return gradleText.match(/versionName\s*=\s*["']([^"']+)["']/)?.[1]?.trim() || '';
-}
-
 async function inspectVitr() {
   const meta = await json(`https://api.github.com/repos/${SOURCE.repo}`);
   const branch = meta.default_branch || 'main';
   const tree = await json(`https://api.github.com/repos/${SOURCE.repo}/git/trees/${encodeURIComponent(branch)}?recursive=1`);
   const sourcePaths = Array.isArray(tree?.tree) ? tree.tree.map((entry) => entry.path).filter(Boolean) : [];
-  const [gradleText, ...appSources] = await Promise.all([
-    raw(SOURCE.repo, branch, SOURCE.versionPath),
-    ...SOURCE.appSourcePaths.map((sourcePath) => raw(SOURCE.repo, branch, sourcePath).catch(() => '')),
-  ]);
+  const appSources = await Promise.all(
+    SOURCE.appSourcePaths.map((sourcePath) => raw(SOURCE.repo, branch, sourcePath).catch(() => '')),
+  );
   const pkg = {
     version: RELEASE_VERSION,
     name: 'vitr',
@@ -94,12 +88,5 @@ try {
 
 fs.mkdirSync(path.dirname(manifestPath), { recursive: true });
 fs.writeFileSync(manifestPath, `${JSON.stringify({ [SOURCE.repo]: inspected }, null, 2)}\n`);
-
-if (inspected.version && !inspected.syncError) {
-  const musicPath = path.join('src', 'music', 'MusicApp.tsx');
-  let music = fs.readFileSync(musicPath, 'utf8');
-  music = music.replace(/const VITR_SOURCE_VERSION = '[^']*';/, `const VITR_SOURCE_VERSION = '${String(inspected.version).replace(/'/g, "\\'")}';`);
-  fs.writeFileSync(musicPath, music);
-}
 
 console.log(`${SOURCE.repo}: v${inspected.version || 'unknown'} | ${inspected.platforms?.join(', ') || 'platform unknown'}${inspected.syncError ? ` | preserved: ${inspected.syncError}` : ''}`);

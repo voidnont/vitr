@@ -43,7 +43,7 @@ async function boot() {
   if (musicMode) {
     document.documentElement.removeAttribute('data-theme');
     const [{ default: MusicApp }] = await Promise.all([
-      import('./music/MusicApp069.tsx'),
+      import('./music/VitrWebApp.tsx'),
       import('./music/music.css'),
     ]);
     mount(<MusicApp />);

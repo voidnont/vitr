@@ -1,7 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "npm --prefix web install --no-audit --no-fund && npm --prefix web run check && npm --prefix web run build",
-  "outputDirectory": "web/dist",
+  "framework": "vite",
+  "buildCommand": "npm run check && npm run build",
+  "outputDirectory": "dist",
   "rewrites": [
     { "source": "/music", "destination": "/index.html" },
     { "source": "/music/(.*)", "destination": "/index.html" }

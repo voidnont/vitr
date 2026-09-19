@@ -9,9 +9,9 @@ const pkg = JSON.parse(read('package.json'));
 const versionFile = read('VERSION').trim();
 const main = read('src/main.jsx');
 const siteMode = read('src/site-mode.js');
-const music = read('src/music/MusicApp069.tsx');
+const music = read('src/music/VitrWebApp.tsx');
 const musicCss = read('src/music/music.css');
-const music069Css = read('src/music/music069.css');
+const webPlayerCss = read('src/music/vitr-web.css');
 const youtubeLoader = read('src/music/youtubeIframeApi.js');
 const resetHelper = read('src/music/resetWebPlayer.js');
 const searchApi = read('api/youtube-search.js');
@@ -19,7 +19,7 @@ const sharedMusic = read('src/shared/musicSearch.js');
 const playwright = read('playwright.config.js');
 const e2e = read('tests/e2e/nont.spec.js');
 const webOnlyUnit = read('tests/unit/web-player-only.test.mjs');
-const ci = read('.github/workflows/ci.yml');
+const ci = read('../.github/workflows/ci.yml');
 const vercel = read('vercel.json');
 const index = read('index.html');
 const vitrIcon = read('public/vitr-icon.svg');
@@ -30,7 +30,7 @@ expect(index.includes('href="/vitr-icon.svg"'), 'Vitr favicon must remain local'
 expect(fs.existsSync('public/vitr-icon.svg'), 'Vitr favicon must exist');
 expect(vitrIcon.includes('viewBox="0 0 512 512"'), 'Vitr logo viewport must remain intact');
 
-expect(main.includes("import('./music/MusicApp069.tsx')"), 'Vitr routes must load the web player');
+expect(main.includes("import('./music/VitrWebApp.tsx')"), 'Vitr routes must load the web player');
 expect(main.includes("import('./App.jsx')"), 'nont.me root must load the standalone release page');
 expect(main.includes('isVitrWebLocation'), 'bootstrap must keep root and web-player routing separate');
 expect(!main.includes('backgroundAudioPlayer'), 'root must not use the retired server-relay audio adapter');
@@ -60,7 +60,7 @@ expect(musicCss.includes('--vitr-navy:#050811'), 'Vitr Web must use the shared d
 expect(music.includes('data-vitr-finish={finish}'), 'Vitr Web must expose its real appearance finish on the app root');
 expect(music.includes("'Liquid Glass' : 'Modern Dark'"), 'Vitr Web must expose Modern Dark and Liquid Glass finishes');
 expect(musicCss.includes('prefers-reduced-motion'), 'web player must retain reduced-motion support');
-expect(music069Css.includes('.frxe069-reset'), 'reset control must have explicit Vitr styling');
+expect(webPlayerCss.includes('.frxe069-reset'), 'reset control must have explicit Vitr styling');
 expect(musicCss.includes('[data-vitr-finish="glass"] .frxe-glass'), 'Liquid Glass must have real player styling');
 
 for (const retired of [

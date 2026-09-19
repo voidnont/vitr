@@ -51,7 +51,7 @@ import {
 } from './playlists.js';
 import { loadYouTubeIframeApi } from './youtubeIframeApi.js';
 import { resetVitrWebStorage } from './resetWebPlayer.js';
-import './music069.css';
+import './vitr-web.css';
 
 type Track = {
   id: string;
@@ -172,7 +172,7 @@ function rowTitle(seed: any) {
   return 'Fresh discovery';
 }
 
-export default function MusicApp069() {
+export default function VitrWebApp() {
   const initialSettings = useRef(safeJson(localStorage.getItem(SETTINGS_KEY) || localStorage.getItem(LEGACY_SETTINGS_KEY), { volume: 76, muted: false, shuffle: false, repeat: 'off', finish: 'dark' }));
   const playerRef = useRef<any>(null);
   const playerReadyRef = useRef(false);

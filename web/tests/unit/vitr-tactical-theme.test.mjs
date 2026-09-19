@@ -35,19 +35,19 @@ test('nont.me keeps real functionality inside the reference-inspired design', ()
 
 test('Vitr Web uses the same navy, pink and glass design system', () => {
   const css = read('src/music/music.css');
-  const css069 = read('src/music/music069.css');
+  const webCss = read('src/music/vitr-web.css');
 
   assert.match(css, /--vitr-accent:#ff2b63/);
   assert.match(css, /--vitr-navy:#050811/);
   assert.match(css, /\.frxe-glass\{[\s\S]*?border-radius:18px/);
   assert.match(css, /@media\(min-width:901px\)[\s\S]*?\.frxe-nav\{[\s\S]*?width:218px/);
   assert.match(css, /\[data-vitr-finish="glass"\] \.frxe-glass/);
-  assert.match(css069, /Vitr dark \+ liquid glass refinements/);
+  assert.match(webCss, /Vitr dark \+ liquid glass refinements/);
   assert.doesNotMatch(css, /--vitr-blood:#b51218/);
 });
 
 test('Vitr Web exposes a real Modern Dark / Liquid Glass appearance toggle', () => {
-  const app = read('src/music/MusicApp069.tsx');
+  const app = read('src/music/VitrWebApp.tsx');
 
   assert.match(app, /data-vitr-finish=\{finish\}/);
   assert.match(app, /Appearance: \{finish === 'glass' \? 'Liquid Glass' : 'Modern Dark'\}/);

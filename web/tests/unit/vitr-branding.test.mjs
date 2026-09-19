@@ -8,7 +8,7 @@ test('public brand is Vitr by Blood', () => {
   const index = read('index.html');
   const app = read('src/App.jsx');
   const main = read('src/main.jsx');
-  const music = read('src/music/MusicApp069.tsx');
+  const music = read('src/music/VitrWebApp.tsx');
   const readme = read('README.md');
 
   for (const source of [index, app, main, music, readme]) {
@@ -19,7 +19,7 @@ test('public brand is Vitr by Blood', () => {
   assert.match(index, /\/vitr-icon\.svg/);
   assert.match(app, /github\.com\/bloodvitr/);
   assert.match(app, /ko-fi\.com\/bloodvitr/);
-  assert.match(music, /github\.com\/bloodvitr\/vitr/);
+  assert.match(music, /github\.com\/voidnont\/vitr/);
   assert.match(readme, /^# Vitr/m);
 });
 

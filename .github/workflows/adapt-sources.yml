@@ -3,9 +3,9 @@ name: Adapt VITR web source
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - 'desktop/**'
-      - '.github/workflows/desktop-*.yml'
+    paths:
+      - 'web/**'
+      - '.github/workflows/adapt-sources.yml'
   schedule:
     - cron: '*/15 * * * *'
   workflow_dispatch:
@@ -16,6 +16,10 @@ permissions:
 concurrency:
   group: vitr-source-adapter
   cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: web
 
 jobs:
   adapt:

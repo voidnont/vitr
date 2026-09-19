@@ -4,10 +4,10 @@ import { readFile } from 'node:fs/promises';
 
 const main = await readFile(new URL('../../src/main.jsx', import.meta.url), 'utf8');
 let app = '';
-try { app = await readFile(new URL('../../src/music/MusicApp069.tsx', import.meta.url), 'utf8'); } catch {}
+try { app = await readFile(new URL('../../src/music/VitrWebApp.tsx', import.meta.url), 'utf8'); } catch {}
 
 test('VITR boots the dedicated 0.1.0 composition app', () => {
-  assert.match(main, /MusicApp069\.tsx/);
+  assert.match(main, /VitrWebApp\.tsx/);
   assert.match(app, /VITR_WEB_VERSION\s*=\s*['"]0\.1\.0['"]/);
 });
 
