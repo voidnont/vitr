@@ -1,5 +1,5 @@
-export const MANUAL_PLAYLISTS_KEY = 'frxe.web.playlists.manual.v1';
-export const GENERATED_PLAYLISTS_KEY = 'frxe.web.playlists.generated.v1';
+export const MANUAL_PLAYLISTS_KEY = 'vitr.web.playlists.manual.v1';
+export const GENERATED_PLAYLISTS_KEY = 'vitr.web.playlists.generated.v1';
 
 function cleanName(value) { return String(value || '').trim().slice(0, 120); }
 function validTrack(track) { return track && typeof track === 'object' && String(track.id || '').trim(); }
@@ -78,19 +78,19 @@ export function buildGeneratedPlaylists({ history = [], library = [], recommenda
   const familiarArtists = [...artistCounts.entries()].sort((a,b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([name]) => name);
   const familiarSet = new Set(familiarArtists.slice(0, 5).map((name) => name.toLowerCase()));
   const generated = [];
-  const daily = uniqueTracks(interleave(uniqueTracks([...historyCopy, ...libraryCopy], 3, 15), recommended), 3, 30); if (daily.length) generated.push(makeGenerated('frxe-daily-mix', 'daily', 'Daily Mix', 'Your favorites mixed with fresh recommendations', now, daily));
-  const discovery = recommended.filter((track) => !familiarSet.has(String(track.artist || '').toLowerCase())); if (discovery.length) generated.push(makeGenerated('frxe-discovery-mix', 'discovery', 'Discovery Mix', 'Artists outside your usual rotation', now, discovery));
-  if (libraryCopy.length) generated.push(makeGenerated('frxe-liked-mix', 'liked', 'Liked Mix', 'Built from your saved songs', now, libraryCopy));
-  const throwback = historyCopy.slice(Math.min(3, Math.floor(historyCopy.length / 2))); if (throwback.length) generated.push(makeGenerated('frxe-throwback-mix', 'throwback', 'Throwback Mix', 'Older plays worth another spin', now, throwback));
-  const freshRow = rows.find((row) => row?.seedKind === 'wildcard') || rows[0]; if (freshRow?.tracks?.length) generated.push(makeGenerated('frxe-fresh-mix', 'fresh', 'Fresh Mix', 'Fresh picks from your discovery feed', now, freshRow.tracks));
+  const daily = uniqueTracks(interleave(uniqueTracks([...historyCopy, ...libraryCopy], 3, 15), recommended), 3, 30); if (daily.length) generated.push(makeGenerated('vitr-daily-mix', 'daily', 'Daily Mix', 'Your favorites mixed with fresh recommendations', now, daily));
+  const discovery = recommended.filter((track) => !familiarSet.has(String(track.artist || '').toLowerCase())); if (discovery.length) generated.push(makeGenerated('vitr-discovery-mix', 'discovery', 'Discovery Mix', 'Artists outside your usual rotation', now, discovery));
+  if (libraryCopy.length) generated.push(makeGenerated('vitr-liked-mix', 'liked', 'Liked Mix', 'Built from your saved songs', now, libraryCopy));
+  const throwback = historyCopy.slice(Math.min(3, Math.floor(historyCopy.length / 2))); if (throwback.length) generated.push(makeGenerated('vitr-throwback-mix', 'throwback', 'Throwback Mix', 'Older plays worth another spin', now, throwback));
+  const freshRow = rows.find((row) => row?.seedKind === 'wildcard') || rows[0]; if (freshRow?.tracks?.length) generated.push(makeGenerated('vitr-fresh-mix', 'fresh', 'Fresh Mix', 'Fresh picks from your discovery feed', now, freshRow.tracks));
   const topArtist = familiarArtists[0]; if (topArtist) {
     const artistTracks = [...historyCopy, ...libraryCopy].filter((track) => String(track.artist || '').toLowerCase() === topArtist.toLowerCase());
     const aroundArtist = rows.find((row) => String(row?.seedLabel || '').toLowerCase() === topArtist.toLowerCase())?.tracks || recommended;
-    generated.push(makeGenerated(`frxe-artist-${stableHash(topArtist)}`, 'artist', `Artist Mix · ${topArtist}`, `More around ${topArtist}`, now, interleave(artistTracks, aroundArtist)));
+    generated.push(makeGenerated(`vitr-artist-${stableHash(topArtist)}`, 'artist', `Artist Mix · ${topArtist}`, `More around ${topArtist}`, now, interleave(artistTracks, aroundArtist)));
   }
   for (const row of rows.filter((row) => row?.seedKind === 'genre').slice(0, 3)) {
     const label = String(row.seedLabel || row.title || 'Genre').replace(/^Explore\s+/i, '').trim();
-    if (row.tracks?.length) generated.push(makeGenerated(`frxe-genre-${stableHash(label)}`, 'genre', `${label} Mix`, `A ${label} mix shaped by your listening`, now, row.tracks));
+    if (row.tracks?.length) generated.push(makeGenerated(`vitr-genre-${stableHash(label)}`, 'genre', `${label} Mix`, `A ${label} mix shaped by your listening`, now, row.tracks));
   }
   return generated.filter((playlist) => playlist.tracks.length > 0);
 }

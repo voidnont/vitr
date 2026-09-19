@@ -1,6 +1,6 @@
 import { recommendAsset } from './release-classifier.js';
 
-export const VITR_REPO = 'voidnont/vitr';
+export const VITR_REPO = 'bloodvitr/vitr';
 
 export const VITR_APP = {
   id: 'vitr',

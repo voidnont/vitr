@@ -308,14 +308,14 @@ export default function App() {
           <h2>Desktop when you want it.<br />Web when you need it.</h2>
         </div>
         <div className="platform-actions">
-          <a className="platform-card" href={VITR_RELEASES_URL} target="_blank" rel="noreferrer"><Monitor size={22} /><span><strong>Desktop builds</strong><small>Connected to voidnont/vitr releases</small></span><ChevronRight size={18} /></a>
+          <a className="platform-card" href={VITR_RELEASES_URL} target="_blank" rel="noreferrer"><Monitor size={22} /><span><strong>Desktop builds</strong><small>Connected to bloodvitr/vitr releases</small></span><ChevronRight size={18} /></a>
           <a className="platform-card accent-card" href="https://vitr.nont.me"><Play size={22} fill="currentColor" /><span><strong>Vitr Web</strong><small>Official player at vitr.nont.me</small></span><ChevronRight size={18} /></a>
         </div>
       </section>
 
       <section className="downloads-section reveal-block" id="downloads" data-reveal>
         <div className="section-heading">
-          <div><span className="eyebrow">DOWNLOADS</span><h2>Get Vitr.</h2><p>Release assets come from <strong>voidnont/vitr</strong>. Until releases exist there, the build buttons open that repository’s Releases page.</p></div>
+          <div><span className="eyebrow">DOWNLOADS</span><h2>Get Vitr.</h2><p>Release assets come from <strong>bloodvitr/vitr</strong>. Until releases exist there, the build buttons open that repository’s Releases page.</p></div>
           <a className="secondary" href={VITR_RELEASES_URL} target="_blank" rel="noreferrer">ALL BUILDS <ExternalLink size={14} /></a>
         </div>
 

@@ -57,8 +57,8 @@ expect(musicCss.includes('--vitr-navy:#050811'), 'Vitr Web must use the shared d
 expect(music.includes('data-vitr-finish={finish}'), 'Vitr Web must expose its real appearance finish on the app root');
 expect(music.includes("'Liquid Glass' : 'Modern Dark'"), 'Vitr Web must expose Modern Dark and Liquid Glass finishes');
 expect(musicCss.includes('prefers-reduced-motion'), 'web player must retain reduced-motion support');
-expect(webPlayerCss.includes('.frxe069-reset'), 'reset control must have explicit Vitr styling');
-expect(musicCss.includes('[data-vitr-finish="glass"] .frxe-glass'), 'Liquid Glass must have real player styling');
+expect(webPlayerCss.includes('.vitr069-reset'), 'reset control must have explicit Vitr styling');
+expect(musicCss.includes('[data-vitr-finish="glass"] .vitr-glass'), 'Liquid Glass must have real player styling');
 
 for (const retired of [
   'api/audio-stream.js',

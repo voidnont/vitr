@@ -79,8 +79,8 @@ test('nont.me keeps real downloads, search and official player links', async ({ 
   await page.goto('/');
   await expect(page.getByRole('textbox', { name: 'Search GitHub apps' })).toBeVisible();
   await expect(page.getByRole('link', { name: /Open Web Player/i })).toHaveAttribute('href', 'https://vitr.nont.me');
-  await expect(page.getByRole('link', { name: /ALL BUILDS/i }).first()).toHaveAttribute('href', 'https://github.com/voidnont/vitr/releases');
-  await expect(page.locator('.frxe-nav')).toHaveCount(0);
+  await expect(page.getByRole('link', { name: /ALL BUILDS/i }).first()).toHaveAttribute('href', 'https://github.com/bloodvitr/vitr/releases');
+  await expect(page.locator('.vitr-nav')).toHaveCount(0);
 });
 
 test('nont.me stays contained at desktop and laptop widths', async ({ page }) => {
@@ -105,7 +105,7 @@ test('/music opens the four-tab Vitr web player', async ({ page }) => {
   await page.goto('/music');
   await expect(page.getByRole('heading', { name: 'VITR' })).toBeVisible();
 
-  const nav = page.locator('.frxe-nav');
+  const nav = page.locator('.vitr-nav');
   await expect(nav.getByRole('button')).toHaveCount(4);
   for (const label of ['Home', 'Search', 'Library', 'Settings']) {
     await expect(nav.getByRole('button', { name: label })).toBeVisible();
@@ -114,10 +114,10 @@ test('/music opens the four-tab Vitr web player', async ({ page }) => {
 
 test('Vitr Web exposes real Modern Dark and Liquid Glass finishes', async ({ page }) => {
   await page.goto('/music');
-  const nav = page.locator('.frxe-nav');
+  const nav = page.locator('.vitr-nav');
   await nav.getByRole('button', { name: 'Settings' }).click();
 
-  const app = page.locator('.frxe-app');
+  const app = page.locator('.vitr-app');
   await expect(app).toHaveAttribute('data-vitr-finish', 'dark');
   await page.getByRole('button', { name: /Appearance: Modern Dark/ }).click();
   await expect(app).toHaveAttribute('data-vitr-finish', 'glass');
@@ -127,27 +127,27 @@ test('Vitr Web exposes real Modern Dark and Liquid Glass finishes', async ({ pag
 
 test('search result starts browser playback without a worker', async ({ page }) => {
   await page.goto('/music');
-  const nav = page.locator('.frxe-nav');
+  const nav = page.locator('.vitr-nav');
   await nav.getByRole('button', { name: 'Search' }).click();
 
   await page.getByRole('textbox', { name: 'Search VITR' }).fill('Signal');
   await page.getByRole('button', { name: 'Search music' }).click();
-  await expect(page.locator('.frxe-result-title', { hasText: /^Signal$/ }).first()).toBeVisible();
+  await expect(page.locator('.vitr-result-title', { hasText: /^Signal$/ }).first()).toBeVisible();
 
   await page.getByRole('button', { name: 'Play Signal', exact: true }).first().click();
-  await expect(page.locator('.frxe-mini-player')).toBeVisible();
-  await expect(page.locator('.frxe-mini-player').getByRole('button', { name: 'Pause' })).toBeVisible();
+  await expect(page.locator('.vitr-mini-player')).toBeVisible();
+  await expect(page.locator('.vitr-mini-player').getByRole('button', { name: 'Pause' })).toBeVisible();
 });
 
 test('Reset VITR Web clears Vitr data and stays on the web player', async ({ page }) => {
   await page.goto('/music');
   await page.evaluate(() => {
     localStorage.setItem('vitr.web.library.v1', JSON.stringify([{ id: 'saved-track' }]));
-    localStorage.setItem('frxe.web.playlists.manual.v1', JSON.stringify([{ id: 'p1', name: 'Old', tracks: [] }]));
+    localStorage.setItem('vitr.web.playlists.manual.v1', JSON.stringify([{ id: 'p1', name: 'Old', tracks: [] }]));
     localStorage.setItem('other.app.keep', 'yes');
   });
 
-  await page.locator('.frxe-nav').getByRole('button', { name: 'Settings' }).click();
+  await page.locator('.vitr-nav').getByRole('button', { name: 'Settings' }).click();
   page.once('dialog', (dialog) => dialog.accept());
   await Promise.all([
     page.waitForNavigation(),
@@ -159,7 +159,7 @@ test('Reset VITR Web clears Vitr data and stays on the web player', async ({ pag
 
   const snapshot = await page.evaluate(() => ({
     library: JSON.parse(localStorage.getItem('vitr.web.library.v1') || '[]'),
-    playlists: JSON.parse(localStorage.getItem('frxe.web.playlists.manual.v1') || '[]'),
+    playlists: JSON.parse(localStorage.getItem('vitr.web.playlists.manual.v1') || '[]'),
     other: localStorage.getItem('other.app.keep'),
   }));
   expect(snapshot).toEqual({ library: [], playlists: [], other: 'yes' });
@@ -169,7 +169,7 @@ test('mobile web player has no page-level horizontal overflow', async ({ page })
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/music');
   await expect(page.getByRole('heading', { name: 'VITR' })).toBeVisible();
-  await expect(page.locator('.frxe-nav')).toBeVisible();
+  await expect(page.locator('.vitr-nav')).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
 
@@ -186,12 +186,12 @@ test('Vitr Web adapts to compact windows without horizontal overflow', async ({ 
 test('Search header and search bar stay visible while results scroll', async ({ page }) => {
   await page.setViewportSize({ width: 1008, height: 678 });
   await page.goto('/music');
-  await page.locator('.frxe-nav').getByRole('button', { name: 'Search' }).click();
+  await page.locator('.vitr-nav').getByRole('button', { name: 'Search' }).click();
   await page.getByRole('textbox', { name: 'Search VITR' }).fill('Signal');
   await page.getByRole('button', { name: 'Search music' }).click();
-  await expect(page.locator('.frxe069-sticky-search')).toBeVisible();
+  await expect(page.locator('.vitr069-sticky-search')).toBeVisible();
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-  const top = await page.locator('.frxe069-sticky-search').evaluate((node) => node.getBoundingClientRect().top);
+  const top = await page.locator('.vitr069-sticky-search').evaluate((node) => node.getBoundingClientRect().top);
   expect(top).toBeGreaterThanOrEqual(0);
   expect(top).toBeLessThan(40);
 });
@@ -199,14 +199,14 @@ test('Search header and search bar stay visible while results scroll', async ({ 
 
 test('Clear search removes the query and results without reloading Vitr Web', async ({ page }) => {
   await page.goto('/music');
-  await page.locator('.frxe-nav').getByRole('button', { name: 'Search' }).click();
+  await page.locator('.vitr-nav').getByRole('button', { name: 'Search' }).click();
   const input = page.getByRole('textbox', { name: 'Search VITR' });
   await input.fill('Signal');
   await page.getByRole('button', { name: 'Search music' }).click();
-  await expect(page.locator('.frxe-result-title', { hasText: /^Signal$/ }).first()).toBeVisible();
+  await expect(page.locator('.vitr-result-title', { hasText: /^Signal$/ }).first()).toBeVisible();
   await page.getByRole('button', { name: 'Clear search' }).click();
   await expect(input).toHaveValue('');
-  await expect(page.locator('.frxe-result-title')).toHaveCount(0);
+  await expect(page.locator('.vitr-result-title')).toHaveCount(0);
   await expect(page.getByText(/Search for anything/)).toBeVisible();
   expect(new URL(page.url()).pathname).toBe('/music');
 });
@@ -215,11 +215,11 @@ test('Clear search removes the query and results without reloading Vitr Web', as
 test('Now Playing keeps previous and next controls visible in a short resizable window', async ({ page }) => {
   await page.setViewportSize({ width: 900, height: 560 });
   await page.goto('/music');
-  await page.locator('.frxe-nav').getByRole('button', { name: 'Search' }).click();
+  await page.locator('.vitr-nav').getByRole('button', { name: 'Search' }).click();
   await page.getByRole('textbox', { name: 'Search VITR' }).fill('Signal');
   await page.getByRole('button', { name: 'Search music' }).click();
   await page.getByRole('button', { name: 'Play Signal', exact: true }).first().click();
-  await page.locator('.frxe-mini-main').click();
+  await page.locator('.vitr-mini-main').click();
   await expect(page.getByRole('button', { name: 'Previous track' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Next track' })).toBeVisible();
   for (const name of ['Previous track', 'Next track']) {
@@ -231,7 +231,7 @@ test('Now Playing keeps previous and next controls visible in a short resizable 
 
 test('Settings only contains non-playback settings', async ({ page }) => {
   await page.goto('/music');
-  await page.locator('.frxe-nav').getByRole('button', { name: 'Settings' }).click();
+  await page.locator('.vitr-nav').getByRole('button', { name: 'Settings' }).click();
   await expect(page.getByRole('button', { name: /Appearance:/ })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Reset VITR Web' })).toBeVisible();
   await expect(page.getByText(/^Volume /)).toHaveCount(0);

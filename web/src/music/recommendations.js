@@ -1,7 +1,7 @@
 import { classifyGenres } from './searchTaxonomy.js';
 
 export const SIGNAL_WEIGHTS = Object.freeze({ played: 0.40, saved: 0.25, genre: 0.20, wildcard: 0.15 });
-export const RECOMMENDATION_CACHE_KEY = 'frxe.web.recommendations.v1';
+export const RECOMMENDATION_CACHE_KEY = 'vitr.web.recommendations.v1';
 export const RECOMMENDATION_TTL_MS = 6 * 60 * 60 * 1000;
 
 const WILDCARDS = ['new music', 'underrated music', 'fresh alternative music', 'global music discovery'];

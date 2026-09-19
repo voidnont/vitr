@@ -43,12 +43,12 @@ test('VITR mini player exposes previous, next and volume controls', async ({ pag
   });
 
   await page.goto('/music');
-  await page.locator('.frxe-nav').getByRole('button', { name: 'Search' }).click();
+  await page.locator('.vitr-nav').getByRole('button', { name: 'Search' }).click();
   await page.getByRole('textbox', { name: 'Search VITR' }).fill('Alpha');
   await page.getByRole('button', { name: 'Search music' }).click();
   await page.getByRole('button', { name: 'Play Alpha', exact: true }).first().click();
 
-  const mini = page.locator('.frxe-mini-player');
+  const mini = page.locator('.vitr-mini-player');
   await expect(mini.getByText('Alpha', { exact: true })).toBeVisible();
   await mini.getByRole('button', { name: 'Next track' }).click();
   await expect(mini.getByText('Beta', { exact: true })).toBeVisible();

@@ -55,7 +55,7 @@ test('VITR 0.1.0 separates songs, artists, genres and related mixes', async ({ p
   await mockMusicSearch(page, seen);
   await page.goto('/music');
 
-  await page.locator('.frxe-nav').getByRole('button', { name: 'Search' }).click();
+  await page.locator('.vitr-nav').getByRole('button', { name: 'Search' }).click();
   await page.getByRole('textbox', { name: 'Search VITR' }).fill('electronic');
   await page.getByRole('button', { name: 'Search music' }).click();
 
@@ -63,10 +63,10 @@ test('VITR 0.1.0 separates songs, artists, genres and related mixes', async ({ p
     await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible();
   }
 
-  await page.locator('.frxe069-genre-grid').getByRole('button', { name: 'Electronic', exact: true }).click();
+  await page.locator('.vitr069-genre-grid').getByRole('button', { name: 'Electronic', exact: true }).click();
   await expect.poll(() => seen.some((query) => query === 'Electronic music')).toBe(true);
 
-  await page.locator('.frxe069-artist-grid').getByRole('button', { name: /Daft Punk/ }).click();
+  await page.locator('.vitr069-artist-grid').getByRole('button', { name: /Daft Punk/ }).click();
   await expect.poll(() => seen.some((query) => query === 'Daft Punk songs')).toBe(true);
 });
 
@@ -74,7 +74,7 @@ test('VITR 0.1.0 creates a manual playlist, adds a searched song and plays it', 
   await mockMusicSearch(page);
   await page.goto('/music');
 
-  const nav = page.locator('.frxe-nav');
+  const nav = page.locator('.vitr-nav');
   await nav.getByRole('button', { name: 'Library' }).click();
   await page.getByRole('textbox', { name: 'New playlist name' }).fill('Road Trip');
   await page.getByRole('button', { name: 'Create playlist' }).click();
@@ -84,13 +84,13 @@ test('VITR 0.1.0 creates a manual playlist, adds a searched song and plays it', 
   await page.getByRole('textbox', { name: 'Search VITR' }).fill('Signal');
   await page.getByRole('button', { name: 'Search music' }).click();
 
-  const signalRow = page.locator('.frxe-result', { hasText: 'Signal' }).first();
+  const signalRow = page.locator('.vitr-result', { hasText: 'Signal' }).first();
   await signalRow.getByRole('button', { name: 'Add to playlist' }).click();
   await page.getByRole('dialog').getByRole('button', { name: /Road Trip/ }).click();
 
   await nav.getByRole('button', { name: 'Library' }).click();
   await page.getByRole('button', { name: /Road Trip/ }).first().click();
-  await expect(page.locator('.frxe069-editor').getByText('Signal', { exact: true })).toBeVisible();
-  await page.locator('.frxe069-editor').getByRole('button', { name: 'Play All' }).click();
-  await expect(page.locator('.frxe-mini-player').getByText('Signal', { exact: true })).toBeVisible();
+  await expect(page.locator('.vitr069-editor').getByText('Signal', { exact: true })).toBeVisible();
+  await page.locator('.vitr069-editor').getByRole('button', { name: 'Play All' }).click();
+  await expect(page.locator('.vitr-mini-player').getByText('Signal', { exact: true })).toBeVisible();
 });

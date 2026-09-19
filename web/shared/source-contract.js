@@ -20,7 +20,7 @@ export function inferSourceContract({ repo, pkg = {}, sourcePaths = [], appSourc
   const platforms = [];
   const capabilities = [];
   const description = String(pkg?.description || '');
-  const isVitr = key.endsWith('/vitr') || key.endsWith('/frxe');
+  const isVitr = key.endsWith('/vitr');
 
   const hasTauri = Boolean(pkg?.dependencies?.['@tauri-apps/api'] || pkg?.devDependencies?.['@tauri-apps/cli']);
   if (hasTauri || hasScript(pkg, /windows|tauri/) || /\bwindows\b/i.test(description)) platforms.push('Windows');
@@ -40,38 +40,36 @@ export function inferSourceContract({ repo, pkg = {}, sourcePaths = [], appSourc
 
   if (isVitr) {
     if (hasAnyPath(sourcePaths,
-      'app/src/main/java/com/vitr/music/ui/components/Glass.kt',
-      'app/src/main/java/com/frxe/music/ui/components/Glass.kt')) capabilities.push('Liquid Glass');
+      'app/src/main/java/com/bloodvitr/vitr/ui/components/Glass.kt',
+      'app/src/main/java/com/vitr/music/ui/components/Glass.kt')) capabilities.push('Liquid Glass');
     if (hasAnyPath(sourcePaths,
-      'app/src/main/java/com/vitr/music/ui/screens/HomeScreen.kt',
-      'app/src/main/java/com/frxe/music/ui/screens/HomeScreen.kt')) capabilities.push('Home');
+      'app/src/main/java/com/bloodvitr/vitr/ui/screens/HomeScreen.kt',
+      'app/src/main/java/com/vitr/music/ui/screens/HomeScreen.kt')) capabilities.push('Home');
     if (hasAnyPath(sourcePaths,
-      'app/src/main/java/com/vitr/music/ui/screens/SearchScreen.kt',
-      'app/src/main/java/com/frxe/music/ui/screens/SearchScreen.kt')) capabilities.push('Search');
+      'app/src/main/java/com/bloodvitr/vitr/ui/screens/SearchScreen.kt',
+      'app/src/main/java/com/vitr/music/ui/screens/SearchScreen.kt')) capabilities.push('Search');
     if (hasAnyPath(sourcePaths,
-      'app/src/main/java/com/vitr/music/ui/screens/SaveScreen.kt',
-      'app/src/main/java/com/frxe/music/ui/screens/SaveScreen.kt')) capabilities.push('Save');
+      'app/src/main/java/com/bloodvitr/vitr/ui/screens/SaveScreen.kt',
+      'app/src/main/java/com/vitr/music/ui/screens/SaveScreen.kt')) capabilities.push('Save');
     if (hasAnyPath(sourcePaths,
-      'app/src/main/java/com/vitr/music/ui/screens/LibraryScreen.kt',
-      'app/src/main/java/com/frxe/music/ui/screens/LibraryScreen.kt')) capabilities.push('Library');
+      'app/src/main/java/com/bloodvitr/vitr/ui/screens/LibraryScreen.kt',
+      'app/src/main/java/com/vitr/music/ui/screens/LibraryScreen.kt')) capabilities.push('Library');
     if (hasAnyPath(sourcePaths,
-      'app/src/main/java/com/vitr/music/ui/screens/NowPlayingScreen.kt',
-      'app/src/main/java/com/frxe/music/ui/screens/NowPlayingScreen.kt')) capabilities.push('Now Playing');
+      'app/src/main/java/com/bloodvitr/vitr/ui/screens/NowPlayingScreen.kt',
+      'app/src/main/java/com/vitr/music/ui/screens/NowPlayingScreen.kt')) capabilities.push('Now Playing');
     if (hasAnyPath(sourcePaths,
-      'app/src/main/java/com/vitr/music/lyrics/LyricsRepository.kt',
-      'app/src/main/java/com/frxe/music/lyrics/LyricsRepository.kt')) capabilities.push('Lyrics');
+      'app/src/main/java/com/bloodvitr/vitr/lyrics/LyricsRepository.kt',
+      'app/src/main/java/com/vitr/music/lyrics/LyricsRepository.kt')) capabilities.push('Lyrics');
     if (hasAnyPath(sourcePaths,
-      'app/src/main/java/com/vitr/music/social/ListenTogether.kt',
-      'app/src/main/java/com/frxe/music/social/ListenTogether.kt')) capabilities.push('Listen Together');
+      'app/src/main/java/com/bloodvitr/vitr/social/ListenTogether.kt',
+      'app/src/main/java/com/vitr/music/social/ListenTogether.kt')) capabilities.push('Listen Together');
     if (hasAnyPath(sourcePaths,
-      'app/src/main/java/com/vitr/music/voice/VoskVoiceController.kt',
-      'app/src/main/java/com/frxe/music/voice/VoskVoiceController.kt')) capabilities.push('Voice');
+      'app/src/main/java/com/bloodvitr/vitr/voice/VoskVoiceController.kt',
+      'app/src/main/java/com/vitr/music/voice/VoskVoiceController.kt')) capabilities.push('Voice');
     if (hasAnyPath(sourcePaths,
-      'app/src/main/java/com/vitr/music/cast/VitrCastOptionsProvider.kt',
-      'app/src/main/java/com/frxe/music/cast/VitrCastOptionsProvider.kt')) capabilities.push('Cast');
-    if (hasAnyPath(sourcePaths,
-      'app/src/main/res/xml/automotive_app_desc.xml',
-      'app/src/main/res/xml/automotive_app_desc.xml')) capabilities.push('Android Auto');
+      'app/src/main/java/com/bloodvitr/vitr/cast/VitrCastOptionsProvider.kt',
+      'app/src/main/java/com/vitr/music/cast/VitrCastOptionsProvider.kt')) capabilities.push('Cast');
+    if (hasPath(sourcePaths, 'app/src/main/res/xml/automotive_app_desc.xml')) capabilities.push('Android Auto');
     if (/\bqueue/i.test(appSource)) capabilities.push('Queue');
     if (/\bshuffle\b/i.test(appSource)) capabilities.push('Shuffle');
     if (/\brepeat\b/i.test(appSource)) capabilities.push('Repeat');
