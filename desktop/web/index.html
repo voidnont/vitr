@@ -205,7 +205,7 @@ body[data-window-class="wide"] .library-grid{grid-template-columns:repeat(4,minm
     <section id="library" class="screen">
       <div class="library-panel glass">
         <div class="page-title"><div class="eyebrow">COLLECTION</div><h1>Your Library</h1><p>Saved music, playlists and albums.</p></div>
-        <div id="libraryGrid" class="library-grid"></div>
+        <div id="libraryGrid" class="library-grid"></div><div id="libraryTracks" class="track-list" style="margin-top:16px"></div>
       </div>
     </section>
     <section id="settings" class="screen">
@@ -234,7 +234,7 @@ body[data-window-class="wide"] .library-grid{grid-template-columns:repeat(4,minm
     <div class="player-art empty" id="playerArt"><img id="playerArtwork" alt=""></div>
     <div class="player-info"><div class="eyebrow">NOW PLAYING · VITR</div><h2 id="playerTitle">Nothing playing</h2><p id="playerArtist">Choose a track</p>
       <div class="progress" id="playerProgress"><i></i></div><div class="times"><span>0:00</span><span>0:00</span></div>
-      <div class="controls"><button id="rewind10" title="Back 10 seconds">↶</button><button id="playerPrev" title="Previous">◀</button><button class="main-play" id="playToggle">▶</button><button id="playerNext" title="Next">▶</button><button id="forward10" title="Forward 10 seconds">↻</button></div>
+      <div class="controls"><button id="rewind10" title="Back 10 seconds">↶</button><button id="playerPrev" title="Previous">◀</button><button class="main-play" id="playToggle">▶</button><button id="playerNext" title="Next">▶</button><button id="forward10" title="Forward 10 seconds">↻</button><button id="favoriteToggle" title="Like track">♡</button></div>
     </div>
   </section>
 </div>
@@ -296,14 +296,20 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
   function addHistory(track){if(!track)return;var data=lists(),key=trackKey(track,0);data.history=[track].concat((data.history||[]).filter(function(t){return trackKey(t,0)!==key})).slice(0,120);saveLists(data);renderHomeHistory();renderLibrary()}
   function renderHomeHistory(){renderTracks((lists().history||[]).slice(0,6),document.getElementById("homeTracks"),"No recently played music")}
   function renderLibrary(){
-    var data=lists(),host=document.getElementById("libraryGrid"),side=document.getElementById("sidebarLibrary"),favorites=data.favorites||[],playlists=data.playlists||[],history=data.history||[];
+    var data=lists(),host=document.getElementById("libraryGrid"),side=document.getElementById("sidebarLibrary"),trackHost=document.getElementById("libraryTracks"),favorites=data.favorites||[],playlists=data.playlists||[],history=data.history||[];
     var tiles=[];
     tiles.push('<div class="library-tile glass-soft"><strong>Liked Songs</strong><small>'+favorites.length+' saved</small></div>');
     tiles.push('<div class="library-tile glass-soft"><strong>Recently Played</strong><small>'+history.length+' tracks</small></div>');
     playlists.forEach(function(p){tiles.push('<div class="library-tile glass-soft"><strong>'+esc(p.name||"Playlist")+'</strong><small>'+((p.tracks||[]).length)+' tracks</small></div>')});
     host.innerHTML=tiles.join("");
     side.innerHTML=favorites.length||playlists.length?'<p>Liked Songs · '+favorites.length+'</p>'+playlists.slice(0,4).map(function(p){return '<p>'+esc(p.name||"Playlist")+'</p>'}).join(""):'<p>Your library is empty.</p>';
+    renderTracks(favorites,trackHost,"No liked songs yet");
   }
+  function favoriteKey(track){return trackKey(track,0)}
+  function isFavorite(track){if(!track)return false;return (lists().favorites||[]).some(function(t){return favoriteKey(t)===favoriteKey(track)})}
+  function refreshFavoriteButton(){var b=document.getElementById("favoriteToggle");if(!b)return;var liked=isFavorite(currentTrack);b.textContent=liked?"♥":"♡";b.title=liked?"Remove from Liked Songs":"Add to Liked Songs"}
+  function toggleFavorite(){if(!currentTrack)return;var data=lists(),key=favoriteKey(currentTrack),favorites=data.favorites||[],exists=favorites.some(function(t){return favoriteKey(t)===key});data.favorites=exists?favorites.filter(function(t){return favoriteKey(t)!==key}):[currentTrack].concat(favorites);saveLists(data);refreshFavoriteButton();renderLibrary()}
+
 
   function playerState(){
     return {track:currentTrack,playing:!!(audio.src&&!audio.paused&&!audio.ended),positionSeconds:Number(audio.currentTime||0),durationSeconds:Number(audio.duration||0),volume:Number(audio.volume||0),artwork:coverUrl(currentTrack)};
@@ -323,6 +329,7 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
     pt.textContent=currentTrack&&currentTrack.title?currentTrack.title:"Nothing playing";
     pa.textContent=currentTrack&&currentTrack.artist?currentTrack.artist:"Choose a track";
     var cover=coverUrl(currentTrack);art.classList.toggle("empty",!cover);if(cover){artImg.src=cover;artImg.alt=currentTrack.title||""}else{artImg.removeAttribute("src");artImg.alt=""}
+    refreshFavoriteButton();
     savePlayerState();
   }
   async function fetchLyrics(track){localStorage.removeItem("vitr-current-lyrics");if(!backend||!backend.lyrics||!track)return;try{var value=await backend.lyrics(track);localStorage.setItem("vitr-current-lyrics",JSON.stringify(value||null))}catch(e){localStorage.removeItem("vitr-current-lyrics")}}
@@ -345,6 +352,7 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
   document.getElementById("playerNext").addEventListener("click",function(){window.vitrPlayerAction("next")});
   document.getElementById("rewind10").addEventListener("click",function(){window.vitrPlayerAction("rewind")});
   document.getElementById("forward10").addEventListener("click",function(){window.vitrPlayerAction("forward")});
+  document.getElementById("favoriteToggle").addEventListener("click",toggleFavorite);
   progress.addEventListener("click",function(e){if(!audio.duration)return;var r=progress.getBoundingClientRect();audio.currentTime=Math.max(0,Math.min(audio.duration,(e.clientX-r.left)/Math.max(1,r.width)*audio.duration))});
   ["play","pause","ended","loadedmetadata","durationchange","volumechange"].forEach(function(name){audio.addEventListener(name,savePlayerState)});
   audio.addEventListener("timeupdate",savePlayerState);
