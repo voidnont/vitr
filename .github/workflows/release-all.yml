@@ -5,6 +5,9 @@ on:
     branches: [ main ]
     paths:
       - VERSION
+      - '.github/workflows/release-all.yml'
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
 
 permissions:
@@ -110,7 +113,7 @@ jobs:
           VERSION=$(tr -d '\r\n' < VERSION)
           DMG=$(find desktop/src-tauri/target/release/bundle -type f -name '*.dmg' | head -1)
           test -n "$DMG"
-          cp "$DMG" "release/Vitr-$VERSION-macos-universal.dmg"
+          cp "$DMG" "release/Vitr-$VERSION-macos.dmg"
       - uses: actions/upload-artifact@v4
         with:
           name: release-macos
@@ -176,6 +179,7 @@ jobs:
           path: release/*
 
   publish:
+    if: ${{ github.event_name != 'pull_request' }}
     needs: [windows, linux, macos, android, ios]
     runs-on: ubuntu-latest
     steps:
@@ -201,12 +205,15 @@ jobs:
             gh release create "$TAG" release/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "Vitr $VERSION" --generate-notes
           fi
       - name: Mirror to canonical bloodvitr/vitr release channel
-        if: ${{ secrets.BLOODVITR_RELEASE_TOKEN != '' }}
         env:
           GH_TOKEN: ${{ secrets.BLOODVITR_RELEASE_TOKEN }}
           VERSION: ${{ steps.version.outputs.value }}
         shell: bash
         run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "BLOODVITR_RELEASE_TOKEN is not configured; source release is published, canonical mirror skipped."
+            exit 0
+          fi
           TAG="v$VERSION"
           REPO="bloodvitr/vitr"
           if gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
