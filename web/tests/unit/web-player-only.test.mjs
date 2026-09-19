@@ -39,7 +39,7 @@ test('reset clears only Vitr-owned browser state', () => {
   const storage = fakeStorage({
     'vitr.web.library.v1': '[]',
     'vitr.web.player.v1': '{}',
-    'frxe.web.playlists.manual.v1': '[]',
+    'vitr.web.playlists.manual.v1': '[]',
     'nont.music.youtube.favorites.v1': '[]',
     'other.app.keep': 'yes',
   });
@@ -61,18 +61,18 @@ test('settings reset reloads the current Vitr route', () => {
 test('web player keeps Search, Library and Settings headers sticky and half-transparent', () => {
   const app = read('src/music/VitrWebApp.tsx');
   const css = read('src/music/vitr-web.css');
-  assert.match(app, /frxe069-sticky-search/);
-  assert.match(app, /Library[\s\S]*frxe069-sticky-title|frxe069-sticky-title[\s\S]*Library/);
-  assert.match(app, /Settings[\s\S]*frxe069-sticky-title|frxe069-sticky-title[\s\S]*Settings/);
-  assert.match(css, /\.frxe069-sticky-search[\s\S]*position:sticky/);
-  assert.match(css, /\.frxe069-search-bar\.frxe-search-glass[\s\S]*rgba\(11,18,30,\.50\)/);
-  assert.match(css, /\.frxe069-sticky-title[\s\S]*rgba\(5,8,17,\.50\)/);
+  assert.match(app, /vitr069-sticky-search/);
+  assert.match(app, /Library[\s\S]*vitr069-sticky-title|vitr069-sticky-title[\s\S]*Library/);
+  assert.match(app, /Settings[\s\S]*vitr069-sticky-title|vitr069-sticky-title[\s\S]*Settings/);
+  assert.match(css, /\.vitr069-sticky-search[\s\S]*position:sticky/);
+  assert.match(css, /\.vitr069-search-bar\.vitr-search-glass[\s\S]*rgba\(11,18,30,\.50\)/);
+  assert.match(css, /\.vitr069-sticky-title[\s\S]*rgba\(5,8,17,\.50\)/);
 });
 
 test('web player layout is fluid across desktop and compact windows', () => {
   const css = read('src/music/vitr-web.css');
-  assert.match(css, /--frxe-sidebar-width:clamp\(/);
-  assert.match(css, /width:calc\(100% - var\(--frxe-sidebar-width\)\)/);
+  assert.match(css, /--vitr-sidebar-width:clamp\(/);
+  assert.match(css, /width:calc\(100% - var\(--vitr-sidebar-width\)\)/);
   assert.match(css, /@media\(max-width:1100px\) and \(min-width:901px\)/);
   assert.match(css, /grid-template-columns:repeat\(auto-fit/);
   assert.match(css, /overflow-x:clip/);
@@ -81,8 +81,8 @@ test('web player layout is fluid across desktop and compact windows', () => {
 
 test('web player base container does not break sticky headers with overflow clipping', () => {
   const css = read('src/music/music.css');
-  assert.match(css, /\.frxe-app\{[^}]*overflow:visible/);
-  assert.doesNotMatch(css, /\.frxe-app\{[^}]*overflow:hidden/);
+  assert.match(css, /\.vitr-app\{[^}]*overflow:visible/);
+  assert.doesNotMatch(css, /\.vitr-app\{[^}]*overflow:hidden/);
 });
 
 

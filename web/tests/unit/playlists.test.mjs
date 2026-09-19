@@ -22,8 +22,8 @@ const trackC = { id: 'c', title: 'C', artist: 'M83', thumbnail: 'c.jpg' };
 test('manual playlist parser survives malformed storage', () => {
   assert.deepEqual(parseManualPlaylists('{broken'), []);
   assert.deepEqual(parseManualPlaylists('null'), []);
-  assert.equal(MANUAL_PLAYLISTS_KEY, 'frxe.web.playlists.manual.v1');
-  assert.equal(GENERATED_PLAYLISTS_KEY, 'frxe.web.playlists.generated.v1');
+  assert.equal(MANUAL_PLAYLISTS_KEY, 'vitr.web.playlists.manual.v1');
+  assert.equal(GENERATED_PLAYLISTS_KEY, 'vitr.web.playlists.generated.v1');
 });
 
 test('manual playlist operations are immutable and preserve ordered unique tracks', () => {
@@ -45,7 +45,7 @@ test('manual playlist operations are immutable and preserve ordered unique track
   assert.deepEqual(deleteManualPlaylist(playlists, 'pl-night'), []);
 });
 
-test('generated playlists include core FRXE mixes and do not mutate manual playlists', () => {
+test('generated playlists include core VITR mixes and do not mutate manual playlists', () => {
   const manual = createManualPlaylist([], 'Keep Me', { now: 1, id: 'manual-1' });
   const snapshot = structuredClone(manual);
   const history = [trackA, trackB, trackC, { id: 'd', title: 'D', artist: 'Daft Punk' }, { id: 'e', title: 'E', artist: 'Phoenix' }];

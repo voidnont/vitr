@@ -76,7 +76,7 @@ test('cache helpers accept matching fresh data and reject malformed stale or mis
   const storage = { getItem: (key) => values.get(key) ?? null, setItem: (key, value) => values.set(key, value) };
   const payload = { version: 1, signature: 'sig', createdAt: 1000, expiresAt: 2000, rows: [{ id: 'x', tracks: [] }] };
   writeRecommendationCache(storage, payload);
-  assert.equal(RECOMMENDATION_CACHE_KEY, 'frxe.web.recommendations.v1');
+  assert.equal(RECOMMENDATION_CACHE_KEY, 'vitr.web.recommendations.v1');
   assert.deepEqual(readRecommendationCache(storage, 'sig', 1500), payload);
   assert.equal(readRecommendationCache(storage, 'other', 1500), null);
   assert.equal(readRecommendationCache(storage, 'sig', 2500), null);

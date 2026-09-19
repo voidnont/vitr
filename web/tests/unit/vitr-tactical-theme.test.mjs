@@ -39,9 +39,9 @@ test('Vitr Web uses the same navy, pink and glass design system', () => {
 
   assert.match(css, /--vitr-accent:#ff2b63/);
   assert.match(css, /--vitr-navy:#050811/);
-  assert.match(css, /\.frxe-glass\{[\s\S]*?border-radius:18px/);
-  assert.match(css, /@media\(min-width:901px\)[\s\S]*?\.frxe-nav\{[\s\S]*?width:218px/);
-  assert.match(css, /\[data-vitr-finish="glass"\] \.frxe-glass/);
+  assert.match(css, /\.vitr-glass\{[\s\S]*?border-radius:18px/);
+  assert.match(css, /@media\(min-width:901px\)[\s\S]*?\.vitr-nav\{[\s\S]*?width:218px/);
+  assert.match(css, /\[data-vitr-finish="glass"\] \.vitr-glass/);
   assert.match(webCss, /Vitr dark \+ liquid glass refinements/);
   assert.doesNotMatch(css, /--vitr-blood:#b51218/);
 });
