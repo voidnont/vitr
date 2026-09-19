@@ -103,9 +103,6 @@ android {
     sourceSets {
         getByName("main") {
             manifest.srcFile("src/standalone/AndroidManifest.xml")
-            java.setSrcDirs(listOf("src/main/java", "src/standalone/java"))
-            res.setSrcDirs(listOf("src/main/res"))
-            assets.setSrcDirs(listOf("src/standalone/assets"))
         }
     }
 }
