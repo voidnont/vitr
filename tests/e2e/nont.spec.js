@@ -122,6 +122,7 @@ test('Vitr Web exposes real Modern Dark and Liquid Glass finishes', async ({ pag
   await page.getByRole('button', { name: /Appearance: Modern Dark/ }).click();
   await expect(app).toHaveAttribute('data-vitr-finish', 'glass');
   await expect(page.getByRole('button', { name: /Appearance: Liquid Glass/ })).toBeVisible();
+  await expect(page.getByText('v0.1.0', { exact: true })).toBeVisible();
 });
 
 test('search result starts browser playback without a worker', async ({ page }) => {
@@ -193,4 +194,19 @@ test('Search header and search bar stay visible while results scroll', async ({ 
   const top = await page.locator('.frxe069-sticky-search').evaluate((node) => node.getBoundingClientRect().top);
   expect(top).toBeGreaterThanOrEqual(0);
   expect(top).toBeLessThan(40);
+});
+
+
+test('Clear search removes the query and results without reloading Vitr Web', async ({ page }) => {
+  await page.goto('/music');
+  await page.locator('.frxe-nav').getByRole('button', { name: 'Search' }).click();
+  const input = page.getByRole('textbox', { name: 'Search VITR' });
+  await input.fill('Signal');
+  await page.getByRole('button', { name: 'Search music' }).click();
+  await expect(page.locator('.frxe-result-title', { hasText: /^Signal$/ }).first()).toBeVisible();
+  await page.getByRole('button', { name: 'Clear search' }).click();
+  await expect(input).toHaveValue('');
+  await expect(page.locator('.frxe-result-title')).toHaveCount(0);
+  await expect(page.getByText(/Search for anything/)).toBeVisible();
+  expect(new URL(page.url()).pathname).toBe('/music');
 });

@@ -95,7 +95,7 @@ type Tab = 'home' | 'search' | 'library' | 'settings';
 type RepeatMode = 'off' | 'queue' | 'track';
 
 export const VITR_WEB_VERSION = '0.1.0';
-const VITR_REPO = 'https://github.com/bloodvitr/vitr';
+const VITR_REPO = 'https://github.com/voidnont/vitr';
 const LIBRARY_KEY = 'vitr.web.library.v1';
 const LEGACY_VITR_LIBRARY_KEY = 'frxe.web.library.v1';
 const HISTORY_KEY = 'vitr.web.history.v1';
@@ -178,6 +178,7 @@ export default function MusicApp069() {
   const playerReadyRef = useRef(false);
   const pendingVideoRef = useRef<string | null>(null);
   const endedRef = useRef<() => void>(() => undefined);
+  const searchRequestRef = useRef(0);
 
   const [tab, setTab] = useState<Tab>('home');
   const [query, setQuery] = useState('');
@@ -419,12 +420,14 @@ export default function MusicApp069() {
   async function runSearch(text: string, record = true) {
     const term = text.trim();
     if (!term || searching) return;
+    const requestId = ++searchRequestRef.current;
     setQuery(term);
     setSearching(true);
     setSearchError('');
     try {
       const response = await fetch(`/api/youtube-search?q=${encodeURIComponent(term)}`);
       const data = await response.json().catch(() => ({}));
+      if (requestId !== searchRequestRef.current) return;
       if (!response.ok) throw new Error(data.error || `Search failed (${response.status}).`);
       const decoded = (data.items || []).map((item: Track) => refineMusicMetadata({ ...item, title: decodeHtml(item.title), artist: decodeHtml(item.artist) }) as Track);
       const tracks = mergeAndRankMusicResults(decoded, term, 40) as Track[];
@@ -433,14 +436,25 @@ export default function MusicApp069() {
       if (record) setRecentSearches((items) => [term, ...items.filter((item) => item.toLowerCase() !== term.toLowerCase())].slice(0, 20));
       if (!tracks.length) setSearchError('No playable music results were found for that search.');
     } catch (error) {
+      if (requestId !== searchRequestRef.current) return;
       setResults([]);
       setSearchError(error instanceof Error ? error.message : String(error));
-    } finally { setSearching(false); }
+    } finally {
+      if (requestId === searchRequestRef.current) setSearching(false);
+    }
   }
 
   async function searchSubmit(event: FormEvent) {
     event.preventDefault();
     await runSearch(query);
+  }
+
+  function clearSearch() {
+    searchRequestRef.current += 1;
+    setQuery('');
+    setResults([]);
+    setSearchError('');
+    setSearching(false);
   }
 
   function createPlaylist() {
@@ -495,7 +509,7 @@ export default function MusicApp069() {
           <section className="frxe-screen">
             <div className="frxe069-sticky-search">
               <header className="frxe-heading compact frxe069-page-title"><div><h2>Search</h2><p>Songs, artists, genres and related mixes.</p></div></header>
-              <div className="frxe-glass strong frxe-search-glass frxe069-search-bar"><form onSubmit={searchSubmit}><SearchIcon size={20} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search songs, artists, genres…" aria-label="Search VITR" /><button type="submit" aria-label="Search music" className="frxe-search-submit" disabled={searching || !query.trim()}>{searching ? <Loader2 size={18} className="frxe-spin" /> : <ArrowDown size={18} />}</button></form></div>
+              <div className="frxe-glass strong frxe-search-glass frxe069-search-bar"><form onSubmit={searchSubmit}><SearchIcon size={20} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search songs, artists, genres…" aria-label="Search VITR" /><button type="button" aria-label="Clear search" className="frxe-search-clear" onClick={clearSearch} disabled={!query && !results.length && !searchError && !searching}><X size={17} /></button><button type="submit" aria-label="Search music" className="frxe-search-submit" disabled={searching || !query.trim()}>{searching ? <Loader2 size={18} className="frxe-spin" /> : <ArrowDown size={18} />}</button></form></div>
             </div>
             {recentSearches.length > 0 && <div className="frxe069-chips">{recentSearches.slice(0, 8).map((term) => <button key={term} onClick={() => runSearch(term)}>{term}</button>)}</div>}
             {searchError && <div className="frxe-error" role="alert">{searchError}</div>}

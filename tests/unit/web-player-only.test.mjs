@@ -84,3 +84,21 @@ test('web player base container does not break sticky headers with overflow clip
   assert.match(css, /\.frxe-app\{[^}]*overflow:visible/);
   assert.doesNotMatch(css, /\.frxe-app\{[^}]*overflow:hidden/);
 });
+
+
+test('web player exposes v0.1.0 and a real clear-search control', () => {
+  const app = read('src/music/MusicApp069.tsx');
+  assert.match(app, /VITR_WEB_VERSION = '0\.1\.0'/);
+  assert.match(app, /aria-label="Clear search"/);
+  assert.match(app, /function clearSearch\(\)/);
+  assert.match(app, /searchRequestRef\.current \+= 1/);
+  assert.match(app, /https:\/\/github\.com\/voidnont\/vitr/);
+});
+
+test('web and desktop use the same supplied droplet icon source', () => {
+  const webIcon = read('public/vitr-icon.svg').trim();
+  const desktopIcon = read('desktop/web/vitr-icon.svg').trim();
+  assert.equal(webIcon, desktopIcon);
+  assert.match(webIcon, /#5b5b5b/i);
+  assert.match(webIcon, /#e91f4f/i);
+});
