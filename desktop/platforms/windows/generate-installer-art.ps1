@@ -40,7 +40,14 @@ function New-VitrBitmap {
   $graphics.FillEllipse($glow, [int](-$Width * .25), [int]($Height * .48), [int]($Width * .95), [int]($Height * .65))
 
   $compact = $Kind -in @('header','banner')
-  if ($compact) {
+  if ($Kind -eq 'header') {
+    # NSIS header artwork is only 150x57. Keep this intentionally minimal
+    # so branding never clips inside the fixed installer slot.
+    $dropX = 14
+    $dropY = 11
+    $dropW = 28
+    $dropH = 34
+  } elseif ($Kind -eq 'banner') {
     $dropX = 22
     $dropY = [Math]::Max(7, [int](($Height - 42) / 2))
     $dropW = 34
@@ -79,12 +86,19 @@ function New-VitrBitmap {
   $muted = [System.Drawing.SolidBrush]::new([System.Drawing.Color]::FromArgb(165, 165, 172))
   $red = [System.Drawing.SolidBrush]::new([System.Drawing.Color]::FromArgb(238, 39, 78))
 
-  if ($compact) {
+  if ($Kind -eq 'header') {
+    $titleFont = [System.Drawing.Font]::new("Segoe UI", [single]12, [System.Drawing.FontStyle]::Bold)
+    $smallFont = [System.Drawing.Font]::new("Segoe UI", [single]6.3, [System.Drawing.FontStyle]::Regular)
+    $graphics.DrawString("vitr", $titleFont, $white, [single]52, [single]10)
+    $graphics.DrawString("$Version  •  BY BLOOD", $smallFont, $muted, [single]53, [single]31)
+    $titleFont.Dispose()
+    $smallFont.Dispose()
+  } elseif ($Kind -eq 'banner') {
     $titleFont = [System.Drawing.Font]::new("Segoe UI", [single]13, [System.Drawing.FontStyle]::Bold)
     $smallFont = [System.Drawing.Font]::new("Segoe UI", [single]7.5, [System.Drawing.FontStyle]::Regular)
     $textY = [single]([Math]::Max(7, ($Height-31)/2))
-    $graphics.DrawString("VITR SETUP", $titleFont, $white, [single]72, $textY)
-    $graphics.DrawString("$Version  •  MUSIC IN MOTION", $smallFont, $muted, [single]73, [single]([Math]::Max(26, ($Height-31)/2 + 21)))
+    $graphics.DrawString("vitr setup", $titleFont, $white, [single]72, $textY)
+    $graphics.DrawString("$Version  •  BY BLOOD", $smallFont, $muted, [single]73, [single]([Math]::Max(26, ($Height-31)/2 + 21)))
     $accentPen = [System.Drawing.Pen]::new([System.Drawing.Color]::FromArgb(235, 30, 72), [single]2)
     $graphics.DrawLine($accentPen, $Width - 74, [int]($Height/2), $Width - 18, [int]($Height/2))
     $accentPen.Dispose()
@@ -97,7 +111,7 @@ function New-VitrBitmap {
     $titleY = [single]($dropY + $dropH + $Height*.07)
     $graphics.DrawString("vitr", $titleFont, $white, [single]($Width*.12), $titleY)
     $graphics.DrawString("MUSIC IN MOTION", $tagFont, $red, [single]($Width*.13), [single]($titleY + $Height*.11))
-    $graphics.DrawString("A fast native desktop player.", $smallFont, $muted, [single]($Width*.13), [single]($titleY + $Height*.18))
+    $graphics.DrawString("Standalone music interface.", $smallFont, $muted, [single]($Width*.13), [single]($titleY + $Height*.18))
     $graphics.DrawString("Vitr $Version", $smallFont, $muted, [single]($Width*.13), [single]($Height*.91))
     $titleFont.Dispose()
     $smallFont.Dispose()
