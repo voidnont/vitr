@@ -1,4 +1,4 @@
-package com.frxe.music.audio
+package com.bloodvitr.vitr.audio
 
 import android.content.Context
 import android.content.Intent
@@ -6,7 +6,7 @@ import android.media.audiofx.AudioEffect
 
 /**
  * Opens the device's audio-effect control panel when one is available.
- * Frxe keeps this hook provider-neutral so compatible system audio panels work.
+ * Vitr keeps this hook provider-neutral so compatible system audio panels work.
  */
 object AudioControl {
     fun openEqualizer(context: Context) {
