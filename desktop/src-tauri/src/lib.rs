@@ -5,6 +5,7 @@ mod models;
 mod runtime;
 mod search;
 mod tray;
+mod updates;
 
 use tauri::{AppHandle, LogicalPosition, LogicalSize, Manager, WebviewWindow};
 
@@ -262,6 +263,7 @@ pub fn run() {
             search::ytdlp_search,
             search::resolve_stream_url,
             downloads::authorize_media_path,
+            downloads::default_download_dir,
             downloads::scan_downloads,
             downloads::clear_removed_downloads,
             downloads::download_already_exists,
@@ -271,6 +273,8 @@ pub fn run() {
             lyrics::fetch_metadata_lyrics,
             runtime::update_runtime_dependencies,
             runtime::current_runtime_status,
+            updates::check_client_update,
+            updates::open_release_page,
             tray::set_tray_enabled,
             media_controls::update_media_controls,
             toggle_mini_player,
