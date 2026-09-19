@@ -1,5 +1,6 @@
 const RESET_PREFIXES = [
   'vitr.web.',
+  'frxe.web.',
   'nont.music.youtube.',
 ];
 
