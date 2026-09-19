@@ -18,7 +18,7 @@ internal object DownloadedTrackIdentity {
 }
 
 internal object DownloadedTrackRegistry {
-    private const val PREFS = "frxe_downloaded_track_sources"
+    private const val PREFS = "vitr_downloaded_track_sources"
     private const val KEY_PREFIX = "track."
 
     @Volatile
