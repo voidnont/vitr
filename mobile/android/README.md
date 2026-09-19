@@ -2,7 +2,7 @@
 
 Native Android Vitr app.
 
-- Version: **0.2.0**
+- Version: **0.3.1**
 - versionCode: **1**
 - Application ID: `com.bloodvitr.vitr`
 - Publisher: **Blood**
