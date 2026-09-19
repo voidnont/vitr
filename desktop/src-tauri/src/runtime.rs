@@ -205,7 +205,7 @@ pub async fn update_runtime_dependencies(app: tauri::AppHandle) -> Result<Runtim
 
     let response = reqwest::Client::new()
         .get(ytdlp_download_url())
-        .header("User-Agent", "vitr/0.1.0")
+        .header("User-Agent", concat!("vitr/", env!("CARGO_PKG_VERSION")) )
         .send()
         .await
         .map_err(|e| format!("Could not download yt-dlp: {e}"))?
