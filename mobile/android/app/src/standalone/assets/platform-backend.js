@@ -32,7 +32,7 @@
 
   window.vitrPlatformBackend={
     search:function(query){return call("search",[String(query||"")])},
-    discover:function(query){return call("discover",[String(query||"")])},
+    discover:function(query,entityType){return call("discover",[String(query||""),String(entityType||"all")])},
     play:function(track,queue){
       return call("play",[
         JSON.stringify(track||{}),

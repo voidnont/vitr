@@ -215,7 +215,7 @@ body[data-window-class="wide"] .library-grid{grid-template-columns:repeat(4,minm
         <div class="page-title"><div class="eyebrow">VITR</div><h1>Settings</h1><p>Appearance and project identity.</p></div>
         <div class="setting-row glass-soft"><div><h3>Interface finish</h3><p>Use the toggle above to switch between Liquid Glass and Normal UI.</p></div><strong id="modeLabel">Liquid Glass</strong></div>
         <div class="setting-row glass-soft"><div><h3>Floating mini player</h3><p>Show or hide a draggable Vitr popup that follows your saved Normal / Liquid Glass appearance.</p></div><button id="miniSettingsLaunch" class="link-pill" type="button">Open mini player</button></div>
-        <div class="setting-row glass-soft"><div><h3>Version</h3><p>Native backend build</p></div><strong>0.2.2</strong></div>
+        <div class="setting-row glass-soft"><div><h3>Version</h3><p>Native backend build</p></div><strong>0.2.3</strong></div>
         <div class="setting-row glass-soft"><div><h3>Blood</h3><p>Creator and maintainer of Vitr.</p></div><div class="setting-links"><a class="link-pill" href="https://github.com/bloodvitr" target="_blank" rel="noreferrer">github.com/bloodvitr</a><a class="link-pill" href="https://ko-fi.com/bloodvitr" target="_blank" rel="noreferrer">ko-fi.com/bloodvitr</a></div></div>
       </div>
     </section>
@@ -281,9 +281,10 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
     return '<article class="track glass-soft" data-track-key="'+esc(key)+'"><div class="thumb">'+(cover?'<img src="'+esc(cover)+'" alt="">':"")+'</div><div class="track-copy"><strong>'+esc(t&&t.title||"Unknown track")+'</strong><small>'+esc(t&&t.artist||"Unknown artist")+esc(source)+'</small></div><button class="play-pill" type="button">▶</button></article>';
   }
   function catalogKey(item,i){return String(item&&item.id?item.id:(item&&item.kind||"item")+":"+i+":"+(item&&item.title||"unknown"))}
+  function entityType(item){return String(item&&item.metadata&&item.metadata.entityType||item&&item.kind||"item").toLowerCase()}
   function catalogItemMarkup(item,i){
-    var key=catalogKey(item,i);catalogRegistry.set(key,item);
-    return '<article class="catalog-item glass-soft" data-catalog-key="'+esc(key)+'"><strong>'+esc(item&&item.title||"Untitled")+'</strong><small>'+esc(item&&item.subtitle||item&&item.kind||"Browse")+'</small></article>';
+    var key=catalogKey(item,i),type=entityType(item);catalogRegistry.set(key,item);
+    return '<article class="catalog-item glass-soft" data-catalog-key="'+esc(key)+'" data-entity-type="'+esc(type)+'"><strong>'+esc(item&&item.title||"Untitled")+'</strong><small>'+esc(item&&item.subtitle||type)+'</small></article>';
   }
   function renderCatalogItems(items,target){
     items=Array.isArray(items)?items:[];if(!items.length){target.innerHTML="";return}
@@ -291,7 +292,7 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
     target.querySelectorAll("[data-catalog-key]").forEach(function(el){
       el.addEventListener("click",function(){
         var item=catalogRegistry.get(el.getAttribute("data-catalog-key"));if(!item)return;
-        var input=document.getElementById("searchInput"),q=item.title||"";
+        var input=document.getElementById("searchInput"),q=item&&item.metadata&&item.metadata.searchQuery||item.title||"";
         input.value=q;document.getElementById("globalSearch").value=q;
         searchKind="songs";setActiveSearchKind("songs");searchVitr(q);
       });
@@ -301,17 +302,19 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
     searchKind=kind||"all";
     document.querySelectorAll("[data-search-kind]").forEach(function(btn){btn.classList.toggle("active",btn.dataset.searchKind===searchKind)});
   }
+  function preferredEntityType(){
+    return searchKind==="artists"?"artist":searchKind==="albums"?"album":searchKind==="playlists"?"playlist":searchKind==="genres"?"genre":searchKind==="songs"?"track":"all";
+  }
   function catalogItemsForKind(catalog,kind){
     if(!catalog)return[];
-    if(kind==="artists")return catalog.artists||[];
-    if(kind==="albums")return catalog.albums||[];
-    if(kind==="playlists")return catalog.playlists||[];
-    if(kind==="genres")return catalog.genres||[];
-    return [].concat(catalog.artists||[],catalog.albums||[],catalog.playlists||[],catalog.genres||[]).slice(0,12);
+    var items=Array.isArray(catalog.items)&&catalog.items.length?catalog.items:[].concat(catalog.artists||[],catalog.albums||[],catalog.playlists||[],catalog.genres||[]);
+    if(kind==="all")return items.slice(0,16);
+    var singular=kind==="artists"?"artist":kind==="albums"?"album":kind==="playlists"?"playlist":kind==="genres"?"genre":kind;
+    return items.filter(function(item){return entityType(item)===singular});
   }
   function renderSearchResult(catalog){
     var catalogHost=document.getElementById("searchCatalog"),trackHost=document.getElementById("searchTracks");
-    lastCatalog=catalog||{tracks:[],artists:[],albums:[],playlists:[],genres:[]};
+    lastCatalog=catalog||{tracks:[],items:[],artists:[],albums:[],playlists:[],genres:[]};
     if(searchKind==="songs"){catalogHost.innerHTML="";renderTracks(lastCatalog.tracks||[],trackHost,"No songs found");return}
     var items=catalogItemsForKind(lastCatalog,searchKind);
     renderCatalogItems(items,catalogHost);
@@ -421,7 +424,7 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
     var serial=++searchSerial;backend=window.vitrPlatformBackend||backend;if(!backend){catalogHost.innerHTML="";empty(trackHost,"Backend unavailable","Restart Vitr and try again.");return}
     catalogHost.innerHTML="";trackHost.innerHTML='<div class="empty-state glass-soft">Searching Vitr…</div>';
     try{
-      var catalog=backend.discover?await backend.discover(q):{tracks:await backend.search(q),artists:[],albums:[],playlists:[],genres:[]};
+      var catalog=backend.discover?await backend.discover(q,preferredEntityType()):{tracks:await backend.search(q),items:[],artists:[],albums:[],playlists:[],genres:[]};
       if(serial!==searchSerial)return;
       renderSearchResult(catalog);
     }catch(error){

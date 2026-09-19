@@ -235,7 +235,7 @@ body[data-device-class="compact"][data-orientation="landscape"] .hero-art{height
       <div class="settings-panel glass">
         <div class="page-title"><div class="eyebrow">VITR</div><h1>Settings</h1><p>Appearance and project identity.</p></div>
         <div class="setting-row glass-soft"><div><h3>Interface finish</h3><p>Use the toggle above to switch between Liquid Glass and Normal UI.</p></div><strong id="modeLabel">Liquid Glass</strong></div>
-        <div class="setting-row glass-soft"><div><h3>Version</h3><p>Native backend build</p></div><strong>0.2.2</strong></div>
+        <div class="setting-row glass-soft"><div><h3>Version</h3><p>Native backend build</p></div><strong>0.2.3</strong></div>
         <div class="setting-row glass-soft"><div><h3>Blood</h3><p>Creator and maintainer of Vitr.</p></div><div class="setting-links"><a class="link-pill" href="https://github.com/bloodvitr">github.com/bloodvitr</a><a class="link-pill" href="https://ko-fi.com/bloodvitr">ko-fi.com/bloodvitr</a></div></div>
       </div>
     </section>
@@ -290,9 +290,10 @@ window.__vitrApplyDeviceProfile = function(profile){
   function empty(target,title,detail){target.innerHTML='<div class="empty-state glass-soft"><strong>'+esc(title)+'</strong>'+(detail?'<div>'+esc(detail)+'</div>':"")+'</div>'}
   function trackMarkup(t,i){var k=key(t,i);trackRegistry.set(k,t);var cover=coverUrl(t),source=t&&t.source?" · "+t.source:"";return '<article class="track glass-soft" data-track-key="'+esc(k)+'"><div class="thumb">'+(cover?'<img src="'+esc(cover)+'" alt="">':"")+'</div><div class="track-copy"><strong>'+esc(t&&t.title||"Unknown track")+'</strong><small>'+esc(t&&t.artist||"Unknown artist")+esc(source)+'</small></div><button class="play-pill" type="button">▶</button></article>'}
   function catalogKey(item,i){return String(item&&item.id?item.id:(item&&item.kind||"item")+":"+i+":"+(item&&item.title||"unknown"))}
+  function entityType(item){return String(item&&item.metadata&&item.metadata.entityType||item&&item.kind||"item").toLowerCase()}
   function catalogItemMarkup(item,i){
-    var k=catalogKey(item,i);catalogRegistry.set(k,item);
-    return '<article class="catalog-item glass-soft" data-catalog-key="'+esc(k)+'"><strong>'+esc(item&&item.title||"Untitled")+'</strong><small>'+esc(item&&item.subtitle||item&&item.kind||"Browse")+'</small></article>';
+    var k=catalogKey(item,i),type=entityType(item);catalogRegistry.set(k,item);
+    return '<article class="catalog-item glass-soft" data-catalog-key="'+esc(k)+'" data-entity-type="'+esc(type)+'"><strong>'+esc(item&&item.title||"Untitled")+'</strong><small>'+esc(item&&item.subtitle||type)+'</small></article>';
   }
   function renderCatalogItems(items,target){
     items=Array.isArray(items)?items:[];if(!items.length){target.innerHTML="";return}
@@ -300,23 +301,23 @@ window.__vitrApplyDeviceProfile = function(profile){
     target.querySelectorAll("[data-catalog-key]").forEach(function(el){
       el.addEventListener("click",function(){
         var item=catalogRegistry.get(el.getAttribute("data-catalog-key"));if(!item)return;
-        var q=item.searchQuery||item.title||"",input=document.getElementById("searchInput");
+        var q=item&&item.metadata&&item.metadata.searchQuery||item.title||"",input=document.getElementById("searchInput");
         input.value=q;document.getElementById("globalSearch").value=q;searchKind="songs";setActiveSearchKind("songs");searchVitr(q);
       });
     });
   }
   function setActiveSearchKind(kind){searchKind=kind||"all";document.querySelectorAll("[data-search-kind]").forEach(function(btn){btn.classList.toggle("active",btn.dataset.searchKind===searchKind)})}
+  function preferredEntityType(){return searchKind==="artists"?"artist":searchKind==="albums"?"album":searchKind==="playlists"?"playlist":searchKind==="genres"?"genre":searchKind==="songs"?"track":"all"}
   function catalogItemsForKind(catalog,kind){
     if(!catalog)return[];
-    if(kind==="artists")return catalog.artists||[];
-    if(kind==="albums")return catalog.albums||[];
-    if(kind==="playlists")return catalog.playlists||[];
-    if(kind==="genres")return catalog.genres||[];
-    return [].concat(catalog.artists||[],catalog.albums||[],catalog.playlists||[],catalog.genres||[]).slice(0,12);
+    var items=Array.isArray(catalog.items)&&catalog.items.length?catalog.items:[].concat(catalog.artists||[],catalog.albums||[],catalog.playlists||[],catalog.genres||[]);
+    if(kind==="all")return items.slice(0,16);
+    var singular=kind==="artists"?"artist":kind==="albums"?"album":kind==="playlists"?"playlist":kind==="genres"?"genre":kind;
+    return items.filter(function(item){return entityType(item)===singular});
   }
   function renderSearchResult(catalog){
     var catalogHost=document.getElementById("searchCatalog"),trackHost=document.getElementById("searchTracks");
-    lastCatalog=catalog||{tracks:[],artists:[],albums:[],playlists:[],genres:[]};
+    lastCatalog=catalog||{tracks:[],items:[],artists:[],albums:[],playlists:[],genres:[]};
     if(searchKind==="songs"){catalogHost.innerHTML="";renderTracks(lastCatalog.tracks||[],trackHost,"No songs found");return}
     var items=catalogItemsForKind(lastCatalog,searchKind);renderCatalogItems(items,catalogHost);
     if(searchKind==="all")renderTracks(lastCatalog.tracks||[],trackHost,"No songs found");else trackHost.innerHTML="";
@@ -372,7 +373,7 @@ window.__vitrApplyDeviceProfile = function(profile){
     if(!q){catalogHost.innerHTML="";empty(trackHost,"Search Vitr","Type a song, artist, album, playlist or genre above.");return}
     var serial=++searchSerial;if(!backend){catalogHost.innerHTML="";empty(trackHost,"Backend unavailable","Restart Vitr and try again.");return}
     catalogHost.innerHTML="";trackHost.innerHTML='<div class="empty-state glass-soft">Searching Vitr…</div>';
-    try{var catalog=backend.discover?await backend.discover(q):{tracks:await backend.search(q),artists:[],albums:[],playlists:[],genres:[]};if(serial!==searchSerial)return;renderSearchResult(catalog)}
+    try{var catalog=backend.discover?await backend.discover(q,preferredEntityType()):{tracks:await backend.search(q),items:[],artists:[],albums:[],playlists:[],genres:[]};if(serial!==searchSerial)return;renderSearchResult(catalog)}
     catch(error){if(serial!==searchSerial)return;catalogHost.innerHTML="";empty(trackHost,"Search unavailable",error&&error.message||"Backend error")}
   }
   function queueSearch(value){clearTimeout(searchTimer);searchTimer=setTimeout(function(){searchVitr(value)},320)}
