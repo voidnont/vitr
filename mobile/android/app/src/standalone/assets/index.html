@@ -86,7 +86,7 @@ body.normal .toggle-indicator{transform:translateX(100%)}
 .track:hover{transform:translateX(3px);background:rgba(255,255,255,.075)}.thumb{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,#32111c,#e82958);position:relative;overflow:hidden}
 .thumb:after{content:"";position:absolute;width:28px;height:28px;border-radius:50%;right:-8px;bottom:-6px;background:#ff829d;filter:blur(4px)}.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2}
 .track:nth-child(2n) .thumb{background:linear-gradient(135deg,#111735,#6656ff)}.track:nth-child(3n) .thumb{background:linear-gradient(135deg,#0e2829,#2bd0c4)}
-.track-copy{min-width:0}.track-copy strong,.track-copy small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.track-copy strong{font-size:12px}.track-copy small{font-size:10px;color:var(--muted);margin-top:4px}.play-pill{border:0;border-radius:999px;width:35px;height:35px;background:rgba(255,255,255,.08)}
+.track-copy{min-width:0}.track-copy strong,.track-copy small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.track-copy strong{font-size:12px}.track-copy small{font-size:10px;color:var(--muted);margin-top:4px}.play-pill{border:0;border-radius:999px;width:35px;height:35px;background:rgba(255,255,255,.08)}.player-mode-row{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap}.player-mode-row button.active{background:rgba(242,47,93,.2);border-color:rgba(242,47,93,.42);color:#fff}.lyrics-panel{margin-top:16px;max-height:220px;overflow:auto;border-radius:18px;padding:14px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06)}.lyrics-panel .lyric-line{display:block;padding:5px 2px;color:var(--muted);font-size:12px;line-height:1.45}.lyrics-panel .lyric-line.active{color:#fff;font-weight:750}.lyrics-panel .lyrics-empty{color:var(--muted);font-size:11px}.app-pill{position:fixed;z-index:45;left:12px;right:12px;bottom:calc(max(12px,env(safe-area-inset-bottom)) + 76px);height:62px;border-radius:999px;padding:7px 10px;display:none;grid-template-columns:46px minmax(0,1fr) auto;align-items:center;gap:9px;box-shadow:0 18px 46px rgba(0,0,0,.46)}.app-pill.visible{display:grid}.app-pill .pill-art{width:46px;height:46px;border-radius:50%;overflow:hidden;background:#21121a}.app-pill .pill-art img{width:100%;height:100%;object-fit:cover}.app-pill .pill-copy{min-width:0}.app-pill .pill-copy strong,.app-pill .pill-copy small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.app-pill .pill-copy strong{font-size:11px}.app-pill .pill-copy small{font-size:9px;color:var(--muted)}.app-pill .pill-controls{display:flex;gap:5px}.app-pill button{width:32px;height:32px;border:0;border-radius:50%;background:rgba(255,255,255,.07);font-size:10px}.app-pill .pill-play{background:linear-gradient(135deg,var(--red2),var(--red))}
 .trending h3{margin:8px 0 2px;font-size:19px}.trend{display:grid;grid-template-columns:22px 38px minmax(0,1fr);align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06)}.trend>span{font-size:10px;color:#716d79}.trend .thumb{width:38px;height:38px;border-radius:11px}.trend strong,.trend small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.trend strong{font-size:11px}.trend small{font-size:9px;color:var(--muted);margin-top:3px}
 .quote{margin-top:24px;padding:16px;border-radius:20px;background:linear-gradient(145deg,rgba(242,47,93,.12),rgba(255,255,255,.025));font-size:12px;line-height:1.6;color:#d9d5df}
 .search-panel,.library-panel,.settings-panel{border-radius:28px;padding:24px;min-height:calc(100vh - 115px)}
@@ -213,6 +213,7 @@ body[data-device-class="compact"][data-orientation="landscape"] .hero-art{height
       <section class="section"><div class="section-head"><div><div class="eyebrow">DISCOVER</div><h2>From Vitr</h2></div><small>Live results</small></div>
         <div id="featuredTracks" class="cards"></div>
       </section>
+      <section class="section"><div class="section-head"><div><div class="eyebrow">FOR YOU</div><h2>Recommended for you</h2></div><small id="recommendationWhy">Based on your Vitr activity</small></div><div id="recommendedTracks" class="cards"></div></section>
       <section class="section"><div class="section-head"><div><div class="eyebrow">RECENT</div><h2>Recently played</h2></div><small>Recent</small></div><div id="homeTracks" class="track-list"></div></section>
     </section>
     <section id="search" class="screen">
@@ -235,6 +236,7 @@ body[data-device-class="compact"][data-orientation="landscape"] .hero-art{height
       <div class="settings-panel glass">
         <div class="page-title"><div class="eyebrow">VITR</div><h1>Settings</h1><p>Appearance and project identity.</p></div>
         <div class="setting-row glass-soft"><div><h3>Interface finish</h3><p>Use the toggle above to switch between Liquid Glass and Normal UI.</p></div><strong id="modeLabel">Liquid Glass</strong></div>
+        <div class="setting-row glass-soft"><div><h3>In-app mini player</h3><p>Keep the pill player visible while music is active.</p></div><select id="pillPlayerSetting" class="setting-select"><option value="on">On</option><option value="off">Off</option></select></div>
         <div class="setting-row glass-soft"><div><h3>Download format</h3><p>Used by the Download button and remembered until you change it.</p></div><select id="downloadFormat" class="setting-select"><option value="m4a">M4A</option><option value="mp3">MP3</option><option value="flac">FLAC</option><option value="wav">WAV</option></select></div>
         <div class="setting-row glass-soft"><div><h3>Language</h3><p id="languageStatus">Auto-detecting your system language.</p></div><select id="languageSelect" class="setting-select"><option value="auto">Auto (system)</option><option value="en">English</option><option value="de">Deutsch</option><option value="fr">Français</option><option value="it">Italiano</option><option value="es">Español</option><option value="pt">Português</option><option value="ja">日本語</option><option value="ko">한국어</option></select></div>
         <div class="setting-row glass-soft"><div><h3>Runtime dependencies</h3><p id="runtimeStatus">Checking Android yt-dlp runtime…</p></div><button id="runtimeUpdate" class="link-pill" type="button">Update runtime</button></div>
@@ -253,6 +255,11 @@ body[data-device-class="compact"][data-orientation="landscape"] .hero-art{height
   <button data-tab="settings"><b>⚙</b><span>Settings</span></button>
 </nav>
 </div>
+<div id="appPill" class="app-pill glass" aria-label="Now playing">
+  <div class="pill-art"><img id="pillArtwork" alt=""></div>
+  <div class="pill-copy"><strong id="pillTitle">Nothing playing</strong><small id="pillArtist">Choose a track</small></div>
+  <div class="pill-controls"><button id="pillPrev" type="button">◀</button><button id="pillPlay" class="pill-play" type="button">▶</button><button id="pillNext" type="button">▶</button></div>
+</div>
 <div id="playerOverlay" class="now-playing">
   <button class="close" id="closePlayer">×</button>
   <section class="player glass">
@@ -261,6 +268,8 @@ body[data-device-class="compact"][data-orientation="landscape"] .hero-art{height
       <div class="progress" id="playerProgress"><i></i></div><div class="times"><span>0:00</span><span>0:00</span></div>
       <div class="volume-row"><span class="volume-icon" id="volumeIcon">🔊</span><input id="volumeSlider" type="range" min="0" max="100" value="100" aria-label="Volume"><span id="volumeValue">100%</span></div>
       <div class="controls"><button id="rewind10">↶</button><button id="playerPrev">◀</button><button class="main-play" id="playToggle">▶</button><button id="playerNext">▶</button><button id="forward10">↻</button><button id="favoriteToggle">♡</button></div>
+      <div class="player-mode-row"><button id="shuffleToggle" class="link-pill" type="button">Shuffle</button><button id="repeatToggle" class="link-pill" type="button">Repeat off</button><button id="pillToggle" class="link-pill" type="button">Pill on</button></div>
+      <div id="playerLyrics" class="lyrics-panel"><div class="lyrics-empty">Lyrics will appear here when available.</div></div>
       <div class="download-row"><button id="downloadTrack" class="link-pill" type="button">↓ Download</button><span id="downloadStatus">Uses your saved audio format.</span></div>
     </div>
   </section>
