@@ -28,7 +28,7 @@ Vitr is a cross-platform music project by **Blood**. The repository version is *
 - GitHub Actions produces `Vitr-0.1.0-sideload.ipa` for sideload tools to re-sign for an iPhone.
 - `npm run check` — validate web and desktop.
 
-The official web player is `https://vitr.nont.me`. Mobile update checks use `bloodvitr/vitr/releases`, support uses `bloodvitr/vitr`, and donations use `ko-fi.com/bloodvitr`.
+The official web player is `https://vitr.nont.me`. For Vitr across the web, desktop, Android, and iOS, releases and update information use `bloodvitr/vitr/releases`, support uses `bloodvitr/vitr`, and donations use `ko-fi.com/bloodvitr`.
 
 ## License
 
