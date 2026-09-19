@@ -20,4 +20,7 @@ object FrxeSupportLinks {
 
     const val GITHUB =
         "https://github.com/bloodvitr/vitr"
+
+    const val RELEASES =
+        "https://github.com/bloodvitr/vitr/releases"
 }
