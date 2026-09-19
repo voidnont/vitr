@@ -10,7 +10,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 object PlaybackQueueStore {
-    private const val PREFS = "frxe_playback_queue"
+    private const val PREFS = "vitr_playback_queue"
     private const val KEY_STATE = "queue_v1"
 
     private val lock = Any()
