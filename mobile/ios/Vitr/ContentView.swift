@@ -34,6 +34,7 @@ private struct VitrInfoView: View {
         NavigationStack {
             Form {
                 Section("Vitr") {
+                    LabeledContent("Publisher", value: "Blood")
                     LabeledContent("Version", value: updateChecker.currentVersion)
 
                     Button("Check for updates") {
