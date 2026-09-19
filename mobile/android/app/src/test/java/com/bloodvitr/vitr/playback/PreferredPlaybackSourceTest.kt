@@ -1,6 +1,6 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
-import com.frxe.music.model.Track
+import com.bloodvitr.vitr.model.Track
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -10,7 +10,7 @@ class PreferredPlaybackSourceTest {
     fun `local content copy wins over catalog source for same track`() {
         val requested = track(
             id = "yt-dQw4w9WgXcQ",
-            streamUrl = "frxe-catalog://youtube/dQw4w9WgXcQ"
+            streamUrl = "vitr-catalog://youtube/dQw4w9WgXcQ"
         )
         val downloaded = requested.copy(
             streamUrl = "content://media/external/audio/media/42",
@@ -30,7 +30,7 @@ class PreferredPlaybackSourceTest {
     fun `remote copy does not replace requested source`() {
         val requested = track(
             id = "yt-dQw4w9WgXcQ",
-            streamUrl = "frxe-catalog://youtube/dQw4w9WgXcQ"
+            streamUrl = "vitr-catalog://youtube/dQw4w9WgXcQ"
         )
         val remote = requested.copy(
             streamUrl = "https://example.com/audio.m4a"
@@ -49,7 +49,7 @@ class PreferredPlaybackSourceTest {
     fun `local copy for another track does not replace requested track`() {
         val requested = track(
             id = "yt-dQw4w9WgXcQ",
-            streamUrl = "frxe-catalog://youtube/dQw4w9WgXcQ"
+            streamUrl = "vitr-catalog://youtube/dQw4w9WgXcQ"
         )
         val other = track(
             id = "yt-aaaaaaaaaaa",

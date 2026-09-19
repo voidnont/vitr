@@ -1,4 +1,4 @@
-package com.frxe.music.intake
+package com.bloodvitr.vitr.intake
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull

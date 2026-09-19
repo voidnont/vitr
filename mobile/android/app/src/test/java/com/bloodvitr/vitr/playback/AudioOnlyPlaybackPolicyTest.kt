@@ -1,4 +1,4 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -10,7 +10,7 @@ class AudioOnlyPlaybackPolicyTest {
     fun `catalog and youtube page urls require resolution`() {
         assertFalse(
             AudioOnlyPlaybackPolicy.isPlayable(
-                "frxe-catalog://youtube/dQw4w9WgXcQ"
+                "vitr-catalog://youtube/dQw4w9WgXcQ"
             )
         )
         assertFalse(

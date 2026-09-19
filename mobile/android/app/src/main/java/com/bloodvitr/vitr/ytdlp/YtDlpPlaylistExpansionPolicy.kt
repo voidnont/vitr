@@ -1,6 +1,6 @@
-package com.frxe.music.ytdlp
+package com.bloodvitr.vitr.ytdlp
 
-import com.frxe.music.intake.UrlIntakeParser
+import com.bloodvitr.vitr.intake.UrlIntakeParser
 
 object YtDlpPlaylistExpansionPolicy {
     fun expand(

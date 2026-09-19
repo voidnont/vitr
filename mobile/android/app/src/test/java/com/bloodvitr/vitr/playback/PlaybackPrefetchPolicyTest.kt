@@ -1,6 +1,6 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
-import com.frxe.music.source.PlaybackResolverKind
+import com.bloodvitr.vitr.source.PlaybackResolverKind
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.frxe.music.ytdlp
+package com.bloodvitr.vitr.ytdlp
 
 data class YtDlpOption(val option: String, val argument: String? = null)
 

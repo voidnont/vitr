@@ -1,7 +1,7 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
-import com.frxe.music.model.Track
-import com.frxe.music.source.PlaybackResolverKind
+import com.bloodvitr.vitr.model.Track
+import com.bloodvitr.vitr.source.PlaybackResolverKind
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -14,7 +14,7 @@ class PlaybackPrefetchCacheMultiTest {
         streamUrl = "https://audio.example/$id",
         durationMs = 1_000L,
         artworkSeed = id.hashCode(),
-        originalStreamUrl = "frxe-catalog://youtube/abcdefghijk"
+        originalStreamUrl = "vitr-catalog://youtube/abcdefghijk"
     )
 
     @Test

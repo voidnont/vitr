@@ -1,6 +1,6 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
-import com.frxe.music.model.Track
+import com.bloodvitr.vitr.model.Track
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -10,7 +10,7 @@ class PlaybackLaunchPolicyTest {
         title = id,
         artist = "artist-$id",
         album = "album",
-        streamUrl = "frxe-catalog://youtube/abcdefghijk",
+        streamUrl = "vitr-catalog://youtube/abcdefghijk",
         durationMs = 180_000L,
         artworkSeed = id.hashCode()
     )

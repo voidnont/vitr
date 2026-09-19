@@ -1,4 +1,4 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -9,10 +9,10 @@ class AndroidAutoBrowsePolicyTest {
     fun rootCategoriesStayStableAndDriverSafe() {
         assertEquals(
             listOf(
-                "frxe:auto:library",
-                "frxe:auto:recent",
-                "frxe:auto:playlists",
-                "frxe:auto:queue"
+                "vitr:auto:library",
+                "vitr:auto:recent",
+                "vitr:auto:playlists",
+                "vitr:auto:queue"
             ),
             AndroidAutoBrowsePolicy.rootCategoryIds
         )
@@ -75,10 +75,10 @@ class AndroidAutoBrowsePolicyTest {
     @Test
     fun invalidIdsAreRejected() {
         assertNull(AndroidAutoBrowsePolicy.parse(""))
-        assertNull(AndroidAutoBrowsePolicy.parse("frxe:auto:unknown"))
-        assertNull(AndroidAutoBrowsePolicy.parse("frxe:auto:playlist:nope"))
-        assertNull(AndroidAutoBrowsePolicy.parse("frxe:auto:track:"))
-        assertNull(AndroidAutoBrowsePolicy.parse("frxe:auto:queue-item:"))
+        assertNull(AndroidAutoBrowsePolicy.parse("vitr:auto:unknown"))
+        assertNull(AndroidAutoBrowsePolicy.parse("vitr:auto:playlist:nope"))
+        assertNull(AndroidAutoBrowsePolicy.parse("vitr:auto:track:"))
+        assertNull(AndroidAutoBrowsePolicy.parse("vitr:auto:queue-item:"))
     }
 
     @Test

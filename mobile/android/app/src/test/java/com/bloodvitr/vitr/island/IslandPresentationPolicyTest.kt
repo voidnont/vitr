@@ -1,4 +1,4 @@
-package com.frxe.music.island
+package com.bloodvitr.vitr.island
 
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -6,12 +6,12 @@ import org.junit.Test
 
 class IslandPresentationPolicyTest {
     @Test
-    fun islandNeverRendersInsideFrxe() {
+    fun islandNeverRendersInsideVitr() {
         assertFalse(IslandPresentationPolicy.showInApp)
     }
 
     @Test
-    fun floatingIslandOnlyShowsOutsideFrxeWhenReady() {
+    fun floatingIslandOnlyShowsOutsideVitrWhenReady() {
         assertTrue(
             IslandPresentationPolicy.showFloating(
                 isForeground = false,
