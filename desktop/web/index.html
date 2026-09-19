@@ -217,6 +217,7 @@ body[data-window-class="wide"] .library-grid{grid-template-columns:repeat(4,minm
         <div class="setting-row glass-soft"><div><h3>Interface finish</h3><p>Use the toggle above to switch between Liquid Glass and Normal UI.</p></div><strong id="modeLabel">Liquid Glass</strong></div>
         <div class="setting-row glass-soft"><div><h3>Floating mini player</h3><p>Always docks bottom-right. Choose the popup style or turn it off.</p></div><select id="miniPlayerSetting" class="setting-select"><option value="off">Off</option><option value="standard">Standard</option><option value="lyrics">Lyrics</option><option value="tiny">Tiny</option><option value="ultra">Ultra tiny</option></select></div>
         <div class="setting-row glass-soft"><div><h3>Download format</h3><p>Used by the Download button and remembered until you change it.</p></div><select id="downloadFormat" class="setting-select"><option value="m4a">M4A</option><option value="mp3">MP3</option><option value="flac">FLAC</option><option value="wav">WAV</option></select></div>
+         <div class="setting-row glass-soft"><div><h3>Audio download folder</h3><p id="downloadLocationStatus">Uses your system Music folder by default and remembers a custom path.</p></div><div class="setting-links"><input id="downloadLocation" class="setting-select" type="text" spellcheck="false" aria-label="Audio download folder"><button id="resetDownloadLocation" class="link-pill" type="button">Reset</button></div></div>
         <div class="setting-row glass-soft"><div><h3>Language</h3><p id="languageStatus">Auto-detecting your system language.</p></div><select id="languageSelect" class="setting-select"><option value="auto">Auto (system)</option><option value="en">English</option><option value="de">Deutsch</option><option value="fr">Français</option><option value="it">Italiano</option><option value="es">Español</option><option value="pt">Português</option><option value="ja">日本語</option><option value="ko">한국어</option></select></div>
         <div class="setting-row glass-soft"><div><h3>Runtime dependencies</h3><p id="runtimeStatus">Checking yt-dlp / FFmpeg / Deno runtime…</p></div><button id="runtimeUpdate" class="link-pill" type="button">Update runtime</button></div>
         <div class="setting-row glass-soft"><div><h3>Client updates</h3><p id="clientUpdateStatus">Automatically checks github.com/bloodvitr/vitr releases.</p><label class="setting-check"><input id="autoUpdateCheck" type="checkbox" checked> Auto-detect updates</label></div><div class="setting-links"><button id="checkClientUpdate" class="link-pill" type="button">Check now</button><button id="openClientUpdate" class="link-pill" type="button">Releases</button></div></div>
@@ -280,7 +281,7 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
   var overlay=document.getElementById("playerOverlay"),pt=document.getElementById("playerTitle"),pa=document.getElementById("playerArtist"),audio=document.getElementById("vitrAudio"),playToggle=document.getElementById("playToggle"),art=document.getElementById("playerArt"),artImg=document.getElementById("playerArtwork"),progress=document.getElementById("playerProgress"),volumeSlider=document.getElementById("volumeSlider"),volumeValue=document.getElementById("volumeValue"),volumeIcon=document.getElementById("volumeIcon");
   var appPill=document.getElementById("appPill"),pillArtwork=document.getElementById("pillArtwork"),pillTitle=document.getElementById("pillTitle"),pillArtist=document.getElementById("pillArtist"),pillPlay=document.getElementById("pillPlay"),playerLyrics=document.getElementById("playerLyrics"),shuffleToggle=document.getElementById("shuffleToggle"),repeatToggle=document.getElementById("repeatToggle"),playerMiniToggle=document.getElementById("playerMiniToggle"),miniPlayerSetting=document.getElementById("miniPlayerSetting");
   var shuffleEnabled=localStorage.getItem("vitr-shuffle")==="true",repeatMode=localStorage.getItem("vitr-repeat-mode")||"off",currentLyrics=null;
-  var downloadFormat=document.getElementById("downloadFormat"),downloadTrack=document.getElementById("downloadTrack"),downloadStatus=document.getElementById("downloadStatus"),runtimeUpdate=document.getElementById("runtimeUpdate"),runtimeStatus=document.getElementById("runtimeStatus"),languageSelect=document.getElementById("languageSelect"),languageStatus=document.getElementById("languageStatus"),autoUpdateCheck=document.getElementById("autoUpdateCheck"),checkClientUpdateButton=document.getElementById("checkClientUpdate"),openClientUpdate=document.getElementById("openClientUpdate"),clientUpdateStatus=document.getElementById("clientUpdateStatus"),latestReleaseUrl="https://github.com/bloodvitr/vitr/releases";
+  var downloadFormat=document.getElementById("downloadFormat"),downloadLocation=document.getElementById("downloadLocation"),downloadLocationStatus=document.getElementById("downloadLocationStatus"),resetDownloadLocation=document.getElementById("resetDownloadLocation"),downloadTrack=document.getElementById("downloadTrack"),downloadStatus=document.getElementById("downloadStatus"),runtimeUpdate=document.getElementById("runtimeUpdate"),runtimeStatus=document.getElementById("runtimeStatus"),languageSelect=document.getElementById("languageSelect"),languageStatus=document.getElementById("languageStatus"),autoUpdateCheck=document.getElementById("autoUpdateCheck"),checkClientUpdateButton=document.getElementById("checkClientUpdate"),openClientUpdate=document.getElementById("openClientUpdate"),clientUpdateStatus=document.getElementById("clientUpdateStatus"),latestReleaseUrl="https://github.com/bloodvitr/vitr/releases";
 
   function esc(value){return String(value==null?"":value).replace(/[&<>"']/g,function(ch){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[ch]})}
   function clock(value){value=Math.max(0,Math.floor(Number(value)||0));return Math.floor(value/60)+":"+String(value%60).padStart(2,"0")}
@@ -517,6 +518,30 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
   if(["m4a","mp3","flac","wav"].indexOf(savedFormat)<0)savedFormat="m4a";
   if(downloadFormat)downloadFormat.value=savedFormat;
   if(downloadFormat)downloadFormat.addEventListener("change",function(){localStorage.setItem("vitr-download-format",downloadFormat.value);if(downloadStatus)downloadStatus.textContent="Saved format: "+downloadFormat.value.toUpperCase()});
+   async function refreshDownloadLocation(){
+     var saved=(localStorage.getItem("vitr-download-folder")||"").trim();
+     if(saved){
+       if(downloadLocation)downloadLocation.value=saved;
+       if(downloadLocationStatus)downloadLocationStatus.textContent="Custom audio folder · remembered until reset.";
+       return saved;
+     }
+     if(!backend||!backend.defaultDownloadDir)return "";
+     try{
+       var dir=await backend.defaultDownloadDir();
+       if(downloadLocation)downloadLocation.value=dir||"";
+       if(downloadLocationStatus)downloadLocationStatus.textContent="Default audio folder · Music/Vitr.";
+       return dir||"";
+     }catch(e){
+       if(downloadLocationStatus)downloadLocationStatus.textContent=e&&e.message||"Could not detect the default Music folder.";
+       return "";
+     }
+   }
+   if(downloadLocation)downloadLocation.addEventListener("change",function(){
+     var value=String(downloadLocation.value||"").trim();
+     if(value)localStorage.setItem("vitr-download-folder",value);else localStorage.removeItem("vitr-download-folder");
+     refreshDownloadLocation();
+   });
+   if(resetDownloadLocation)resetDownloadLocation.addEventListener("click",function(){localStorage.removeItem("vitr-download-folder");refreshDownloadLocation()});
 
   async function refreshRuntimeStatus(){
     if(!backend||!backend.currentRuntimeStatus)return;
@@ -558,7 +583,7 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
     localStorage.setItem("vitr-download-format",format);
     downloadTrack.disabled=true;downloadStatus.textContent="Preparing "+format.toUpperCase()+" download…";
     try{
-      var outputDir=await backend.defaultDownloadDir();
+      var outputDir=(localStorage.getItem("vitr-download-folder")||"").trim();if(!outputDir)outputDir=await backend.defaultDownloadDir();
       if(await backend.downloadAlreadyExists(currentTrack.id,outputDir)){downloadStatus.textContent="Already downloaded.";downloadTrack.disabled=false;return}
       var taskId="vitr-"+Date.now()+"-"+Math.random().toString(36).slice(2,8);
       window.__vitrDownloadTask=taskId;
@@ -642,7 +667,7 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
 
   function init(){
     backend=window.vitrPlatformBackend||null;persistence=window.vitrPersistence||null;
-    applyLanguage();renderHomeHistory();renderLibrary();document.getElementById("searchCatalog").innerHTML="";empty(document.getElementById("searchTracks"),"Search Vitr","Type a song, artist, album, playlist or genre above.");setPlayerTrack(readJson("vitr-current-track",null));currentLyrics=readJson("vitr-current-lyrics",null);syncVolumeUi();savePlayerState();loadDiscovery();refreshRuntimeStatus();syncMiniUi();
+    applyLanguage();renderHomeHistory();renderLibrary();document.getElementById("searchCatalog").innerHTML="";empty(document.getElementById("searchTracks"),"Search Vitr","Type a song, artist, album, playlist or genre above.");setPlayerTrack(readJson("vitr-current-track",null));currentLyrics=readJson("vitr-current-lyrics",null);syncVolumeUi();savePlayerState();loadDiscovery();refreshRuntimeStatus();refreshDownloadLocation();syncMiniUi();
     if(backend&&backend.onDownloadProgress)backend.onDownloadProgress(function(p){if(!p||p.taskId!==window.__vitrDownloadTask)return;downloadStatus.textContent=Math.round(Number(p.percent||0))+"% · "+(p.speed||"")+" · ETA "+(p.eta||"")});
     if(autoUpdateCheck&&autoUpdateCheck.checked)checkUpdates(true);
   }
