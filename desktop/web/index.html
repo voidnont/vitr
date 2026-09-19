@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#050507">
 <title>vitr · by Blood</title>
+<script type="module" src="./platform-backend.mjs"></script>
 <style>
 :root{
   --red:#f22f5d;--red2:#ff5578;--bg:#050507;--panel:rgba(19,18,24,.64);
@@ -86,7 +87,7 @@ body.normal .toggle-indicator{transform:translateX(100%)}
 .card strong,.card small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card strong{font-size:12px;margin-top:10px}.card small{font-size:10px;color:var(--muted);margin-top:4px}
 .track-list{display:grid;gap:7px}.track{height:64px;border-radius:18px;padding:8px 10px;display:grid;grid-template-columns:46px minmax(0,1fr) auto;align-items:center;gap:10px;transition:transform .2s ease,background .2s ease}
 .track:hover{transform:translateX(3px);background:rgba(255,255,255,.075)}.thumb{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,#32111c,#e82958);position:relative;overflow:hidden}
-.thumb:after{content:"";position:absolute;width:28px;height:28px;border-radius:50%;right:-8px;bottom:-6px;background:#ff829d;filter:blur(4px)}
+.thumb:after{content:"";position:absolute;width:28px;height:28px;border-radius:50%;right:-8px;bottom:-6px;background:#ff829d;filter:blur(4px)}.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2}
 .track:nth-child(2n) .thumb{background:linear-gradient(135deg,#111735,#6656ff)}.track:nth-child(3n) .thumb{background:linear-gradient(135deg,#0e2829,#2bd0c4)}
 .track-copy{min-width:0}.track-copy strong,.track-copy small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.track-copy strong{font-size:12px}.track-copy small{font-size:10px;color:var(--muted);margin-top:4px}.play-pill{border:0;border-radius:999px;width:35px;height:35px;background:rgba(255,255,255,.08)}
 .trending h3{margin:8px 0 2px;font-size:19px}.trend{display:grid;grid-template-columns:22px 38px minmax(0,1fr);align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06)}.trend>span{font-size:10px;color:#716d79}.trend .thumb{width:38px;height:38px;border-radius:11px}.trend strong,.trend small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.trend strong{font-size:11px}.trend small{font-size:9px;color:var(--muted);margin-top:3px}
@@ -158,7 +159,7 @@ body[data-window-class="wide"] .library-grid{grid-template-columns:repeat(4,minm
 <div class="app">
 <header class="topbar">
   <div class="brand"><div class="drop"></div><div class="brand-copy"><strong>vitr</strong><small>by blood</small></div></div>
-  <label class="top-search glass-soft"><span>⌕</span><input id="globalSearch" placeholder="Search the Vitr demo…" autocomplete="off"></label>
+  <label class="top-search glass-soft"><span>⌕</span><input id="globalSearch" placeholder="Search Vitr…" autocomplete="off"></label>
   <button id="miniLaunch" class="mini-launch glass-soft" type="button">Mini player</button>
   <div class="mode-toggle glass-soft" aria-label="Appearance">
     <div class="toggle-indicator"></div>
@@ -183,7 +184,7 @@ body[data-window-class="wide"] .library-grid{grid-template-columns:repeat(4,minm
         <div class="hero-copy">
           <div class="eyebrow">VITR · BY BLOOD</div>
           <h1>Music in <em>motion.</em></h1>
-          <p>A polished standalone Vitr interface. No backend, no account system, no network-powered catalogue — just the complete UI experience.</p>
+          <p>Vitr’s native music backend is built into this interface for search, playback, lyrics and runtime services.</p>
           <div class="cta-row"><button class="primary" data-player="Red Light|Novae">▶ Play now</button><button class="ghost" data-tab="library">Your library</button></div>
         </div>
         <div class="hero-art"><div class="disc"></div></div>
@@ -197,11 +198,11 @@ body[data-window-class="wide"] .library-grid{grid-template-columns:repeat(4,minm
           <article class="card glass-soft" data-player="Fragments|Vitr Mix"><div class="cover"></div><strong>Fragments</strong><small>Pop · 37 tracks</small></article>
         </div>
       </section>
-      <section class="section"><div class="section-head"><div><div class="eyebrow">RECENT</div><h2>Recently played</h2></div><small>Local demo data</small></div><div id="homeTracks" class="track-list"></div></section>
+      <section class="section"><div class="section-head"><div><div class="eyebrow">RECENT</div><h2>Recently played</h2></div><small>Recent</small></div><div id="homeTracks" class="track-list"></div></section>
     </section>
     <section id="search" class="screen">
       <div class="search-panel glass">
-        <div class="page-title"><div class="eyebrow">DISCOVER</div><h1>Search</h1><p>Filter the local demo catalogue instantly.</p></div>
+        <div class="page-title"><div class="eyebrow">DISCOVER</div><h1>Search</h1><p>Search through Vitr’s native music backend.</p></div>
         <label class="big-search glass-soft"><span>⌕</span><input id="searchInput" placeholder="Songs, artists, playlists…"></label>
         <div class="chips"><button class="chip active">All</button><button class="chip">Artists</button><button class="chip">Songs</button><button class="chip">Playlists</button><button class="chip">Albums</button></div>
         <div id="searchTracks" class="track-list"></div>
@@ -209,7 +210,7 @@ body[data-window-class="wide"] .library-grid{grid-template-columns:repeat(4,minm
     </section>
     <section id="library" class="screen">
       <div class="library-panel glass">
-        <div class="page-title"><div class="eyebrow">COLLECTION</div><h1>Your Library</h1><p>Saved music, playlists and albums — represented locally for this UI build.</p></div>
+        <div class="page-title"><div class="eyebrow">COLLECTION</div><h1>Your Library</h1><p>Saved music, playlists and albums.</p></div>
         <div class="library-grid">
           <div class="library-tile glass-soft"><strong>Liked Songs</strong><small>327 songs</small></div>
           <div class="library-tile glass-soft"><strong>Midnight Thoughts</strong><small>42 tracks</small></div>
@@ -225,7 +226,7 @@ body[data-window-class="wide"] .library-grid{grid-template-columns:repeat(4,minm
         <div class="page-title"><div class="eyebrow">VITR</div><h1>Settings</h1><p>Appearance and project identity.</p></div>
         <div class="setting-row glass-soft"><div><h3>Interface finish</h3><p>Use the toggle above to switch between Liquid Glass and Normal UI.</p></div><strong id="modeLabel">Liquid Glass</strong></div>
         <div class="setting-row glass-soft"><div><h3>Floating mini player</h3><p>Show or hide a draggable Vitr popup that follows your saved Normal / Liquid Glass appearance.</p></div><button id="miniSettingsLaunch" class="link-pill" type="button">Open mini player</button></div>
-        <div class="setting-row glass-soft"><div><h3>Version</h3><p>Standalone UI build</p></div><strong>0.2.0</strong></div>
+        <div class="setting-row glass-soft"><div><h3>Version</h3><p>Native backend build</p></div><strong>0.2.0</strong></div>
         <div class="setting-row glass-soft"><div><h3>Blood</h3><p>Creator and maintainer of Vitr.</p></div><div class="setting-links"><a class="link-pill" href="https://github.com/bloodvitr" target="_blank" rel="noreferrer">github.com/bloodvitr</a><a class="link-pill" href="https://ko-fi.com/bloodvitr" target="_blank" rel="noreferrer">ko-fi.com/bloodvitr</a></div></div>
       </div>
     </section>
@@ -239,6 +240,7 @@ body[data-window-class="wide"] .library-grid{grid-template-columns:repeat(4,minm
   <button data-tab="settings"><b>⚙</b><span>Settings</span></button>
 </nav>
 </div>
+<audio id="vitrAudio" preload="metadata"></audio>
 <div id="playerOverlay" class="now-playing">
   <button class="close" id="closePlayer">×</button>
   <section class="player glass">
@@ -286,8 +288,14 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
   if(!localStorage.getItem("vitr-current-track"))rememberTrack("Red Light","Novae");
   liquidBtn.addEventListener("click",function(){setMode("liquid")}); normalBtn.addEventListener("click",function(){setMode("normal")});
 
+  var trackRegistry=new Map();
+  function esc(value){return String(value==null?"":value).replace(/[&<>"']/g,function(ch){return({"&":"&amp;","<":"&lt;",">":"&gt;",'\"':"&quot;","'":"&#39;"})[ch]})}
+  function trackKey(t,i){return String(t&&t.id?t.id:"track-"+i+"-"+(t&&t.title||"unknown"))}
   function trackMarkup(t,i){
-    return '<article class="track glass-soft" data-player="'+t.title+'|'+t.artist+'"><div class="thumb"></div><div class="track-copy"><strong>'+t.title+'</strong><small>'+t.artist+' · Vitr demo</small></div><button class="play-pill">▶</button></article>';
+    var key=trackKey(t,i);trackRegistry.set(key,t);
+    var source=t&&t.source?" · "+t.source:"";
+    var cover=t&&(t.cover||t.artworkUrl||t.thumbnail);
+    return '<article class="track glass-soft" data-track-key="'+esc(key)+'"><div class="thumb">'+(cover?'<img src="'+esc(cover)+'" alt="">':"")+'</div><div class="track-copy"><strong>'+esc(t&&t.title||"Unknown track")+'</strong><small>'+esc(t&&t.artist||"Unknown artist")+esc(source)+'</small></div><button class="play-pill" type="button">▶</button></article>';
   }
   function renderTracks(list,target){target.innerHTML=list.map(trackMarkup).join("");bindPlayers(target)}
   renderTracks(tracks.slice(0,6),document.getElementById("homeTracks")); renderTracks(tracks,document.getElementById("searchTracks"));
@@ -300,18 +308,67 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
   }
   document.querySelectorAll("[data-tab]").forEach(function(b){b.addEventListener("click",function(){switchTab(b.getAttribute("data-tab"))})});
 
-  var overlay=document.getElementById("playerOverlay"),pt=document.getElementById("playerTitle"),pa=document.getElementById("playerArtist");
-  function rememberTrack(title,artist){
-    localStorage.setItem("vitr-current-track",JSON.stringify({title:title||"Red Light",artist:artist||"Vitr"}));
+  var overlay=document.getElementById("playerOverlay"),pt=document.getElementById("playerTitle"),pa=document.getElementById("playerArtist"),audio=document.getElementById("vitrAudio"),playToggle=document.getElementById("playToggle");
+  function rememberTrack(track){
+    var value=track||{title:"Red Light",artist:"Vitr"};
+    localStorage.setItem("vitr-current-track",JSON.stringify(value));
   }
-  function openPlayer(raw){var p=raw.split("|");pt.textContent=p[0]||"Red Light";pa.textContent=p[1]||"Vitr";rememberTrack(pt.textContent,pa.textContent);overlay.classList.add("open")}
-  function bindPlayers(root){(root||document).querySelectorAll("[data-player]").forEach(function(el){el.addEventListener("click",function(){openPlayer(el.getAttribute("data-player"))})})}
+  async function openTrack(track){
+    if(!track)return;
+    pt.textContent=track.title||"Unknown track";
+    pa.textContent=track.artist||"Unknown artist";
+    rememberTrack(track);
+    overlay.classList.add("open");
+    var backend=window.vitrPlatformBackend;
+    if(!backend||!track.id)return;
+    try{
+      var src=await backend.resolveTrack(track);
+      if(src){
+        audio.src=src;
+        await audio.play();
+      }
+      backend.lyrics(track).then(function(value){
+        localStorage.setItem("vitr-current-lyrics",JSON.stringify(value||null));
+      }).catch(function(){});
+    }catch(error){
+      console.error("Vitr playback failed",error);
+    }
+  }
+  function openPlayer(raw){var p=raw.split("|");openTrack({title:p[0]||"Red Light",artist:p[1]||"Vitr"})}
+  function bindPlayers(root){
+    (root||document).querySelectorAll("[data-track-key]").forEach(function(el){
+      if(el.dataset.bound==="1")return;el.dataset.bound="1";
+      el.addEventListener("click",function(){openTrack(trackRegistry.get(el.getAttribute("data-track-key")))});
+    });
+    (root||document).querySelectorAll("[data-player]").forEach(function(el){
+      if(el.dataset.bound==="1")return;el.dataset.bound="1";
+      el.addEventListener("click",function(){openPlayer(el.getAttribute("data-player"))});
+    });
+  }
   bindPlayers(document);
   document.getElementById("closePlayer").addEventListener("click",function(){overlay.classList.remove("open")});
   overlay.addEventListener("click",function(e){if(e.target===overlay)overlay.classList.remove("open")});
-  var playing=localStorage.getItem("vitr-playing")!=="false";
-  localStorage.setItem("vitr-playing",playing?"true":"false");
-  document.getElementById("playToggle").addEventListener("click",function(e){playing=!playing;localStorage.setItem("vitr-playing",playing?"true":"false");e.currentTarget.textContent=playing?"❚❚":"▶"});
+  function syncPlaying(){
+    var playing=!audio.paused&&!audio.ended;
+    localStorage.setItem("vitr-playing",playing?"true":"false");
+    playToggle.textContent=playing?"❚❚":"▶";
+  }
+  playToggle.addEventListener("click",function(){
+    if(!audio.src)return;
+    if(audio.paused)audio.play().catch(function(){});else audio.pause();
+  });
+  audio.addEventListener("play",syncPlaying);
+  audio.addEventListener("pause",syncPlaying);
+  audio.addEventListener("ended",syncPlaying);
+  audio.addEventListener("timeupdate",function(){
+    var pct=audio.duration?Math.max(0,Math.min(100,(audio.currentTime/audio.duration)*100)):0;
+    var bar=overlay.querySelector(".progress i");if(bar)bar.style.width=pct+"%";
+    var spans=overlay.querySelectorAll(".times span");
+    function clock(value){value=Math.max(0,Math.floor(value||0));return Math.floor(value/60)+":"+String(value%60).padStart(2,"0")}
+    if(spans[0])spans[0].textContent=clock(audio.currentTime);
+    if(spans[1])spans[1].textContent=clock(audio.duration);
+  });
+  syncPlaying();
   async function toggleMini(){
     if(!invoke)return;
     var mode=localStorage.getItem("vitr-mini-mode")||"standard";
@@ -323,9 +380,31 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
   if(miniLaunch)miniLaunch.addEventListener("click",toggleMini);
   if(miniSettingsLaunch)miniSettingsLaunch.addEventListener("click",toggleMini);
 
-  function filter(q){q=(q||"").toLowerCase().trim();var list=!q?tracks:tracks.filter(function(t){return (t.title+" "+t.artist).toLowerCase().indexOf(q)>=0});renderTracks(list,document.getElementById("searchTracks"))}
-  document.getElementById("searchInput").addEventListener("input",function(e){filter(e.target.value)});
-  document.getElementById("globalSearch").addEventListener("input",function(e){switchTab("search");document.getElementById("searchInput").value=e.target.value;filter(e.target.value)});
+  var searchTimer=0,searchSerial=0;
+  async function searchVitr(q){
+    q=(q||"").trim();
+    var target=document.getElementById("searchTracks");
+    if(!q){renderTracks(tracks,target);return}
+    var serial=++searchSerial;
+    var backend=window.vitrPlatformBackend;
+    if(!backend){
+      var local=tracks.filter(function(t){return (t.title+" "+t.artist).toLowerCase().indexOf(q.toLowerCase())>=0});
+      renderTracks(local,target);return;
+    }
+    target.innerHTML='<div class="track glass-soft"><div class="track-copy"><strong>Searching Vitr…</strong><small>Native providers</small></div></div>';
+    try{
+      var results=await backend.search(q);
+      if(serial!==searchSerial)return;
+      renderTracks(results||[],target);
+      if(!results||!results.length)target.innerHTML='<div class="track glass-soft"><div class="track-copy"><strong>No results</strong><small>Try another search</small></div></div>';
+    }catch(error){
+      if(serial!==searchSerial)return;
+      target.innerHTML='<div class="track glass-soft"><div class="track-copy"><strong>Search unavailable</strong><small>'+esc(error&&error.message||"Backend error")+'</small></div></div>';
+    }
+  }
+  function queueSearch(value){clearTimeout(searchTimer);searchTimer=setTimeout(function(){searchVitr(value)},320)}
+  document.getElementById("searchInput").addEventListener("input",function(e){queueSearch(e.target.value)});
+  document.getElementById("globalSearch").addEventListener("input",function(e){switchTab("search");document.getElementById("searchInput").value=e.target.value;queueSearch(e.target.value)});
 })();
 </script>
 </body>
