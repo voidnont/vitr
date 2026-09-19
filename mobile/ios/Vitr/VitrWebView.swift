@@ -11,6 +11,7 @@ struct VitrWebView: UIViewRepresentable {
         configuration.allowsInlineMediaPlayback = true
         configuration.mediaTypesRequiringUserActionForPlayback = []
         configuration.websiteDataStore = .default()
+        configuration.preferences.javaScriptCanOpenWindowsAutomatically = false
 
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.navigationDelegate = context.coordinator
@@ -18,11 +19,16 @@ struct VitrWebView: UIViewRepresentable {
         webView.isOpaque = false
         webView.backgroundColor = .black
         webView.scrollView.backgroundColor = .black
-        webView.allowsBackForwardNavigationGestures = true
+        webView.scrollView.contentInsetAdjustmentBehavior = .never
+        webView.allowsBackForwardNavigationGestures = false
 
-        var request = URLRequest(url: VitrLinks.player)
-        request.cachePolicy = .useProtocolCachePolicy
-        webView.load(request)
+        if let localURL = Bundle.main.url(forResource: "index", withExtension: "html") {
+            webView.loadFileURL(
+                localURL,
+                allowingReadAccessTo: localURL.deletingLastPathComponent()
+            )
+        }
+
         return webView
     }
 
@@ -39,8 +45,7 @@ struct VitrWebView: UIViewRepresentable {
                 return
             }
 
-            if let host = url.host,
-               host == "vitr.nont.me" || host.hasSuffix(".nont.me") {
+            if url.isFileURL || url.scheme == "about" {
                 decisionHandler(.allow)
                 return
             }
