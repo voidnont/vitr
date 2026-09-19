@@ -1,6 +1,6 @@
-package com.frxe.music.recommendation
+package com.bloodvitr.vitr.recommendation
 
-import com.frxe.music.model.Track
+import com.bloodvitr.vitr.model.Track
 
 object HomeRefreshPolicy {
     fun key(

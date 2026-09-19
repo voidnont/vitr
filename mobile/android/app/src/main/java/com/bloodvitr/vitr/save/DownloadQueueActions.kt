@@ -1,4 +1,4 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
 import android.content.Context
 import android.net.Uri
@@ -50,13 +50,13 @@ object DownloadQueueActions {
 
         return when (execution) {
             is QueuedDownloadRequest.Legacy ->
-                FrxeDownloadService.enqueue(
+                VitrDownloadService.enqueue(
                     context,
                     execution.request
                 )
 
             is QueuedDownloadRequest.Native ->
-                FrxeDownloadService.enqueue(
+                VitrDownloadService.enqueue(
                     context,
                     execution.request
                 )

@@ -1,4 +1,4 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper

@@ -1,4 +1,4 @@
-package com.frxe.music.recommendation
+package com.bloodvitr.vitr.recommendation
 
 import java.util.Locale
 

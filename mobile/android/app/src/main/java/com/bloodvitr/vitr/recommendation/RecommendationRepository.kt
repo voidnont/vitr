@@ -1,7 +1,7 @@
-package com.frxe.music.recommendation
+package com.bloodvitr.vitr.recommendation
 
-import com.frxe.music.model.HomeSection
-import com.frxe.music.model.Track
+import com.bloodvitr.vitr.model.HomeSection
+import com.bloodvitr.vitr.model.Track
 import java.time.Year
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -167,7 +167,7 @@ class RecommendationRepository(
             rankedTracks.isNotEmpty()
         ) {
             sections += HomeSection(
-                title = "FRXE Mix",
+                title = "VITR Mix",
                 subtitle = "A fresh blend from the catalog",
                 tracks = rankedTracks.take(12)
             )

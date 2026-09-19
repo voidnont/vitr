@@ -1,11 +1,11 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
 import android.content.Context
-import com.frxe.music.BuildConfig
-import com.frxe.music.playback.ResolvedStreamRequestHeaders
-import com.frxe.music.source.PlaybackResolutionResult
-import com.frxe.music.source.PlaybackResolverKind
-import com.frxe.music.source.PlaybackStreamResolver
+import com.bloodvitr.vitr.BuildConfig
+import com.bloodvitr.vitr.playback.ResolvedStreamRequestHeaders
+import com.bloodvitr.vitr.source.PlaybackResolutionResult
+import com.bloodvitr.vitr.source.PlaybackResolverKind
+import com.bloodvitr.vitr.source.PlaybackStreamResolver
 import kotlinx.coroutines.CancellationException
 
 internal class DownloadPipeline(
@@ -13,7 +13,7 @@ internal class DownloadPipeline(
 ) {
 
     private val local =
-        FrxeSaveEngine(context)
+        VitrSaveEngine(context)
 
     private val resolver =
         DownloadAudioResolver()

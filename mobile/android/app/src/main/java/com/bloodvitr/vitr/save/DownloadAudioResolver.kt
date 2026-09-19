@@ -1,8 +1,8 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
-import com.frxe.music.source.PlaybackResolutionResult
-import com.frxe.music.source.PlaybackResolverKind
-import com.frxe.music.source.YouTubeAudioResolverRuntime
+import com.bloodvitr.vitr.source.PlaybackResolutionResult
+import com.bloodvitr.vitr.source.PlaybackResolverKind
+import com.bloodvitr.vitr.source.YouTubeAudioResolverRuntime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

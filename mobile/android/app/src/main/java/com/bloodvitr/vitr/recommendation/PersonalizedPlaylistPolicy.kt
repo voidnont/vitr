@@ -1,7 +1,7 @@
-package com.frxe.music.recommendation
+package com.bloodvitr.vitr.recommendation
 
-import com.frxe.music.model.HomeSection
-import com.frxe.music.model.Track
+import com.bloodvitr.vitr.model.HomeSection
+import com.bloodvitr.vitr.model.Track
 
 object PersonalizedPlaylistPolicy {
     fun build(
@@ -24,7 +24,7 @@ object PersonalizedPlaylistPolicy {
             if (favorite.isNotEmpty()) {
                 add(
                     HomeSection(
-                        title = "FRXE Mix 1",
+                        title = "VITR Mix 1",
                         subtitle = favoriteArtist
                             ?.takeIf(String::isNotBlank)
                             ?.let { "Built around $it and nearby sounds" }
@@ -37,7 +37,7 @@ object PersonalizedPlaylistPolicy {
             if (broadMix.isNotEmpty()) {
                 add(
                     HomeSection(
-                        title = "FRXE Mix 2",
+                        title = "VITR Mix 2",
                         subtitle = "A wider blend of your taste and new picks",
                         tracks = broadMix
                     )
@@ -58,7 +58,7 @@ object PersonalizedPlaylistPolicy {
                 add(
                     HomeSection(
                         title = "Trending Mix",
-                        subtitle = "Popular tracks blended into the FRXE catalog",
+                        subtitle = "Popular tracks blended into the VITR catalog",
                         tracks = trending
                     )
                 )

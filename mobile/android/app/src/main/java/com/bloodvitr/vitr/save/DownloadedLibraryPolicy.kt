@@ -1,6 +1,6 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
-import com.frxe.music.model.Track
+import com.bloodvitr.vitr.model.Track
 
 data class DownloadedLibraryEntry(
     val queueItemId: String,

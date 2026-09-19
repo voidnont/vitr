@@ -1,4 +1,4 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
 import android.content.Context
 import kotlinx.coroutines.CancellationException
@@ -26,13 +26,13 @@ class DownloadCoordinator(
                         .forSaveRequest(request)
             ) {
                 is QueuedDownloadRequest.Legacy ->
-                    FrxeDownloadService.enqueue(
+                    VitrDownloadService.enqueue(
                         appContext,
                         routed.request
                     )
 
                 is QueuedDownloadRequest.Native ->
-                    FrxeDownloadService.enqueue(
+                    VitrDownloadService.enqueue(
                         appContext,
                         routed.request
                     )
@@ -103,6 +103,6 @@ class DownloadCoordinator(
 
     fun cancel() {
         val active = DownloadQueueStore.active() ?: return
-        FrxeDownloadService.cancel(appContext, active.id)
+        VitrDownloadService.cancel(appContext, active.id)
     }
 }

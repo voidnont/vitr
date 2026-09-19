@@ -1,4 +1,4 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
 import android.content.Context
 import kotlinx.coroutines.CancellationException
@@ -17,7 +17,7 @@ internal class CobaltSaveEngine(
         baseUrl.trim().trimEnd('/')
 
     private val local =
-        FrxeSaveEngine(context)
+        VitrSaveEngine(context)
 
     val configured: Boolean
         get() = baseUrl.startsWith("https://") ||
