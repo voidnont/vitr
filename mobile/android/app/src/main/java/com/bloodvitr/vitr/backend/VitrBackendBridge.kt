@@ -94,6 +94,106 @@ class VitrBackendBridge(
     }
 
     @JavascriptInterface
+    fun discover(query: String, requestId: String) {
+        scope.launch {
+            try {
+                val clean = query.trim().ifBlank { "music" }
+                val (tracks, albumHits, playlistHits) = withContext(Dispatchers.IO) {
+                    Triple(
+                        source.search(clean),
+                        source.search("$clean album"),
+                        source.search("$clean playlist")
+                    )
+                }
+
+                val artists = JSONArray()
+                tracks
+                    .filter { it.artist.isNotBlank() }
+                    .distinctBy { it.artist.lowercase() }
+                    .take(16)
+                    .forEach { track ->
+                        artists.put(
+                            catalogItemJson(
+                                id = "artist:${track.artist.lowercase().hashCode()}",
+                                kind = "artist",
+                                title = track.artist,
+                                subtitle = "Artist",
+                                cover = track.artworkUrl,
+                                searchQuery = track.artist
+                            )
+                        )
+                    }
+
+                val albums = JSONArray()
+                albumHits
+                    .distinctBy { "${it.title.lowercase()}|${it.artist.lowercase()}" }
+                    .take(16)
+                    .forEach { track ->
+                        albums.put(
+                            catalogItemJson(
+                                id = "album:${track.id}",
+                                kind = "album",
+                                title = track.title,
+                                subtitle = listOf("Album", track.artist)
+                                    .filter(String::isNotBlank)
+                                    .joinToString(" · "),
+                                cover = track.artworkUrl,
+                                searchQuery = "${track.title} ${track.artist}".trim()
+                            )
+                        )
+                    }
+
+                val playlists = JSONArray()
+                playlistHits
+                    .distinctBy { "${it.title.lowercase()}|${it.artist.lowercase()}" }
+                    .take(16)
+                    .forEach { track ->
+                        playlists.put(
+                            catalogItemJson(
+                                id = "playlist:${track.id}",
+                                kind = "playlist",
+                                title = track.title,
+                                subtitle = listOf("Playlist", track.artist)
+                                    .filter(String::isNotBlank)
+                                    .joinToString(" · "),
+                                cover = track.artworkUrl,
+                                searchQuery = "${track.title} playlist".trim()
+                            )
+                        )
+                    }
+
+                val genres = JSONArray()
+                genreSuggestions(clean)
+                    .forEach { genre ->
+                        genres.put(
+                            catalogItemJson(
+                                id = "genre:${genre.lowercase().replace(" ", "-")}",
+                                kind = "genre",
+                                title = genre,
+                                subtitle = "Genre",
+                                cover = null,
+                                searchQuery = "$genre music"
+                            )
+                        )
+                    }
+
+                reply(
+                    requestId,
+                    true,
+                    JSONObject()
+                        .put("tracks", tracksJson(tracks))
+                        .put("artists", artists)
+                        .put("albums", albums)
+                        .put("playlists", playlists)
+                        .put("genres", genres)
+                )
+            } catch (error: Throwable) {
+                replyError(requestId, error)
+            }
+        }
+    }
+
+    @JavascriptInterface
     fun play(trackJson: String, queueJson: String, requestId: String) {
         scope.launch {
             try {
@@ -250,6 +350,36 @@ class VitrBackendBridge(
             downloadUrl = json.optString("downloadUrl").takeIf(String::isNotBlank),
             originalStreamUrl = json.optString("originalStreamUrl").takeIf(String::isNotBlank)
         )
+    }
+
+    private fun catalogItemJson(
+        id: String,
+        kind: String,
+        title: String,
+        subtitle: String,
+        cover: String?,
+        searchQuery: String
+    ): JSONObject = JSONObject()
+        .put("id", id)
+        .put("kind", kind)
+        .put("title", title)
+        .put("subtitle", subtitle)
+        .put("cover", cover ?: JSONObject.NULL)
+        .put("searchQuery", searchQuery)
+
+    private fun genreSuggestions(query: String): List<String> {
+        val genres = listOf(
+            "Pop", "Hip-hop", "R&B", "Rock", "Electronic", "Indie",
+            "Jazz", "Classical", "Metal", "Afrobeats", "Latin", "Country",
+            "Reggae", "K-pop", "Ambient", "Lo-fi", "Chill", "Workout",
+            "Focus", "Party", "Sleep", "Romance", "Energy"
+        )
+        val clean = query.trim().lowercase()
+        val matching = genres.filter { genre ->
+            genre.lowercase().contains(clean) ||
+                clean.contains(genre.lowercase())
+        }
+        return (if (matching.isNotEmpty()) matching else genres).take(16)
     }
 
     private fun trackJson(track: Track): JSONObject = JSONObject()
