@@ -1,13 +1,14 @@
 # Vitr Android
 
-Full native Android app migrated from voidnont/frxe.
+Native Android Vitr app.
 
 - Version: **0.1.0**
 - versionCode: **1**
-- Application ID: com.frxe.music
+- Application ID: `com.bloodvitr.vitr`
+- Publisher: **Blood**
 - Min SDK: 26
 - Target/compile SDK: 37
 - Java: 21
 - Gradle: 9.6.0
 
-The internal com.frxe.music package/class names are retained for compatibility.
+Signing uses only `BLOOD_*` credentials. Runtime/build configuration uses only `VITR_*` variables.
