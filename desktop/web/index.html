@@ -258,138 +258,6 @@ window.addEventListener("resize",applyWindowsLayout,{passive:true});
 if(window.visualViewport){window.visualViewport.addEventListener("resize",applyWindowsLayout,{passive:true});}
 
 (function(){
-  var tracks=[
-    {title:"Red Light",artist:"Novae"},{title:"Velvet Skies",artist:"Lume"},{title:"Hollow",artist:"SYN"},
-    {title:"Better Days",artist:"Kairo"},{title:"Let Go",artist:"Tahl"},{title:"Still Here",artist:"Fayren"},
-    {title:"Fading",artist:"Kairo"},{title:"A Quieter Tomorrow",artist:"Vitr"}
-  ];
-  var body=document.body, liquidBtn=document.getElementById("liquidBtn"), normalBtn=document.getElementById("normalBtn"), modeLabel=document.getElementById("modeLabel");
-  var invoke=window.__TAURI__&&window.__TAURI__.core&&window.__TAURI__.core.invoke;
-  function setMode(mode){
-    var normal=mode==="normal"; body.classList.toggle("normal",normal);
-    liquidBtn.classList.toggle("active",!normal); normalBtn.classList.toggle("active",normal);
-    if(modeLabel) modeLabel.textContent=normal?"Normal":"Liquid Glass";
-    localStorage.setItem("vitr-ui-mode",normal?"normal":"liquid");
-  }
-  setMode(localStorage.getItem("vitr-ui-mode")==="normal"?"normal":"liquid");
-  if(!localStorage.getItem("vitr-current-track"))rememberTrack("Red Light","Novae");
-  liquidBtn.addEventListener("click",function(){setMode("liquid")}); normalBtn.addEventListener("click",function(){setMode("normal")});
-
-  var trackRegistry=new Map();
-  function esc(value){return String(value==null?"":value).replace(/[&<>"']/g,function(ch){return({"&":"&amp;","<":"&lt;",">":"&gt;",'\"':"&quot;","'":"&#39;"})[ch]})}
-  function trackKey(t,i){return String(t&&t.id?t.id:"track-"+i+"-"+(t&&t.title||"unknown"))}
-  function trackMarkup(t,i){
-    var key=trackKey(t,i);trackRegistry.set(key,t);
-    var source=t&&t.source?" · "+t.source:"";
-    var cover=t&&(t.cover||t.artworkUrl||t.thumbnail);
-    return '<article class="track glass-soft" data-track-key="'+esc(key)+'"><div class="thumb">'+(cover?'<img src="'+esc(cover)+'" alt="">':"")+'</div><div class="track-copy"><strong>'+esc(t&&t.title||"Unknown track")+'</strong><small>'+esc(t&&t.artist||"Unknown artist")+esc(source)+'</small></div><button class="play-pill" type="button">▶</button></article>';
-  }
-  function renderTracks(list,target){target.innerHTML=list.map(trackMarkup).join("");bindPlayers(target)}
-  renderTracks(tracks.slice(0,6),document.getElementById("homeTracks")); renderTracks(tracks,document.getElementById("searchTracks"));
-  document.getElementById("trendingList").innerHTML=tracks.slice(0,5).map(function(t,i){return '<div class="trend"><span>0'+(i+1)+'</span><div class="thumb"></div><div><strong>'+t.title+'</strong><small>'+t.artist+'</small></div></div>'}).join("");
-
-  function switchTab(id){
-    document.querySelectorAll(".screen").forEach(function(x){x.classList.toggle("active",x.id===id)});
-    document.querySelectorAll("[data-tab]").forEach(function(x){x.classList.toggle("active",x.getAttribute("data-tab")===id)});
-    window.scrollTo({top:0,behavior:"smooth"});
-  }
-  document.querySelectorAll("[data-tab]").forEach(function(b){b.addEventListener("click",function(){switchTab(b.getAttribute("data-tab"))})});
-
-  var overlay=document.getElementById("playerOverlay"),pt=document.getElementById("playerTitle"),pa=document.getElementById("playerArtist"),audio=document.getElementById("vitrAudio"),playToggle=document.getElementById("playToggle");
-  function rememberTrack(track){
-    var value=track||{title:"Red Light",artist:"Vitr"};
-    localStorage.setItem("vitr-current-track",JSON.stringify(value));
-  }
-  async function openTrack(track){
-    if(!track)return;
-    pt.textContent=track.title||"Unknown track";
-    pa.textContent=track.artist||"Unknown artist";
-    rememberTrack(track);
-    overlay.classList.add("open");
-    var backend=window.vitrPlatformBackend;
-    if(!backend||!track.id)return;
-    try{
-      var src=await backend.resolveTrack(track);
-      if(src){
-        audio.src=src;
-        await audio.play();
-      }
-      backend.lyrics(track).then(function(value){
-        localStorage.setItem("vitr-current-lyrics",JSON.stringify(value||null));
-      }).catch(function(){});
-    }catch(error){
-      console.error("Vitr playback failed",error);
-    }
-  }
-  function openPlayer(raw){var p=raw.split("|");openTrack({title:p[0]||"Red Light",artist:p[1]||"Vitr"})}
-  function bindPlayers(root){
-    (root||document).querySelectorAll("[data-track-key]").forEach(function(el){
-      if(el.dataset.bound==="1")return;el.dataset.bound="1";
-      el.addEventListener("click",function(){openTrack(trackRegistry.get(el.getAttribute("data-track-key")))});
-    });
-    (root||document).querySelectorAll("[data-player]").forEach(function(el){
-      if(el.dataset.bound==="1")return;el.dataset.bound="1";
-      el.addEventListener("click",function(){openPlayer(el.getAttribute("data-player"))});
-    });
-  }
-  bindPlayers(document);
-  document.getElementById("closePlayer").addEventListener("click",function(){overlay.classList.remove("open")});
-  overlay.addEventListener("click",function(e){if(e.target===overlay)overlay.classList.remove("open")});
-  function syncPlaying(){
-    var playing=!audio.paused&&!audio.ended;
-    localStorage.setItem("vitr-playing",playing?"true":"false");
-    playToggle.textContent=playing?"❚❚":"▶";
-  }
-  playToggle.addEventListener("click",function(){
-    if(!audio.src)return;
-    if(audio.paused)audio.play().catch(function(){});else audio.pause();
-  });
-  audio.addEventListener("play",syncPlaying);
-  audio.addEventListener("pause",syncPlaying);
-  audio.addEventListener("ended",syncPlaying);
-  audio.addEventListener("timeupdate",function(){
-    var pct=audio.duration?Math.max(0,Math.min(100,(audio.currentTime/audio.duration)*100)):0;
-    var bar=overlay.querySelector(".progress i");if(bar)bar.style.width=pct+"%";
-    var spans=overlay.querySelectorAll(".times span");
-    function clock(value){value=Math.max(0,Math.floor(value||0));return Math.floor(value/60)+":"+String(value%60).padStart(2,"0")}
-    if(spans[0])spans[0].textContent=clock(audio.currentTime);
-    if(spans[1])spans[1].textContent=clock(audio.duration);
-  });
-  syncPlaying();
-  async function toggleMini(){
-    if(!invoke)return;
-    var mode=localStorage.getItem("vitr-mini-mode")||"standard";
-    var dock=localStorage.getItem("vitr-mini-dock")||"right";
-    try{await invoke("toggle_mini_player",{mode:mode,dock:dock});}catch(e){console.error(e);}
-  }
-  var miniLaunch=document.getElementById("miniLaunch");
-  var miniSettingsLaunch=document.getElementById("miniSettingsLaunch");
-  if(miniLaunch)miniLaunch.addEventListener("click",toggleMini);
-  if(miniSettingsLaunch)miniSettingsLaunch.addEventListener("click",toggleMini);
-
-  var searchTimer=0,searchSerial=0;
-  async function searchVitr(q){
-    q=(q||"").trim();
-    var target=document.getElementById("searchTracks");
-    if(!q){renderTracks(tracks,target);return}
-    var serial=++searchSerial;
-    var backend=window.vitrPlatformBackend;
-    if(!backend){
-      var local=tracks.filter(function(t){return (t.title+" "+t.artist).toLowerCase().indexOf(q.toLowerCase())>=0});
-      renderTracks(local,target);return;
-    }
-    target.innerHTML='<div class="track glass-soft"><div class="track-copy"><strong>Searching Vitr…</strong><small>Native providers</small></div></div>';
-    try{
-      var results=await backend.search(q);
-      if(serial!==searchSerial)return;
-      renderTracks(results||[],target);
-      if(!results||!results.length)target.innerHTML='<div class="track glass-soft"><div class="track-copy"><strong>No results</strong><small>Try another search</small></div></div>';
-    }catch(error){
-      if(serial!==searchSerial)return;
-      target.innerHTML='<div class="track glass-soft"><div class="track-copy"><strong>Search unavailable</strong><small>'+esc(error&&error.message||"Backend error")+'</small></div></div>';
-    }
-  }
-  function queueSearch(value){clearTimeout(searchTimer);searchTimer=setTimeout(function(){
   var body=document.body,liquidBtn=document.getElementById("liquidBtn"),normalBtn=document.getElementById("normalBtn"),modeLabel=document.getElementById("modeLabel");
   var invoke=window.__TAURI__&&window.__TAURI__.core&&window.__TAURI__.core.invoke;
   var backend=null,persistence=null,trackRegistry=new Map(),discoveryTracks=[],playbackQueue=[],currentIndex=-1,currentTrack=null;
@@ -511,7 +379,7 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
     renderHomeHistory();renderLibrary();empty(document.getElementById("searchTracks"),"Search Vitr","Type a song or artist above.");setPlayerTrack(null);savePlayerState();loadDiscovery();
   }
   if(window.vitrPlatformBackend)init();else window.addEventListener("vitr-backend-ready",init,{once:true});
-})();;
+})();
 </script>
 </body>
 </html>
