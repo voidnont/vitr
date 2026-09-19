@@ -19,5 +19,5 @@ object FrxeSupportLinks {
         "https://ko-fi.com/bloodvitr"
 
     const val GITHUB =
-        "https://github.com/voidnont/vitr"
+        "https://github.com/bloodvitr/vitr"
 }
