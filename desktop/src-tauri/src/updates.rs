@@ -15,7 +15,6 @@ use crate::models::ClientUpdateStatus;
 const RELEASES_API: &str = "https://api.github.com/repos/bloodvitr/vitr/releases/latest";
 const SOURCE_RELEASES_API: &str = "https://api.github.com/repos/voidnont/vitr/releases/latest";
 const RELEASES_PAGE: &str = "https://github.com/bloodvitr/vitr/releases";
-const SOURCE_RELEASES_PAGE: &str = "https://github.com/voidnont/vitr/releases";
 
 fn version_parts(value: &str) -> Vec<u64> {
     value
