@@ -1,6 +1,6 @@
 # Vitr
 
-Vitr is a cross-platform music project by **Blood**. The repository version is **0.2.0**.
+Vitr is a cross-platform music project by **Blood**. The repository version is **0.3.1**.
 
 ## Repository layout
 
@@ -23,9 +23,9 @@ Vitr is a cross-platform music project by **Blood**. The repository version is *
 - `npm run desktop:build:windows` — build Windows installers.
 - `npm run desktop:build:linux` — build Linux packages.
 - `npm run desktop:build:macos` — build macOS packages.
-- `npm run android:build` — build the native Android Vitr 0.2.0 APK.
+- `npm run android:build` — build the native Android Vitr 0.3.1 APK.
 - `npm run ios:build` — build the iOS simulator app on macOS.
-- GitHub Actions produces `Vitr-0.2.0-sideload.ipa` for sideload tools to re-sign for an iPhone.
+- GitHub Actions produces `Vitr-0.3.1-sideload.ipa` for sideload tools to re-sign for an iPhone.
 - `npm run check` — validate web and desktop.
 
 The official web player is `https://vitr.nont.me`. For Vitr across the web, desktop, Android, and iOS, releases and update information use `bloodvitr/vitr/releases`, support uses `bloodvitr/vitr`, and donations use `ko-fi.com/bloodvitr`.

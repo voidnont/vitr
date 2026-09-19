@@ -94,7 +94,7 @@ type GeneratedPlaylist = {
 type Tab = 'home' | 'search' | 'library' | 'settings';
 type RepeatMode = 'off' | 'queue' | 'track';
 
-export const VITR_WEB_VERSION = '0.1.0';
+export const VITR_WEB_VERSION = '0.3.1';
 const BLOOD_GITHUB = 'https://github.com/bloodvitr';
 const VITR_REPO = 'https://github.com/bloodvitr/vitr';
 const VITR_RELEASES = 'https://github.com/bloodvitr/vitr/releases';

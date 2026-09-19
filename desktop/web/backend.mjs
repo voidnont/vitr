@@ -275,6 +275,10 @@ export function createBackend({ invoke, listen = null, convertFileSrc = (path) =
       return invoke('check_client_update');
     },
 
+    installClientUpdate() {
+      return invoke('install_client_update');
+    },
+
     openReleasePage(url) {
       return invoke('open_release_page', { url: url || null });
     },

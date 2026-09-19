@@ -3,15 +3,16 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
 const main = await readFile(new URL('../../src/main.jsx', import.meta.url), 'utf8');
+const version = (await readFile(new URL('../../VERSION', import.meta.url), 'utf8')).trim();
 let app = '';
 try { app = await readFile(new URL('../../src/music/VitrWebApp.tsx', import.meta.url), 'utf8'); } catch {}
 
-test('VITR boots the dedicated 0.1.0 composition app', () => {
+test('VITR boots the dedicated canonical-version composition app', () => {
   assert.match(main, /VitrWebApp\.tsx/);
-  assert.match(app, /VITR_WEB_VERSION\s*=\s*['"]0\.1\.0['"]/);
+  assert.ok(app.includes(`VITR_WEB_VERSION = '${version}'`));
 });
 
-test('0.1.0 composition wires discovery taxonomy and playlists', () => {
+test('canonical-version composition wires discovery taxonomy and playlists', () => {
   assert.match(app, /from ['"]\.\/recommendations\.js['"]/);
   assert.match(app, /from ['"]\.\/searchTaxonomy\.js['"]/);
   assert.match(app, /from ['"]\.\/playlists\.js['"]/);
@@ -25,7 +26,7 @@ test('0.1.0 composition wires discovery taxonomy and playlists', () => {
   assert.match(app, /Add to playlist/);
 });
 
-test('0.1.0 composition uses credential-free browser playback without the retired relay', () => {
+test('canonical-version composition uses credential-free browser playback without the retired relay', () => {
   assert.match(app, /loadYouTubeIframeApi/);
   assert.doesNotMatch(app, /\/api\/audio-stream|EXTRACTOR_WORKER|backgroundAudioPlayer/);
   assert.match(app, /This track does not allow embedded web playback/);

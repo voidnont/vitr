@@ -1,4 +1,7 @@
 import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+
+const VITR_VERSION = readFileSync(new URL('../../VERSION', import.meta.url), 'utf8').trim();
 
 const TRACKS = [
   { id: 'dQw4w9WgXcQ', title: 'Signal', artist: 'Daft Punk', thumbnail: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg', official: true },
@@ -79,7 +82,7 @@ test('nont.me keeps real downloads, search and official player links', async ({ 
   await page.goto('/');
   await expect(page.getByRole('textbox', { name: 'Search GitHub apps' })).toBeVisible();
   await expect(page.getByRole('link', { name: /Open Web Player/i })).toHaveAttribute('href', 'https://vitr.nont.me');
-  await expect(page.getByRole('link', { name: /ALL BUILDS/i }).first()).toHaveAttribute('href', 'https://github.com/voidnont/vitr/releases');
+  await expect(page.getByRole('link', { name: /ALL BUILDS/i }).first()).toHaveAttribute('href', 'https://github.com/bloodvitr/vitr/releases');
   await expect(page.locator('.frxe-nav')).toHaveCount(0);
 });
 
@@ -122,7 +125,7 @@ test('Vitr Web exposes real Modern Dark and Liquid Glass finishes', async ({ pag
   await page.getByRole('button', { name: /Appearance: Modern Dark/ }).click();
   await expect(app).toHaveAttribute('data-vitr-finish', 'glass');
   await expect(page.getByRole('button', { name: /Appearance: Liquid Glass/ })).toBeVisible();
-  await expect(page.getByText('v0.1.0', { exact: true })).toBeVisible();
+  await expect(page.getByText(`v${VITR_VERSION}`, { exact: true })).toBeVisible();
 });
 
 test('search result starts browser playback without a worker', async ({ page }) => {
