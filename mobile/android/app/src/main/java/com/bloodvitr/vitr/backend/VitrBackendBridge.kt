@@ -93,21 +93,37 @@ class VitrBackendBridge(
         }
     }
 
+
     @JavascriptInterface
-    fun discover(query: String, requestId: String) {
+    fun discover(query: String, entityType: String, requestId: String) {
         scope.launch {
             try {
                 val clean = query.trim().ifBlank { "music" }
-                val (tracks, albumHits, playlistHits) = withContext(Dispatchers.IO) {
-                    Triple(
-                        source.search(clean),
+                val requestedType = entityType.trim().lowercase().ifBlank { "all" }
+                val primaryQuery = when (requestedType) {
+                    "artist" -> "$clean artist"
+                    "album" -> "$clean album"
+                    "playlist" -> "$clean playlist"
+                    "genre" -> "$clean music"
+                    "track" -> "$clean song"
+                    else -> clean
+                }
+
+                val results = withContext(Dispatchers.IO) {
+                    listOf(
+                        source.search(primaryQuery),
+                        source.search("$clean artist"),
                         source.search("$clean album"),
                         source.search("$clean playlist")
                     )
                 }
+                val tracks = results.getOrElse(0) { emptyList() }
+                val artistHits = results.getOrElse(1) { emptyList() }
+                val albumHits = results.getOrElse(2) { emptyList() }
+                val playlistHits = results.getOrElse(3) { emptyList() }
 
                 val artists = JSONArray()
-                tracks
+                (tracks + artistHits)
                     .filter { it.artist.isNotBlank() }
                     .distinctBy { it.artist.lowercase() }
                     .take(16)
@@ -119,7 +135,9 @@ class VitrBackendBridge(
                                 title = track.artist,
                                 subtitle = "Artist",
                                 cover = track.artworkUrl,
-                                searchQuery = track.artist
+                                searchQuery = track.artist,
+                                source = "track_metadata",
+                                confidence = 0.78
                             )
                         )
                     }
@@ -138,7 +156,9 @@ class VitrBackendBridge(
                                     .filter(String::isNotBlank)
                                     .joinToString(" · "),
                                 cover = track.artworkUrl,
-                                searchQuery = "${track.title} ${track.artist}".trim()
+                                searchQuery = "${track.title} ${track.artist}".trim(),
+                                source = "query_inference",
+                                confidence = 0.62
                             )
                         )
                     }
@@ -157,7 +177,9 @@ class VitrBackendBridge(
                                     .filter(String::isNotBlank)
                                     .joinToString(" · "),
                                 cover = track.artworkUrl,
-                                searchQuery = "${track.title} playlist".trim()
+                                searchQuery = "${track.title} playlist".trim(),
+                                source = "query_inference",
+                                confidence = 0.62
                             )
                         )
                     }
@@ -172,7 +194,9 @@ class VitrBackendBridge(
                                 title = genre,
                                 subtitle = "Genre",
                                 cover = null,
-                                searchQuery = "$genre music"
+                                searchQuery = "$genre music",
+                                source = "vitr_genre_index",
+                                confidence = 0.92
                             )
                         )
                     }
@@ -182,6 +206,7 @@ class VitrBackendBridge(
                     true,
                     JSONObject()
                         .put("tracks", tracksJson(tracks))
+                        .put("items", mergeCatalogItems(artists, albums, playlists, genres))
                         .put("artists", artists)
                         .put("albums", albums)
                         .put("playlists", playlists)
@@ -352,20 +377,40 @@ class VitrBackendBridge(
         )
     }
 
+
     private fun catalogItemJson(
         id: String,
         kind: String,
         title: String,
         subtitle: String,
         cover: String?,
-        searchQuery: String
+        searchQuery: String,
+        source: String,
+        confidence: Double
     ): JSONObject = JSONObject()
         .put("id", id)
         .put("kind", kind)
         .put("title", title)
         .put("subtitle", subtitle)
         .put("cover", cover ?: JSONObject.NULL)
-        .put("searchQuery", searchQuery)
+        .put(
+            "metadata",
+            JSONObject()
+                .put("entityType", kind)
+                .put("source", source)
+                .put("browseId", id)
+                .put("searchQuery", searchQuery)
+                .put("confidence", confidence)
+        )
+
+    private fun mergeCatalogItems(vararg groups: JSONArray): JSONArray =
+        JSONArray().also { output ->
+            groups.forEach { group ->
+                for (index in 0 until group.length()) {
+                    output.put(group.get(index))
+                }
+            }
+        }
 
     private fun genreSuggestions(query: String): List<String> {
         val genres = listOf(
