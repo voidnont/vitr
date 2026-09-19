@@ -295,6 +295,7 @@ pub fn run() {
             runtime::update_runtime_dependencies,
             runtime::current_runtime_status,
             updates::check_client_update,
+            updates::install_client_update,
             updates::open_release_page,
             tray::set_tray_enabled,
             media_controls::update_media_controls,
