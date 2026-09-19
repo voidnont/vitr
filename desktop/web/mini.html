@@ -107,7 +107,7 @@ body.normal .menu{background:#17171d}.menu.open{display:grid;gap:3px}.menu butto
     var state=currentState(),track=state.track||null,has=!!(track&&track.title),art=coverUrl(track),pct=state.durationSeconds?Math.max(0,Math.min(100,state.positionSeconds/state.durationSeconds*100)):0;
     document.querySelectorAll("[data-title]").forEach(function(el){el.textContent=has?track.title:"Nothing playing"});
     document.querySelectorAll("[data-artist]").forEach(function(el){el.textContent=has?(track.artist||"Unknown artist"):"Open Vitr and play a track"});
-    document.querySelectorAll("[data-play]").forEach(function(el){el.textContent=state.playing?"❚❚":"▶"});document.querySelectorAll("[data-mini-volume]").forEach(function(el){el.value=String(Math.round(Math.max(0,Math.min(1,Number(state.volume==null?.7:state.volume)))*100))});
+    document.querySelectorAll("[data-play]").forEach(function(el){el.textContent=state.playing?"❚❚":"▶"});document.querySelectorAll("[data-mini-volume]").forEach(function(el){el.value=String(Math.round(Math.max(0,Math.min(1,Number(state.volume==null?0.7:state.volume)))*100))});
     document.querySelectorAll(".progress i").forEach(function(el){el.style.width=pct+"%"});
     document.querySelectorAll(".time").forEach(function(el){var spans=el.querySelectorAll("span");if(spans[0])spans[0].textContent=clock(state.positionSeconds);if(spans[1])spans[1].textContent=clock(state.durationSeconds)});
     document.querySelectorAll("[data-cover]").forEach(function(el){el.classList.toggle("empty",!art);el.style.backgroundImage=art?'url("'+String(art).replace(/"/g,"%22")+'")':""});
@@ -120,7 +120,7 @@ body.normal .menu{background:#17171d}.menu.open{display:grid;gap:3px}.menu butto
   function action(name){if(invoke)invoke("mini_player_action",{action:name}).catch(function(){})}
 
   document.querySelectorAll("[data-play]").forEach(function(el){el.addEventListener("click",function(e){e.stopPropagation();action("toggle")})});
-  document.querySelectorAll("[data-mini-volume]").forEach(function(el){el.addEventListener("input",function(e){e.stopPropagation();if(!invoke)return;var state=currentState(),target=Math.max(0,Math.min(1,Number(el.value)/100)),current=Math.max(0,Math.min(1,Number(state.volume==null?.7:state.volume)));invoke("mini_player_volume",{delta:target-current}).catch(function(){})})});
+  document.querySelectorAll("[data-mini-volume]").forEach(function(el){el.addEventListener("input",function(e){e.stopPropagation();if(!invoke)return;var state=currentState(),target=Math.max(0,Math.min(1,Number(el.value)/100)),current=Math.max(0,Math.min(1,Number(state.volume==null?0.7:state.volume)));invoke("mini_player_volume",{delta:target-current}).catch(function(){})})});
   document.querySelectorAll("[data-prev]").forEach(function(el){el.addEventListener("click",function(e){e.stopPropagation();action("previous")})});
   document.querySelectorAll("[data-next]").forEach(function(el){el.addEventListener("click",function(e){e.stopPropagation();action("next")})});
   document.querySelectorAll("[data-menu-button]").forEach(function(el){el.addEventListener("click",function(e){e.stopPropagation();menu.classList.toggle("open")})});
