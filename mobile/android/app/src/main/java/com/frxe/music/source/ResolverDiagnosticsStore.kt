@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 object ResolverDiagnosticsStore {
-    private const val PREFS = "frxe_resolver_diagnostics"
+    private const val PREFS = "vitr_resolver_diagnostics"
     private const val KEY_LAST_RESOLVER = "last_resolver"
     private const val KEY_LAST_SUCCESS_AT = "last_success_at"
     private const val KEY_YTDLP_INIT_ERROR = "ytdlp_init_error"
