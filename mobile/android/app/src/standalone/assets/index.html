@@ -84,7 +84,7 @@ body.normal .toggle-indicator{transform:translateX(100%)}
 .card strong,.card small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card strong{font-size:12px;margin-top:10px}.card small{font-size:10px;color:var(--muted);margin-top:4px}
 .track-list{display:grid;gap:7px}.track{height:64px;border-radius:18px;padding:8px 10px;display:grid;grid-template-columns:46px minmax(0,1fr) auto;align-items:center;gap:10px;transition:transform .2s ease,background .2s ease}
 .track:hover{transform:translateX(3px);background:rgba(255,255,255,.075)}.thumb{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,#32111c,#e82958);position:relative;overflow:hidden}
-.thumb:after{content:"";position:absolute;width:28px;height:28px;border-radius:50%;right:-8px;bottom:-6px;background:#ff829d;filter:blur(4px)}
+.thumb:after{content:"";position:absolute;width:28px;height:28px;border-radius:50%;right:-8px;bottom:-6px;background:#ff829d;filter:blur(4px)}.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2}
 .track:nth-child(2n) .thumb{background:linear-gradient(135deg,#111735,#6656ff)}.track:nth-child(3n) .thumb{background:linear-gradient(135deg,#0e2829,#2bd0c4)}
 .track-copy{min-width:0}.track-copy strong,.track-copy small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.track-copy strong{font-size:12px}.track-copy small{font-size:10px;color:var(--muted);margin-top:4px}.play-pill{border:0;border-radius:999px;width:35px;height:35px;background:rgba(255,255,255,.08)}
 .trending h3{margin:8px 0 2px;font-size:19px}.trend{display:grid;grid-template-columns:22px 38px minmax(0,1fr);align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06)}.trend>span{font-size:10px;color:#716d79}.trend .thumb{width:38px;height:38px;border-radius:11px}.trend strong,.trend small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.trend strong{font-size:11px}.trend small{font-size:9px;color:var(--muted);margin-top:3px}
@@ -181,7 +181,7 @@ body[data-device-class="compact"][data-orientation="landscape"] .hero-art{height
 <div class="app">
 <header class="topbar">
   <div class="brand"><div class="drop"></div><div class="brand-copy"><strong>vitr</strong><small>by blood</small></div></div>
-  <label class="top-search glass-soft"><span>⌕</span><input id="globalSearch" placeholder="Search the Vitr demo…" autocomplete="off"></label>
+  <label class="top-search glass-soft"><span>⌕</span><input id="globalSearch" placeholder="Search Vitr…" autocomplete="off"></label>
   <div class="mode-toggle glass-soft" aria-label="Appearance">
     <div class="toggle-indicator"></div>
     <button id="liquidBtn" class="active" type="button">Liquid Glass</button>
@@ -205,7 +205,7 @@ body[data-device-class="compact"][data-orientation="landscape"] .hero-art{height
         <div class="hero-copy">
           <div class="eyebrow">VITR · BY BLOOD</div>
           <h1>Music in <em>motion.</em></h1>
-          <p>A polished standalone Vitr interface. No backend, no account system, no network-powered catalogue — just the complete UI experience.</p>
+          <p>Vitr’s native Android music runtime is built into this interface for search and playback.</p>
           <div class="cta-row"><button class="primary" data-player="Red Light|Novae">▶ Play now</button><button class="ghost" data-tab="library">Your library</button></div>
         </div>
         <div class="hero-art"><div class="disc"></div></div>
@@ -219,11 +219,11 @@ body[data-device-class="compact"][data-orientation="landscape"] .hero-art{height
           <article class="card glass-soft" data-player="Fragments|Vitr Mix"><div class="cover"></div><strong>Fragments</strong><small>Pop · 37 tracks</small></article>
         </div>
       </section>
-      <section class="section"><div class="section-head"><div><div class="eyebrow">RECENT</div><h2>Recently played</h2></div><small>Local demo data</small></div><div id="homeTracks" class="track-list"></div></section>
+      <section class="section"><div class="section-head"><div><div class="eyebrow">RECENT</div><h2>Recently played</h2></div><small>Recent</small></div><div id="homeTracks" class="track-list"></div></section>
     </section>
     <section id="search" class="screen">
       <div class="search-panel glass">
-        <div class="page-title"><div class="eyebrow">DISCOVER</div><h1>Search</h1><p>Filter the local demo catalogue instantly.</p></div>
+        <div class="page-title"><div class="eyebrow">DISCOVER</div><h1>Search</h1><p>Search through Vitr’s native Android music backend.</p></div>
         <label class="big-search glass-soft"><span>⌕</span><input id="searchInput" placeholder="Songs, artists, playlists…"></label>
         <div class="chips"><button class="chip active">All</button><button class="chip">Artists</button><button class="chip">Songs</button><button class="chip">Playlists</button><button class="chip">Albums</button></div>
         <div id="searchTracks" class="track-list"></div>
@@ -231,7 +231,7 @@ body[data-device-class="compact"][data-orientation="landscape"] .hero-art{height
     </section>
     <section id="library" class="screen">
       <div class="library-panel glass">
-        <div class="page-title"><div class="eyebrow">COLLECTION</div><h1>Your Library</h1><p>Saved music, playlists and albums — represented locally for this UI build.</p></div>
+        <div class="page-title"><div class="eyebrow">COLLECTION</div><h1>Your Library</h1><p>Saved music, playlists and albums.</p></div>
         <div class="library-grid">
           <div class="library-tile glass-soft"><strong>Liked Songs</strong><small>327 songs</small></div>
           <div class="library-tile glass-soft"><strong>Midnight Thoughts</strong><small>42 tracks</small></div>
@@ -246,7 +246,7 @@ body[data-device-class="compact"][data-orientation="landscape"] .hero-art{height
       <div class="settings-panel glass">
         <div class="page-title"><div class="eyebrow">VITR</div><h1>Settings</h1><p>Appearance and project identity.</p></div>
         <div class="setting-row glass-soft"><div><h3>Interface finish</h3><p>Use the toggle above to switch between Liquid Glass and Normal UI.</p></div><strong id="modeLabel">Liquid Glass</strong></div>
-        <div class="setting-row glass-soft"><div><h3>Version</h3><p>Standalone UI build</p></div><strong>0.2.0</strong></div>
+        <div class="setting-row glass-soft"><div><h3>Version</h3><p>Native backend build</p></div><strong>0.2.0</strong></div>
         <div class="setting-row glass-soft"><div><h3>Blood</h3><p>Creator and maintainer of Vitr.</p></div><div class="setting-links"><a class="link-pill" href="https://github.com/bloodvitr">github.com/bloodvitr</a><a class="link-pill" href="https://ko-fi.com/bloodvitr">ko-fi.com/bloodvitr</a></div></div>
       </div>
     </section>
@@ -270,6 +270,7 @@ body[data-device-class="compact"][data-orientation="landscape"] .hero-art{height
     </div>
   </section>
 </div>
+<script src="./platform-backend.js"></script>
 <script>
 
 window.__vitrApplyDeviceProfile = function(profile){
@@ -300,8 +301,14 @@ window.__vitrApplyDeviceProfile = function(profile){
   setMode(localStorage.getItem("vitr-ui-mode")==="normal"?"normal":"liquid");
   liquidBtn.addEventListener("click",function(){setMode("liquid")}); normalBtn.addEventListener("click",function(){setMode("normal")});
 
+  var trackRegistry=new Map();
+  function esc(value){return String(value==null?"":value).replace(/[&<>"']/g,function(ch){return({"&":"&amp;","<":"&lt;",">":"&gt;",'\"':"&quot;","'":"&#39;"})[ch]})}
+  function trackKey(t,i){return String(t&&t.id?t.id:"track-"+i+"-"+(t&&t.title||"unknown"))}
   function trackMarkup(t,i){
-    return '<article class="track glass-soft" data-player="'+t.title+'|'+t.artist+'"><div class="thumb"></div><div class="track-copy"><strong>'+t.title+'</strong><small>'+t.artist+' · Vitr demo</small></div><button class="play-pill">▶</button></article>';
+    var key=trackKey(t,i);trackRegistry.set(key,t);
+    var source=t&&t.source?" · "+t.source:"";
+    var cover=t&&(t.cover||t.artworkUrl||t.thumbnail);
+    return '<article class="track glass-soft" data-track-key="'+esc(key)+'"><div class="thumb">'+(cover?'<img src="'+esc(cover)+'" alt="">':"")+'</div><div class="track-copy"><strong>'+esc(t&&t.title||"Unknown track")+'</strong><small>'+esc(t&&t.artist||"Unknown artist")+esc(source)+'</small></div><button class="play-pill" type="button">▶</button></article>';
   }
   function renderTracks(list,target){target.innerHTML=list.map(trackMarkup).join("");bindPlayers(target)}
   renderTracks(tracks.slice(0,6),document.getElementById("homeTracks")); renderTracks(tracks,document.getElementById("searchTracks"));
@@ -314,17 +321,77 @@ window.__vitrApplyDeviceProfile = function(profile){
   }
   document.querySelectorAll("[data-tab]").forEach(function(b){b.addEventListener("click",function(){switchTab(b.getAttribute("data-tab"))})});
 
-  var overlay=document.getElementById("playerOverlay"),pt=document.getElementById("playerTitle"),pa=document.getElementById("playerArtist");
-  function openPlayer(raw){var p=raw.split("|");pt.textContent=p[0]||"Red Light";pa.textContent=p[1]||"Vitr";overlay.classList.add("open")}
-  function bindPlayers(root){(root||document).querySelectorAll("[data-player]").forEach(function(el){el.addEventListener("click",function(){openPlayer(el.getAttribute("data-player"))})})}
+  var overlay=document.getElementById("playerOverlay"),pt=document.getElementById("playerTitle"),pa=document.getElementById("playerArtist"),playToggle=document.getElementById("playToggle");
+  function rememberTrack(track){localStorage.setItem("vitr-current-track",JSON.stringify(track||{}))}
+  async function openTrack(track){
+    if(!track)return;
+    pt.textContent=track.title||"Unknown track";
+    pa.textContent=track.artist||"Unknown artist";
+    rememberTrack(track);
+    overlay.classList.add("open");
+    var backend=window.vitrPlatformBackend;
+    if(!backend||!track.id)return;
+    try{await backend.play(track)}catch(error){console.error("Vitr Android playback failed",error)}
+  }
+  function openPlayer(raw){var p=raw.split("|");openTrack({title:p[0]||"Red Light",artist:p[1]||"Vitr"})}
+  function bindPlayers(root){
+    (root||document).querySelectorAll("[data-track-key]").forEach(function(el){
+      if(el.dataset.bound==="1")return;el.dataset.bound="1";
+      el.addEventListener("click",function(){openTrack(trackRegistry.get(el.getAttribute("data-track-key")))});
+    });
+    (root||document).querySelectorAll("[data-player]").forEach(function(el){
+      if(el.dataset.bound==="1")return;el.dataset.bound="1";
+      el.addEventListener("click",function(){openPlayer(el.getAttribute("data-player"))});
+    });
+  }
+  function applyPlayerState(state){
+    state=state||{};
+    var track=state.track;
+    if(track&&track.title){
+      pt.textContent=track.title;pa.textContent=track.artist||"Unknown artist";rememberTrack(track);
+    }
+    var playing=!!state.playing;
+    localStorage.setItem("vitr-playing",playing?"true":"false");
+    playToggle.textContent=playing?"❚❚":"▶";
+    var duration=Number(state.durationMs||0),position=Number(state.positionMs||0);
+    var pct=duration?Math.max(0,Math.min(100,(position/duration)*100)):0;
+    var bar=overlay.querySelector(".progress i");if(bar)bar.style.width=pct+"%";
+    var spans=overlay.querySelectorAll(".times span");
+    function clock(ms){var seconds=Math.max(0,Math.floor((ms||0)/1000));return Math.floor(seconds/60)+":"+String(seconds%60).padStart(2,"0")}
+    if(spans[0])spans[0].textContent=clock(position);
+    if(spans[1])spans[1].textContent=clock(duration);
+  }
   bindPlayers(document);
   document.getElementById("closePlayer").addEventListener("click",function(){overlay.classList.remove("open")});
   overlay.addEventListener("click",function(e){if(e.target===overlay)overlay.classList.remove("open")});
-  var playing=true;document.getElementById("playToggle").addEventListener("click",function(e){playing=!playing;e.currentTarget.textContent=playing?"❚❚":"▶"});
+  playToggle.addEventListener("click",function(){window.vitrPlatformBackend&&window.vitrPlatformBackend.togglePlay()});
+  window.addEventListener("vitr-player-state",function(e){applyPlayerState(e.detail)});
+  setInterval(function(){var backend=window.vitrPlatformBackend;if(backend)backend.state().then(applyPlayerState).catch(function(){})},700);
 
-  function filter(q){q=(q||"").toLowerCase().trim();var list=!q?tracks:tracks.filter(function(t){return (t.title+" "+t.artist).toLowerCase().indexOf(q)>=0});renderTracks(list,document.getElementById("searchTracks"))}
-  document.getElementById("searchInput").addEventListener("input",function(e){filter(e.target.value)});
-  document.getElementById("globalSearch").addEventListener("input",function(e){switchTab("search");document.getElementById("searchInput").value=e.target.value;filter(e.target.value)});
+  var searchTimer=0,searchSerial=0;
+  async function searchVitr(q){
+    q=(q||"").trim();
+    var target=document.getElementById("searchTracks");
+    if(!q){renderTracks(tracks,target);return}
+    var serial=++searchSerial,backend=window.vitrPlatformBackend;
+    if(!backend){
+      var local=tracks.filter(function(t){return (t.title+" "+t.artist).toLowerCase().indexOf(q.toLowerCase())>=0});
+      renderTracks(local,target);return;
+    }
+    target.innerHTML='<div class="track glass-soft"><div class="track-copy"><strong>Searching Vitr…</strong><small>Android native providers</small></div></div>';
+    try{
+      var results=await backend.search(q);
+      if(serial!==searchSerial)return;
+      renderTracks(results||[],target);
+      if(!results||!results.length)target.innerHTML='<div class="track glass-soft"><div class="track-copy"><strong>No results</strong><small>Try another search</small></div></div>';
+    }catch(error){
+      if(serial!==searchSerial)return;
+      target.innerHTML='<div class="track glass-soft"><div class="track-copy"><strong>Search unavailable</strong><small>'+esc(error&&error.message||"Backend error")+'</small></div></div>';
+    }
+  }
+  function queueSearch(value){clearTimeout(searchTimer);searchTimer=setTimeout(function(){searchVitr(value)},320)}
+  document.getElementById("searchInput").addEventListener("input",function(e){queueSearch(e.target.value)});
+  document.getElementById("globalSearch").addEventListener("input",function(e){switchTab("search");document.getElementById("searchInput").value=e.target.value;queueSearch(e.target.value)});
 })();
 </script>
 </body>
