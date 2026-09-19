@@ -98,7 +98,7 @@ class FrxeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val playerPrefs =
         application.getSharedPreferences(
-            "frxe_player_prefs",
+            "vitr_player_prefs",
             0
         )
 
