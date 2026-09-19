@@ -106,14 +106,18 @@ jobs:
       - working-directory: desktop
         run: npm run icons
       - working-directory: desktop
-        run: npx tauri build --bundles app,dmg
-      - shell: bash
+        run: npx tauri build --bundles app
+      - name: Package macOS app and DMG
+        shell: bash
         run: |
-          mkdir -p release
+          set -euo pipefail
+          mkdir -p release dmg-root
           VERSION=$(tr -d '\r\n' < VERSION)
-          DMG=$(find desktop/src-tauri/target/release/bundle -type f -name '*.dmg' | head -1)
-          test -n "$DMG"
-          cp "$DMG" "release/Vitr-$VERSION-macos.dmg"
+          APP=$(find desktop/src-tauri/target/release/bundle/macos -maxdepth 1 -type d -name '*.app' | head -1)
+          test -n "$APP"
+          ditto -c -k --sequesterRsrc --keepParent "$APP" "release/Vitr-$VERSION-macos-app.zip"
+          cp -R "$APP" dmg-root/
+          hdiutil create -volname "Vitr $VERSION" -srcfolder dmg-root -ov -format UDZO "release/Vitr-$VERSION-macos.dmg"
       - uses: actions/upload-artifact@v4
         with:
           name: release-macos
