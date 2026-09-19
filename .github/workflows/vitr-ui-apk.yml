@@ -16,23 +16,29 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: "21"
       - uses: android-actions/setup-android@v3
         with:
           packages: platform-tools
       - name: Install Android SDK
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+        run: sdkmanager "platforms;android-37.0" "build-tools;37.0.0"
       - uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: "8.11.1"
+          gradle-version: "9.6.0"
+      - name: Read version
+        id: version
+        shell: bash
+        run: echo "value=$(tr -d '\r\n' < VERSION)" >> "$GITHUB_OUTPUT"
       - name: Build signed release APK
+        env:
+          VITR_CI_RELEASE_DEBUG_SIGNING: "1"
         run: gradle -p mobile/android :app:assembleRelease --stacktrace
       - name: Prepare APK
         run: |
           mkdir -p out
-          cp mobile/android/app/build/outputs/apk/release/app-release.apk out/vitr-0.1.0-ui.apk
+          cp mobile/android/app/build/outputs/apk/release/app-release.apk "out/vitr-${{ steps.version.outputs.value }}-ui.apk"
       - uses: actions/upload-artifact@v4
         with:
-          name: vitr-0.1.0-ui-apk
-          path: out/vitr-0.1.0-ui.apk
+          name: vitr-${{ steps.version.outputs.value }}-ui-apk
+          path: out/vitr-${{ steps.version.outputs.value }}-ui.apk
           if-no-files-found: error

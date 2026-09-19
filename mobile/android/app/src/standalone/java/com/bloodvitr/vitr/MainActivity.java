@@ -16,9 +16,11 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
+import com.bloodvitr.vitr.backend.VitrBackendBridge;
 
 public final class MainActivity extends Activity {
     private WebView webView;
+    private VitrBackendBridge backendBridge;
     private boolean pageReady = false;
     private int safeTop = 0;
     private int safeBottom = 0;
@@ -47,10 +49,13 @@ public final class MainActivity extends Activity {
         settings.setDomStorageEnabled(true);
         settings.setAllowFileAccess(true);
         settings.setAllowContentAccess(false);
-        settings.setBlockNetworkLoads(true);
+        settings.setBlockNetworkLoads(false);
         settings.setBuiltInZoomControls(false);
         settings.setDisplayZoomControls(false);
         settings.setMediaPlaybackRequiresUserGesture(true);
+
+        backendBridge = new VitrBackendBridge(this, webView);
+        webView.addJavascriptInterface(backendBridge, "VitrNative");
 
         webView.setWebChromeClient(new WebChromeClient());
         webView.setWebViewClient(new WebViewClient() {
@@ -219,6 +224,10 @@ public final class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        if (backendBridge != null) {
+            backendBridge.release();
+            backendBridge = null;
+        }
         if (webView != null) {
             webView.destroy();
             webView = null;

@@ -39,7 +39,7 @@ jobs:
         with:
           packages: platform-tools
 
-      - name: Install Android 17 SDK
+      - name: Install Android SDK 37
         run: sdkmanager "platforms;android-37.0" "build-tools;37.0.0"
 
       - name: Set up Gradle 9.6.0
@@ -47,25 +47,32 @@ jobs:
         with:
           gradle-version: '9.6.0'
 
+      - name: Read version
+        id: version
+        shell: bash
+        run: echo "value=$(tr -d '\r\n' < VERSION)" >> "$GITHUB_OUTPUT"
+
       - name: Test and build installable release APK
         working-directory: mobile/android
         env:
           VITR_CI_RELEASE_DEBUG_SIGNING: '1'
         run: gradle --no-daemon --stacktrace :app:testDebugUnitTest :app:assembleRelease
 
-      - name: Verify Vitr 0.1.0 APK metadata
+      - name: Verify Vitr APK metadata
         shell: bash
         run: |
           APK="mobile/android/app/build/outputs/apk/release/app-release.apk"
           test -f "$APK"
           "$ANDROID_HOME/build-tools/37.0.0/aapt" dump badging "$APK" | tee /tmp/vitr-apk-badging.txt
-          grep -F "package: name='com.bloodvitr.vitr' versionCode='1' versionName='0.1.0'" /tmp/vitr-apk-badging.txt
-          cp "$APK" "Vitr-0.1.0-android.apk"
+          VERSION="${{ steps.version.outputs.value }}"
+          VERSION_CODE=$(awk -F. '{ print ($1 * 10000) + ($2 * 100) + $3 }' <<< "$VERSION")
+          grep -F "package: name='com.bloodvitr.vitr' versionCode='$VERSION_CODE' versionName='$VERSION'" /tmp/vitr-apk-badging.txt
+          cp "$APK" "Vitr-$VERSION-android.apk"
 
       - name: Upload Vitr APK
         uses: actions/upload-artifact@v4
         with:
-          name: Vitr-0.1.0-APK
-          path: Vitr-0.1.0-android.apk
+          name: Vitr-${{ steps.version.outputs.value }}-APK
+          path: Vitr-${{ steps.version.outputs.value }}-android.apk
           if-no-files-found: error
           retention-days: 30

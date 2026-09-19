@@ -1,7 +1,7 @@
 {
   "name": "vitr-monorepo",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "npm --prefix web run dev",
@@ -22,7 +22,8 @@
     "desktop:build:linux": "npm --prefix desktop run tauri:build:linux",
     "desktop:build:macos": "npm --prefix desktop run tauri:build:macos",
     "android:build": "gradle -p mobile/android clean :app:assembleRelease",
-    "ios:build": "xcodebuild -project mobile/ios/Vitr.xcodeproj -scheme Vitr -configuration Release -sdk iphonesimulator CODE_SIGNING_ALLOWED=NO build"
+    "ios:build": "xcodebuild -project mobile/ios/Vitr.xcodeproj -scheme Vitr -configuration Release -sdk iphonesimulator CODE_SIGNING_ALLOWED=NO build",
+    "version:sync": "node scripts/sync-version.mjs"
   },
   "license": "SEE LICENSE IN LICENSE",
   "author": "Blood"

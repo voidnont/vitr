@@ -4,6 +4,8 @@ use tauri::AppHandle;
 
 use crate::{models::{CatalogItem, SearchCatalog, Track}, runtime};
 
+const VITR_USER_AGENT: &str = concat!("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 vitr/", env!("CARGO_PKG_VERSION"));
+
 #[derive(Debug, Clone)]
 struct InnerTubeConfig {
     api_key: String,
@@ -238,7 +240,7 @@ fn client_settings(client: &str) -> Result<(&'static str, &'static str, &'static
 async fn fetch_innertube_config(client: &str) -> Result<InnerTubeConfig, String> {
     let (homepage, endpoint, client_name) = client_settings(client)?;
     let http = reqwest::Client::builder()
-        .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 vitr/0.1.0")
+        .user_agent(VITR_USER_AGENT)
         .build()
         .map_err(|e| e.to_string())?;
     let html = http
@@ -290,7 +292,7 @@ async fn innertube_search_response(query: &str, client: &str) -> Result<Value, S
     });
     reqwest::Client::new()
         .post(url)
-        .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) vitr/0.1.0")
+        .header("User-Agent", VITR_USER_AGENT)
         .header("Referer", &cfg.homepage)
         .json(&body)
         .send()
