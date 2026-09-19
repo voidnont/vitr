@@ -86,9 +86,12 @@ test('web player base container does not break sticky headers with overflow clip
 });
 
 
-test('web player exposes v0.1.0 and a real clear-search control', () => {
+test('web player exposes the canonical version and a real clear-search control', () => {
   const app = read('src/music/VitrWebApp.tsx');
-  assert.match(app, /VITR_WEB_VERSION = '0\.1\.0'/);
+  const version = read('VERSION').trim().replace(/[.*+?^$\{\}()|[\]\\]/g, '\\test('web player exposes v0.1.0 and a real clear-search control', () => {
+  const app = read('src/music/VitrWebApp.tsx');
+  assert.match(app, /VITR_WEB_VERSION = '0\.1\.0'/);');
+  assert.match(app, new RegExp(`VITR_WEB_VERSION = '${version}'`));
   assert.match(app, /aria-label="Clear search"/);
   assert.match(app, /function clearSearch\(\)/);
   assert.match(app, /searchRequestRef\.current \+= 1/);
@@ -108,9 +111,12 @@ test('web and desktop use only the supplied PNG icon asset', () => {
 });
 
 
-test('source adapter cannot overwrite the canonical 0.1.0 version', () => {
+test('source adapter cannot overwrite the canonical release version', () => {
   const adapter = read('scripts/adapt-sources.mjs');
-  assert.match(adapter, /const RELEASE_VERSION = '0\.1\.0'/);
+  const version = read('VERSION').trim().replace(/[.*+?^$\{\}()|[\]\\]/g, '\\test('source adapter cannot overwrite the canonical 0.1.0 version', () => {
+  const adapter = read('scripts/adapt-sources.mjs');
+  assert.match(adapter, /const RELEASE_VERSION = '0\.1\.0'/);');
+  assert.match(adapter, new RegExp(`const RELEASE_VERSION = '${version}'`));
   assert.match(adapter, /version:\s*RELEASE_VERSION/);
   assert.doesNotMatch(adapter, /version:\s*parseVitrVersion\(gradleText\)/);
 });
