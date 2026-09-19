@@ -1,4 +1,4 @@
-package com.frxe.music.ui.screens
+package com.bloodvitr.vitr.ui.screens
 
 import android.content.Intent
 import android.net.Uri
@@ -44,21 +44,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.frxe.music.BuildConfig
-import com.frxe.music.ui.FrxeViewModel
-import com.frxe.music.ui.components.GlassPanel
-import com.frxe.music.ui.gestures.PlayerGesturePreferences
-import com.frxe.music.updates.DependencyUpdateMode
-import com.frxe.music.updates.FrxeSupportLinks
-import com.frxe.music.updates.RuntimeHealthStore
-import com.frxe.music.updates.YtDlpRuntimeUpdater
+import com.bloodvitr.vitr.BuildConfig
+import com.bloodvitr.vitr.ui.VitrViewModel
+import com.bloodvitr.vitr.ui.components.GlassPanel
+import com.bloodvitr.vitr.ui.gestures.PlayerGesturePreferences
+import com.bloodvitr.vitr.updates.DependencyUpdateMode
+import com.bloodvitr.vitr.updates.VitrSupportLinks
+import com.bloodvitr.vitr.updates.RuntimeHealthStore
+import com.bloodvitr.vitr.updates.YtDlpRuntimeUpdater
 import java.text.DateFormat
 import java.util.Date
 import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsScreen(
-    viewModel: FrxeViewModel,
+    viewModel: VitrViewModel,
     isTv: Boolean
 ) {
     val state by
@@ -231,7 +231,7 @@ fun SettingsScreen(
                                     .onSurface
                         )
                         Text(
-                            "Disabled so the Island never covers FRXE itself",
+                            "Disabled so the Island never covers VITR itself",
                             color =
                                 MaterialTheme
                                     .colorScheme
@@ -438,7 +438,7 @@ fun SettingsScreen(
                                     .onSurface
                         )
                         Text(
-                            "Runtime components update in place; compiled libraries require a Frxe update.",
+                            "Runtime components update in place; compiled libraries require a Vitr update.",
                             color =
                                 MaterialTheme
                                     .colorScheme
@@ -846,7 +846,7 @@ fun SettingsScreen(
                         onClick = {
                             openExternal(
                                 context,
-                                FrxeSupportLinks.KO_FI
+                                VitrSupportLinks.KO_FI
                             )
                         },
                         colors =
@@ -870,7 +870,7 @@ fun SettingsScreen(
                         onClick = {
                             openExternal(
                                 context,
-                                FrxeSupportLinks.GITHUB
+                                VitrSupportLinks.GITHUB
                             )
                         },
                         colors =

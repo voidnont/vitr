@@ -1,4 +1,4 @@
-package com.frxe.music.updates
+package com.bloodvitr.vitr.updates
 
 object RuntimeUpdatePolicy {
     const val AUTO_UPDATE_INTERVAL_MS: Long =
@@ -14,7 +14,7 @@ object RuntimeUpdatePolicy {
             AUTO_UPDATE_INTERVAL_MS
 }
 
-object FrxeSupportLinks {
+object VitrSupportLinks {
     const val KO_FI =
         "https://ko-fi.com/bloodvitr"
 

@@ -1,11 +1,11 @@
-package com.frxe.music.ui.theme
+package com.bloodvitr.vitr.ui.theme
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-private val FrxeColors = darkColorScheme(
+private val VitrColors = darkColorScheme(
     primary = Color(0xFFB7FF59),
     onPrimary = Color(0xFF0B1104),
     secondary = Color(0xFFD7D8E2),
@@ -19,9 +19,9 @@ private val FrxeColors = darkColorScheme(
 )
 
 @Composable
-fun FrxeTheme(content: @Composable () -> Unit) {
+fun VitrTheme(content: @Composable () -> Unit) {
     MaterialTheme(
-        colorScheme = FrxeColors,
+        colorScheme = VitrColors,
         typography = androidx.compose.material3.Typography(),
         content = content
     )

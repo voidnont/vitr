@@ -1,4 +1,4 @@
-package com.frxe.music.ui.screens
+package com.bloodvitr.vitr.ui.screens
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
@@ -51,26 +51,26 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.frxe.music.lyrics.LyricsRepository
-import com.frxe.music.lyrics.LyricsUiState
-import com.frxe.music.model.Track
-import com.frxe.music.ui.FrxeViewModel
-import com.frxe.music.ui.queueNext
-import com.frxe.music.ui.queuePrevious
-import com.frxe.music.ui.components.ArtistSheet
-import com.frxe.music.ui.components.AudioSheet
-import com.frxe.music.ui.components.DetailsSheet
-import com.frxe.music.ui.components.GlassPanel
-import com.frxe.music.ui.components.LiquidIconButton
-import com.frxe.music.ui.components.ListenTogetherSheet
-import com.frxe.music.ui.components.LyricsSheet
-import com.frxe.music.ui.components.PlayerActionsSheet
-import com.frxe.music.ui.components.QueueSheet
-import com.frxe.music.ui.components.SleepTimerSheet
-import com.frxe.music.ui.components.WavySlider
-import com.frxe.music.ui.gestures.PlayerGestureAction
-import com.frxe.music.ui.gestures.PlayerGesturePreferences
-import com.frxe.music.ui.gestures.playerGestures
+import com.bloodvitr.vitr.lyrics.LyricsRepository
+import com.bloodvitr.vitr.lyrics.LyricsUiState
+import com.bloodvitr.vitr.model.Track
+import com.bloodvitr.vitr.ui.VitrViewModel
+import com.bloodvitr.vitr.ui.queueNext
+import com.bloodvitr.vitr.ui.queuePrevious
+import com.bloodvitr.vitr.ui.components.ArtistSheet
+import com.bloodvitr.vitr.ui.components.AudioSheet
+import com.bloodvitr.vitr.ui.components.DetailsSheet
+import com.bloodvitr.vitr.ui.components.GlassPanel
+import com.bloodvitr.vitr.ui.components.LiquidIconButton
+import com.bloodvitr.vitr.ui.components.ListenTogetherSheet
+import com.bloodvitr.vitr.ui.components.LyricsSheet
+import com.bloodvitr.vitr.ui.components.PlayerActionsSheet
+import com.bloodvitr.vitr.ui.components.QueueSheet
+import com.bloodvitr.vitr.ui.components.SleepTimerSheet
+import com.bloodvitr.vitr.ui.components.WavySlider
+import com.bloodvitr.vitr.ui.gestures.PlayerGestureAction
+import com.bloodvitr.vitr.ui.gestures.PlayerGesturePreferences
+import com.bloodvitr.vitr.ui.gestures.playerGestures
 
 private enum class PlayerSheet {
     Actions,
@@ -85,7 +85,7 @@ private enum class PlayerSheet {
 
 @Composable
 fun NowPlayingScreen(
-    viewModel: FrxeViewModel,
+    viewModel: VitrViewModel,
     onClose: () -> Unit,
     pendingTrack: Track? = null,
     playbackMessage: String? = null,

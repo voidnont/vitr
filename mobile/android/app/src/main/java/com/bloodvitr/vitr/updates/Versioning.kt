@@ -1,4 +1,4 @@
-package com.frxe.music.updates
+package com.bloodvitr.vitr.updates
 
 private data class VersionParts(
     val numbers: List<Int>,

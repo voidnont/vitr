@@ -1,7 +1,7 @@
-package com.frxe.music.updates
+package com.bloodvitr.vitr.updates
 
 import android.os.Build
-import com.frxe.music.BuildConfig
+import com.bloodvitr.vitr.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.HttpURLConnection
@@ -19,7 +19,7 @@ sealed interface UpdateCheckResult {
     data class Error(val message: String) : UpdateCheckResult
 }
 
-class FrxeUpdateRepository {
+class VitrUpdateRepository {
     suspend fun check(currentVersion: String = BuildConfig.VERSION_NAME): UpdateCheckResult = withContext(Dispatchers.IO) {
         runCatching {
             val connection = (URL(RELEASES_API).openConnection() as HttpURLConnection).apply {

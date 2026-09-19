@@ -1,7 +1,7 @@
-package com.frxe.music.updates
+package com.bloodvitr.vitr.updates
 
 import android.content.Context
-import com.frxe.music.source.YtDlpPlaybackRecoveryPolicy
+import com.bloodvitr.vitr.source.YtDlpPlaybackRecoveryPolicy
 import com.yausername.youtubedl_android.YoutubeDL
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

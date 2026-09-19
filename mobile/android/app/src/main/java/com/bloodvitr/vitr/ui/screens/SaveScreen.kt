@@ -1,4 +1,4 @@
-package com.frxe.music.ui.screens
+package com.bloodvitr.vitr.ui.screens
 
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -45,36 +45,36 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.frxe.music.intake.UrlIntakeParser
-import com.frxe.music.model.Track
-import com.frxe.music.save.DownloadQueueActions
-import com.frxe.music.save.DownloadQueueItem
-import com.frxe.music.save.DownloadQueueItemState
-import com.frxe.music.save.DownloadQueueStore
-import com.frxe.music.save.DownloadUiPrivacyPolicy
-import com.frxe.music.save.FrxeDownloadService
-import com.frxe.music.save.InspectedDownloadMatchingPolicy
-import com.frxe.music.save.SaveFormat
-import com.frxe.music.save.SaveQuality
-import com.frxe.music.save.SaveRequest
-import com.frxe.music.save.defaultQualityFor
-import com.frxe.music.save.qualityOptionsFor
-import com.frxe.music.ui.FrxeViewModel
-import com.frxe.music.ui.consumeExternalUrl
-import com.frxe.music.ui.inspectUrl
-import com.frxe.music.ui.inspectionState
-import com.frxe.music.ui.pendingExternalUrl
-import com.frxe.music.ui.components.GeneratedArtwork
-import com.frxe.music.ui.components.GlassPanel
-import com.frxe.music.ytdlp.YtDlpDownloadRequest
-import com.frxe.music.ytdlp.YtDlpInspectionUiState
-import com.frxe.music.ytdlp.YtDlpMediaFormat
-import com.frxe.music.ytdlp.YtDlpMediaKind
-import com.frxe.music.ytdlp.YtDlpPlaylistExpansionPolicy
+import com.bloodvitr.vitr.intake.UrlIntakeParser
+import com.bloodvitr.vitr.model.Track
+import com.bloodvitr.vitr.save.DownloadQueueActions
+import com.bloodvitr.vitr.save.DownloadQueueItem
+import com.bloodvitr.vitr.save.DownloadQueueItemState
+import com.bloodvitr.vitr.save.DownloadQueueStore
+import com.bloodvitr.vitr.save.DownloadUiPrivacyPolicy
+import com.bloodvitr.vitr.save.VitrDownloadService
+import com.bloodvitr.vitr.save.InspectedDownloadMatchingPolicy
+import com.bloodvitr.vitr.save.SaveFormat
+import com.bloodvitr.vitr.save.SaveQuality
+import com.bloodvitr.vitr.save.SaveRequest
+import com.bloodvitr.vitr.save.defaultQualityFor
+import com.bloodvitr.vitr.save.qualityOptionsFor
+import com.bloodvitr.vitr.ui.VitrViewModel
+import com.bloodvitr.vitr.ui.consumeExternalUrl
+import com.bloodvitr.vitr.ui.inspectUrl
+import com.bloodvitr.vitr.ui.inspectionState
+import com.bloodvitr.vitr.ui.pendingExternalUrl
+import com.bloodvitr.vitr.ui.components.GeneratedArtwork
+import com.bloodvitr.vitr.ui.components.GlassPanel
+import com.bloodvitr.vitr.ytdlp.YtDlpDownloadRequest
+import com.bloodvitr.vitr.ytdlp.YtDlpInspectionUiState
+import com.bloodvitr.vitr.ytdlp.YtDlpMediaFormat
+import com.bloodvitr.vitr.ytdlp.YtDlpMediaKind
+import com.bloodvitr.vitr.ytdlp.YtDlpPlaylistExpansionPolicy
 
 @Composable
 fun SaveScreen(
-    viewModel: FrxeViewModel,
+    viewModel: VitrViewModel,
     isTv: Boolean
 ) {
     // Keep the existing screen signature stable; queue state now lives outside the ViewModel.
@@ -306,7 +306,7 @@ fun SaveScreen(
                                     modifier = Modifier.horizontalScroll(rememberScrollState()),
                                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
-                                    FrxeChoiceChip(
+                                    VitrChoiceChip(
                                         label = "Select all",
                                         selected = false
                                     ) {
@@ -325,7 +325,7 @@ fun SaveScreen(
                                                 }
                                                 .toSet()
                                     }
-                                    FrxeChoiceChip(
+                                    VitrChoiceChip(
                                         label = "Deselect all",
                                         selected = false
                                     ) {
@@ -341,7 +341,7 @@ fun SaveScreen(
                                         "$sourceIndex. ${entry.title.ifBlank { "Item $sourceIndex" }}"
 
                                     if (selectable) {
-                                        FrxeChoiceChip(
+                                        VitrChoiceChip(
                                             label = label,
                                             selected = sourceIndex in selectedPlaylistIndices
                                         ) {
@@ -372,7 +372,7 @@ fun SaveScreen(
                                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
                                     subtitleLanguages.forEach { language ->
-                                        FrxeChoiceChip(
+                                        VitrChoiceChip(
                                             label = language,
                                             selected = language in selectedSubtitleLanguages
                                         ) {
@@ -431,7 +431,7 @@ fun SaveScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     SaveFormat.entries.forEach { item ->
-                        FrxeChoiceChip(
+                        VitrChoiceChip(
                             item.displayName,
                             selected = format == item
                         ) { format = item }
@@ -444,7 +444,7 @@ fun SaveScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     qualityOptionsFor(format).forEach { item ->
-                        FrxeChoiceChip(
+                        VitrChoiceChip(
                             item.label,
                             selected = quality == item
                         ) { quality = item }
@@ -508,7 +508,7 @@ fun SaveScreen(
 
                         val results =
                             requests.map { request ->
-                                FrxeDownloadService.enqueue(
+                                VitrDownloadService.enqueue(
                                     context,
                                     request
                                 )
@@ -545,7 +545,7 @@ fun SaveScreen(
                         }
                     } else {
                         val result =
-                            FrxeDownloadService.enqueue(
+                            VitrDownloadService.enqueue(
                                 context,
                                 SaveRequest(
                                     sourceUrl = url.trim(),
@@ -603,7 +603,7 @@ fun SaveScreen(
                     Switch(
                         checked = wifiOnly,
                         onCheckedChange = {
-                            FrxeDownloadService.setWifiOnly(context, it)
+                            VitrDownloadService.setWifiOnly(context, it)
                         }
                     )
                 }
@@ -617,28 +617,28 @@ fun SaveScreen(
                         icon = Icons.Default.Pause,
                         enabled = active.isNotEmpty() || queued.isNotEmpty()
                     ) {
-                        FrxeDownloadService.pauseAll(context)
+                        VitrDownloadService.pauseAll(context)
                     }
                     QueueActionChip(
                         label = "Resume all",
                         icon = Icons.Default.PlayArrow,
                         enabled = paused.isNotEmpty()
                     ) {
-                        FrxeDownloadService.resumeAll(context)
+                        VitrDownloadService.resumeAll(context)
                     }
                     QueueActionChip(
                         label = "Retry failed",
                         icon = Icons.Default.Refresh,
                         enabled = failed.isNotEmpty()
                     ) {
-                        FrxeDownloadService.retryAllFailed(context)
+                        VitrDownloadService.retryAllFailed(context)
                     }
                     QueueActionChip(
                         label = "Clear failed/cancelled",
                         icon = Icons.Default.Delete,
                         enabled = failed.isNotEmpty() || cancelled.isNotEmpty()
                     ) {
-                        FrxeDownloadService.clearFailedAndCancelled(context)
+                        VitrDownloadService.clearFailedAndCancelled(context)
                     }
                 }
             }
@@ -758,28 +758,28 @@ private fun DownloadQueueCard(
                     DownloadQueueItemState.Running,
                     DownloadQueueItemState.Queued -> {
                         QueueActionChip("Pause", Icons.Default.Pause) {
-                            FrxeDownloadService.pause(context, item.id)
+                            VitrDownloadService.pause(context, item.id)
                         }
                         QueueActionChip("Cancel", Icons.Default.Cancel) {
-                            FrxeDownloadService.cancel(context, item.id)
+                            VitrDownloadService.cancel(context, item.id)
                         }
                     }
 
                     DownloadQueueItemState.Paused -> {
                         QueueActionChip("Resume", Icons.Default.PlayArrow) {
-                            FrxeDownloadService.resume(context, item.id)
+                            VitrDownloadService.resume(context, item.id)
                         }
                         QueueActionChip("Cancel", Icons.Default.Cancel) {
-                            FrxeDownloadService.cancel(context, item.id)
+                            VitrDownloadService.cancel(context, item.id)
                         }
                     }
 
                     DownloadQueueItemState.Failed -> {
                         QueueActionChip("Retry", Icons.Default.Refresh) {
-                            FrxeDownloadService.retry(context, item.id)
+                            VitrDownloadService.retry(context, item.id)
                         }
                         QueueActionChip("Remove", Icons.Default.Delete) {
-                            FrxeDownloadService.remove(item.id)
+                            VitrDownloadService.remove(item.id)
                         }
                     }
 
@@ -794,7 +794,7 @@ private fun DownloadQueueCard(
 
                     DownloadQueueItemState.Cancelled -> {
                         QueueActionChip("Remove", Icons.Default.Delete) {
-                            FrxeDownloadService.remove(item.id)
+                            VitrDownloadService.remove(item.id)
                         }
                     }
                 }
@@ -835,7 +835,7 @@ private fun GlassTextField(
 }
 
 @Composable
-private fun FrxeChoiceChip(
+private fun VitrChoiceChip(
     label: String,
     selected: Boolean,
     onClick: () -> Unit

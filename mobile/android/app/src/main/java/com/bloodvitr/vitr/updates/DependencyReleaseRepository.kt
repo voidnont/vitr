@@ -1,4 +1,4 @@
-package com.frxe.music.updates
+package com.bloodvitr.vitr.updates
 
 import java.net.HttpURLConnection
 import java.net.URL
@@ -63,7 +63,7 @@ class DependencyReleaseRepository {
                         readTimeout = 8_000
                         setRequestProperty(
                             "User-Agent",
-                            "Frxe dependency release checker"
+                            "Vitr dependency release checker"
                         )
                     }
 

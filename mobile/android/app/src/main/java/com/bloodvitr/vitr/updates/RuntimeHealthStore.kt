@@ -1,4 +1,4 @@
-package com.frxe.music.updates
+package com.bloodvitr.vitr.updates
 
 import android.content.Context
 import android.content.SharedPreferences
