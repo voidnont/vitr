@@ -1,0 +1,176 @@
+name: Normalize Vitr source identity
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/normalize-vitr-source.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Normalize source names and paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f mobile/android/build.bat
+
+          python - <<'PY'
+          from pathlib import Path
+          import shutil
+
+          root = Path(".")
+          skip = {
+              Path(".github/workflows/normalize-vitr-source.yml"),
+              Path(".github/workflows/repo-hygiene-audit.yml"),
+          }
+
+          # Move Android Java/Kotlin package roots first.
+          for base in [
+              Path("mobile/android/app/src/main/java"),
+              Path("mobile/android/app/src/test/java"),
+          ]:
+              old = base / "com/frxe/music"
+              new = base / "com/bloodvitr/vitr"
+              if old.exists():
+                  new.parent.mkdir(parents=True, exist_ok=True)
+                  if new.exists():
+                      raise SystemExit(f"destination already exists: {new}")
+                  shutil.move(str(old), str(new))
+                  # prune empty legacy directories
+                  legacy = base / "com/frxe"
+                  if legacy.exists():
+                      try:
+                          legacy.rmdir()
+                      except OSError:
+                          pass
+
+          replacements = [
+              ("com.frxe.music", "com.bloodvitr.vitr"),
+              ("voidnont/vitr", "bloodvitr/vitr"),
+              ("voidnont", "bloodvitr"),
+              ("FRXE_", "VITR_"),
+              ("frxe_", "vitr_"),
+              ("FRXE", "VITR"),
+              ("Frxe", "Vitr"),
+              ("frxe", "vitr"),
+              ('android:value="void"', 'android:value="Blood"'),
+              ("by blood", "by Blood"),
+          ]
+
+          def is_text(path: Path):
+              try:
+                  raw = path.read_bytes()
+              except OSError:
+                  return False
+              if b"\0" in raw:
+                  return False
+              try:
+                  raw.decode("utf-8")
+                  return True
+              except UnicodeDecodeError:
+                  return False
+
+          for path in sorted(root.rglob("*")):
+              if not path.is_file() or ".git" in path.parts or path in skip:
+                  continue
+              if not is_text(path):
+                  continue
+              text = path.read_text(encoding="utf-8")
+              updated = text
+              for old, new in replacements:
+                  updated = updated.replace(old, new)
+              if updated != text:
+                  path.write_text(updated, encoding="utf-8")
+
+          # Rename remaining filenames that still carry legacy product names.
+          for path in sorted(root.rglob("*"), key=lambda p: len(p.parts), reverse=True):
+              if ".git" in path.parts or path in skip or not path.exists():
+                  continue
+              name = path.name
+              new_name = name.replace("FRXE", "VITR").replace("Frxe", "Vitr").replace("frxe", "vitr")
+              if new_name != name:
+                  target = path.with_name(new_name)
+                  if target.exists():
+                      raise SystemExit(f"rename collision: {path} -> {target}")
+                  path.rename(target)
+          PY
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate web
+        working-directory: web
+        run: |
+          npm install --no-audit --no-fund
+          npm run check
+          npm run test:unit
+          npm run build
+
+      - name: Validate desktop
+        working-directory: desktop
+        run: |
+          npm ci
+          npm run check
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+
+      - name: Install Android SDK 37
+        run: sdkmanager "platforms;android-37.0" "build-tools;37.0.0"
+
+      - name: Set up Gradle 9.6.0
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.6.0'
+
+      - name: Validate Android
+        working-directory: mobile/android
+        env:
+          VITR_CI_RELEASE_DEBUG_SIGNING: '1'
+        run: gradle --no-daemon --stacktrace :app:testDebugUnitTest :app:assembleRelease
+
+      - name: Verify clean tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          PATTERN='frxe|voidnont|VOID_|ChatGPT|OpenAI|Claude|Gemini|Copilot|\bLLM\b|artificial intelligence|AI[- ]generated|generated by AI|superpowers'
+          if grep -RniI -E "$PATTERN" .               --exclude-dir=.git               --exclude='package-lock.json'               --exclude='Cargo.lock'               --exclude='normalize-vitr-source.yml'               --exclude='repo-hygiene-audit.yml'; then
+            echo "Legacy/provenance marker remains."
+            exit 1
+          fi
+
+      - name: Commit normalized source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git reset .github/workflows/normalize-vitr-source.yml .github/workflows/repo-hygiene-audit.yml || true
+          if git diff --cached --quiet; then
+            echo "No source changes to commit."
+            exit 0
+          fi
+          git commit -m "refactor: normalize Vitr source identity"
+          git push origin HEAD:main
