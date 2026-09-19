@@ -442,10 +442,12 @@ window.__vitrApplyDeviceProfile = function(profile){
   if(checkClientUpdateButton)checkClientUpdateButton.addEventListener("click",function(){checkUpdates(false)});
   if(openClientUpdate)openClientUpdate.addEventListener("click",function(){if(backend&&backend.openReleasePage)backend.openReleasePage(latestReleaseUrl)});
 
+  function rememberSearch(q){q=String(q||"").trim();if(!q)return;var history=readJson("vitr-search-history",[]);history=[q].concat(history.filter(function(x){return String(x).toLowerCase()!==q.toLowerCase()})).slice(0,30);localStorage.setItem("vitr-search-history",JSON.stringify(history))}
   var searchTimer=0,searchSerial=0;
   async function searchVitr(q){
     q=(q||"").trim();lastSearchQuery=q;var trackHost=document.getElementById("searchTracks"),catalogHost=document.getElementById("searchCatalog");
     if(!q){catalogHost.innerHTML="";empty(trackHost,"Search Vitr","Type a song, artist, album, playlist or genre above.");return}
+    rememberSearch(q);
     var serial=++searchSerial;if(!backend){catalogHost.innerHTML="";empty(trackHost,"Backend unavailable","Restart Vitr and try again.");return}
     catalogHost.innerHTML="";trackHost.innerHTML='<div class="empty-state glass-soft">Searching Vitr…</div>';
     try{var catalog=backend.discover?await backend.discover(q,preferredEntityType()):{tracks:await backend.search(q),items:[],artists:[],albums:[],playlists:[],genres:[]};if(serial!==searchSerial)return;renderSearchResult(catalog)}
@@ -454,8 +456,26 @@ window.__vitrApplyDeviceProfile = function(profile){
   function queueSearch(value){clearTimeout(searchTimer);searchTimer=setTimeout(function(){searchVitr(value)},320)}
   document.getElementById("searchInput").addEventListener("input",function(e){queueSearch(e.target.value)});document.getElementById("globalSearch").addEventListener("input",function(e){switchTab("search");document.getElementById("searchInput").value=e.target.value;queueSearch(e.target.value)});document.querySelectorAll("[data-search-kind]").forEach(function(btn){btn.addEventListener("click",function(){setActiveSearchKind(btn.dataset.searchKind);var q=document.getElementById("searchInput").value.trim()||lastSearchQuery||"music";if(!document.getElementById("searchInput").value.trim())document.getElementById("searchInput").value=q;searchVitr(q)})});
 
-  async function loadDiscovery(){var featured=document.getElementById("featuredTracks");if(!backend){empty(featured,"Backend unavailable","Restart Vitr and try again.");return}try{var results=await backend.search("music");discoveryTracks=(results||[]).slice(0,12);renderCards(discoveryTracks,featured);renderTrending(discoveryTracks);var hero=document.getElementById("heroPlay");hero.disabled=!discoveryTracks.length;hero.onclick=function(){if(discoveryTracks[0])openTrack(discoveryTracks[0],discoveryTracks)}}catch(error){empty(featured,"Discovery unavailable",error&&error.message||"Backend error");renderTrending([])}}
-  function init(){backend=window.vitrPlatformBackend||backend;applyLanguage();document.getElementById("searchCatalog").innerHTML="";empty(document.getElementById("searchTracks"),"Search Vitr","Type a song, artist, album, playlist or genre above.");renderLibrary();loadLibrary();loadHistory();loadDiscovery();refreshRuntimeStatus();if(autoUpdateCheck&&autoUpdateCheck.checked)checkUpdates(true);if(backend)backend.state().then(applyPlayerState).catch(function(){});setInterval(function(){if(backend)backend.state().then(applyPlayerState).catch(function(){})},700)}
+  function recommendationSeeds(){
+    var seeds=[],seen={};function add(value){value=String(value||"").trim();var k=value.toLowerCase();if(!value||seen[k])return;seen[k]=1;seeds.push(value)}
+    libraryTracks.slice(0,6).forEach(function(t){add(t.artist);add(t.album)});
+    historyTracks.slice(0,10).forEach(function(t){add(t.artist)});
+    readJson("vitr-search-history",[]).slice(0,5).forEach(add);
+    if(!seeds.length)add("music");
+    return seeds.slice(0,4);
+  }
+  async function loadRecommendations(){
+    var host=document.getElementById("recommendedTracks");if(!host||!backend)return;
+    var seeds=recommendationSeeds(),recent=historyTracks.slice(0,8).map(function(t){return key(t,0)});
+    try{
+      var batches=await Promise.all(seeds.map(function(seed){return backend.search(seed+" music").catch(function(){return []})})),seen={},recommended=[];
+      batches.forEach(function(list){(list||[]).forEach(function(t){var k=key(t,0);if(seen[k]||recent.indexOf(k)>=0)return;seen[k]=1;recommended.push(t)})});
+      if(!recommended.length)recommended=(await backend.search("music discovery").catch(function(){return []})).slice(0,10);
+      renderCards(recommended.slice(0,10),host);var why=document.getElementById("recommendationWhy");if(why)why.textContent=seeds[0]==="music"?"Fresh discovery":"Because you listen to "+seeds.slice(0,2).join(" · ");
+    }catch(e){empty(host,"Recommendations unavailable","Play, like, or search for music to build your recommendations.")}
+  }
+  async function loadDiscovery(){var featured=document.getElementById("featuredTracks");if(!backend){empty(featured,"Backend unavailable","Restart Vitr and try again.");return}try{var results=await backend.search("music");discoveryTracks=(results||[]).slice(0,12);renderCards(discoveryTracks,featured);renderTrending(discoveryTracks);var hero=document.getElementById("heroPlay");hero.disabled=!discoveryTracks.length;hero.onclick=function(){if(discoveryTracks[0])openTrack(discoveryTracks[0],discoveryTracks)};loadRecommendations()}catch(error){empty(featured,"Discovery unavailable",error&&error.message||"Backend error");renderTrending([])}}
+  function init(){backend=window.vitrPlatformBackend||backend;applyLanguage();syncPillSetting();document.getElementById("searchCatalog").innerHTML="";empty(document.getElementById("searchTracks"),"Search Vitr","Type a song, artist, album, playlist or genre above.");renderLibrary();loadLibrary();loadHistory();loadDiscovery();refreshRuntimeStatus();if(autoUpdateCheck&&autoUpdateCheck.checked)checkUpdates(true);if(backend)backend.state().then(applyPlayerState).catch(function(){});setInterval(function(){if(backend)backend.state().then(applyPlayerState).catch(function(){})},700)}
   if(backend)init();else window.addEventListener("vitr-backend-ready",init,{once:true});
 })();
 </script>
