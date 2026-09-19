@@ -3,7 +3,7 @@ package com.frxe.music.ui.gestures
 import android.content.Context
 
 object PlayerGesturePreferences {
-    private const val PREFS = "frxe_player_prefs"
+    private const val PREFS = "vitr_player_prefs"
     private const val KEY_ENABLED = "player_gestures_enabled"
 
     fun enabled(context: Context): Boolean =
