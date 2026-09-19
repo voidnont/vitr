@@ -219,8 +219,8 @@ body[data-window-class="wide"] .library-grid{grid-template-columns:repeat(4,minm
         <div class="setting-row glass-soft"><div><h3>Download format</h3><p>Used by the Download button and remembered until you change it.</p></div><select id="downloadFormat" class="setting-select"><option value="m4a">M4A</option><option value="mp3">MP3</option><option value="flac">FLAC</option><option value="wav">WAV</option></select></div>
         <div class="setting-row glass-soft"><div><h3>Language</h3><p id="languageStatus">Auto-detecting your system language.</p></div><select id="languageSelect" class="setting-select"><option value="auto">Auto (system)</option><option value="en">English</option><option value="de">Deutsch</option><option value="fr">Français</option><option value="it">Italiano</option><option value="es">Español</option><option value="pt">Português</option><option value="ja">日本語</option><option value="ko">한국어</option></select></div>
         <div class="setting-row glass-soft"><div><h3>Runtime dependencies</h3><p id="runtimeStatus">Checking yt-dlp / FFmpeg / Deno runtime…</p></div><button id="runtimeUpdate" class="link-pill" type="button">Update runtime</button></div>
-        <div class="setting-row glass-soft"><div><h3>Client updates</h3><p id="clientUpdateStatus">Automatically checks github.com/bloodvitr/vitr releases.</p><label class="setting-check"><input id="autoUpdateCheck" type="checkbox" checked> Auto-detect updates</label></div><div class="setting-links"><button id="checkClientUpdate" class="link-pill" type="button">Check now</button><button id="openClientUpdate" class="link-pill" type="button">Releases</button></div></div>
-        <div class="setting-row glass-soft"><div><h3>Version</h3><p>Native backend build</p></div><strong>0.3.0</strong></div>
+        <div class="setting-row glass-soft"><div><h3>Client updates</h3><p id="clientUpdateStatus">Automatically checks github.com/bloodvitr/vitr releases.</p><label class="setting-check"><input id="autoUpdateCheck" type="checkbox" checked> Auto-detect and install updates</label></div><div class="setting-links"><button id="checkClientUpdate" class="link-pill" type="button">Check now</button><button id="openClientUpdate" class="link-pill" type="button">Releases</button></div></div>
+        <div class="setting-row glass-soft"><div><h3>Version</h3><p>Native backend build</p></div><strong>0.3.1</strong></div>
         <div class="setting-row glass-soft"><div><h3>Blood</h3><p>Creator and maintainer of Vitr.</p></div><div class="setting-links"><a class="link-pill brand-link" href="https://github.com/bloodvitr" target="_blank" rel="noreferrer"><svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .7a11.3 11.3 0 0 0-3.57 22c.56.1.77-.24.77-.54v-2.1c-3.13.69-3.79-1.36-3.79-1.36-.51-1.33-1.25-1.68-1.25-1.68-1.03-.71.08-.7.08-.7 1.13.08 1.73 1.18 1.73 1.18 1.01 1.76 2.65 1.25 3.3.96.1-.75.39-1.25.72-1.54-2.5-.29-5.13-1.27-5.13-5.64 0-1.25.44-2.27 1.16-3.07-.12-.29-.5-1.46.11-3.04 0 0 .95-.31 3.1 1.17A10.6 10.6 0 0 1 12 6c.96 0 1.93.13 2.83.38 2.15-1.48 3.1-1.17 3.1-1.17.62 1.58.23 2.75.12 3.04.72.8 1.16 1.82 1.16 3.07 0 4.38-2.64 5.34-5.15 5.62.4.35.76 1.04.76 2.11v3.12c0 .3.2.65.78.54A11.3 11.3 0 0 0 12 .7Z"/></svg><span>github.com/bloodvitr</span></a><a class="link-pill brand-link" href="https://ko-fi.com/bloodvitr" target="_blank" rel="noreferrer"><svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 5.5h13.8v8.4A5.1 5.1 0 0 1 11.7 19H8.1A5.1 5.1 0 0 1 3 13.9V5.5Zm13.8 2.1h1.5a3.7 3.7 0 0 1 0 7.4h-2v-2h2a1.7 1.7 0 1 0 0-3.4h-1.5v-2ZM6.2 9.1c0-1.7 2.1-2.5 3.2-1.2l.5.6.5-.6c1.1-1.3 3.2-.5 3.2 1.2 0 .6-.2 1.1-.6 1.5l-3.1 3-3.1-3c-.4-.4-.6-.9-.6-1.5Z"/></svg><span>ko-fi.com/bloodvitr</span></a></div></div>
       </div>
     </section>
@@ -280,7 +280,7 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
   var overlay=document.getElementById("playerOverlay"),pt=document.getElementById("playerTitle"),pa=document.getElementById("playerArtist"),audio=document.getElementById("vitrAudio"),playToggle=document.getElementById("playToggle"),art=document.getElementById("playerArt"),artImg=document.getElementById("playerArtwork"),progress=document.getElementById("playerProgress"),volumeSlider=document.getElementById("volumeSlider"),volumeValue=document.getElementById("volumeValue"),volumeIcon=document.getElementById("volumeIcon");
   var appPill=document.getElementById("appPill"),pillArtwork=document.getElementById("pillArtwork"),pillTitle=document.getElementById("pillTitle"),pillArtist=document.getElementById("pillArtist"),pillPlay=document.getElementById("pillPlay"),playerLyrics=document.getElementById("playerLyrics"),shuffleToggle=document.getElementById("shuffleToggle"),repeatToggle=document.getElementById("repeatToggle"),playerMiniToggle=document.getElementById("playerMiniToggle"),miniPlayerSetting=document.getElementById("miniPlayerSetting");
   var shuffleEnabled=localStorage.getItem("vitr-shuffle")==="true",repeatMode=localStorage.getItem("vitr-repeat-mode")||"off",currentLyrics=null;
-  var downloadFormat=document.getElementById("downloadFormat"),downloadTrack=document.getElementById("downloadTrack"),downloadStatus=document.getElementById("downloadStatus"),runtimeUpdate=document.getElementById("runtimeUpdate"),runtimeStatus=document.getElementById("runtimeStatus"),languageSelect=document.getElementById("languageSelect"),languageStatus=document.getElementById("languageStatus"),autoUpdateCheck=document.getElementById("autoUpdateCheck"),checkClientUpdateButton=document.getElementById("checkClientUpdate"),openClientUpdate=document.getElementById("openClientUpdate"),clientUpdateStatus=document.getElementById("clientUpdateStatus"),latestReleaseUrl="https://github.com/bloodvitr/vitr/releases";
+  var downloadFormat=document.getElementById("downloadFormat"),downloadTrack=document.getElementById("downloadTrack"),downloadStatus=document.getElementById("downloadStatus"),runtimeUpdate=document.getElementById("runtimeUpdate"),runtimeStatus=document.getElementById("runtimeStatus"),languageSelect=document.getElementById("languageSelect"),languageStatus=document.getElementById("languageStatus"),autoUpdateCheck=document.getElementById("autoUpdateCheck"),checkClientUpdateButton=document.getElementById("checkClientUpdate"),openClientUpdate=document.getElementById("openClientUpdate"),clientUpdateStatus=document.getElementById("clientUpdateStatus"),latestReleaseUrl="https://github.com/bloodvitr/vitr/releases",latestUpdateStatus=null;
 
   function esc(value){return String(value==null?"":value).replace(/[&<>"']/g,function(ch){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[ch]})}
   function clock(value){value=Math.max(0,Math.floor(Number(value)||0));return Math.floor(value/60)+":"+String(value%60).padStart(2,"0")}
@@ -536,13 +536,30 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
     runtimeUpdate.disabled=false;
   });
 
+  async function installUpdate(){
+    if(!backend||!backend.installClientUpdate)return false;
+    openClientUpdate.disabled=true;
+    clientUpdateStatus.textContent="Downloading and installing Vitr update…";
+    try{
+      var message=await backend.installClientUpdate();
+      clientUpdateStatus.textContent=message||"Vitr update installer started.";
+      return true;
+    }catch(e){
+      clientUpdateStatus.textContent=e&&e.message||"Automatic update failed. Open Releases to install manually.";
+      openClientUpdate.textContent="Releases";
+      return false;
+    }finally{
+      openClientUpdate.disabled=false;
+    }
+  }
   async function checkUpdates(silent){
     if(!backend||!backend.checkClientUpdate)return;
     if(!silent)clientUpdateStatus.textContent="Checking Vitr releases…";
     try{
-      var s=await backend.checkClientUpdate();latestReleaseUrl=s.releaseUrl||latestReleaseUrl;
+      var s=await backend.checkClientUpdate();latestUpdateStatus=s;latestReleaseUrl=s.releaseUrl||latestReleaseUrl;
       clientUpdateStatus.textContent=s.updateAvailable?("Vitr "+s.latestVersion+" is available."):"Vitr "+s.currentVersion+" is up to date.";
-      openClientUpdate.textContent=s.updateAvailable?("Get "+s.latestVersion):"Releases";
+      openClientUpdate.textContent=s.updateAvailable?("Install "+s.latestVersion):"Releases";
+      if(s.updateAvailable&&silent&&autoUpdateCheck&&autoUpdateCheck.checked)await installUpdate();
     }catch(e){if(!silent)clientUpdateStatus.textContent=e&&e.message||"Update check failed."}
   }
   if(autoUpdateCheck){
@@ -550,7 +567,12 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
     autoUpdateCheck.addEventListener("change",function(){localStorage.setItem("vitr-auto-update-check",autoUpdateCheck.checked?"true":"false")});
   }
   if(checkClientUpdateButton)checkClientUpdateButton.addEventListener("click",function(){checkUpdates(false)});
-  if(openClientUpdate)openClientUpdate.addEventListener("click",function(){if(backend&&backend.openReleasePage)backend.openReleasePage(latestReleaseUrl).catch(function(){})});
+  if(openClientUpdate)openClientUpdate.addEventListener("click",async function(){
+    if(latestUpdateStatus&&latestUpdateStatus.updateAvailable&&backend&&backend.installClientUpdate){
+      if(await installUpdate())return;
+    }
+    if(backend&&backend.openReleasePage)backend.openReleasePage(latestReleaseUrl).catch(function(){});
+  });
 
   if(downloadTrack)downloadTrack.addEventListener("click",async function(){
     if(!backend||!currentTrack||!currentTrack.id){downloadStatus.textContent="Play a track first.";return}
