@@ -1,9 +1,9 @@
-package com.frxe.music.source
+package com.bloodvitr.vitr.source
 
 import android.content.Context
 import android.net.Uri
-import com.frxe.music.model.Track
-import com.frxe.music.playback.PreferredPlaybackSource
+import com.bloodvitr.vitr.model.Track
+import com.bloodvitr.vitr.playback.PreferredPlaybackSource
 import java.io.File
 
 internal object DownloadedTrackIdentity {
@@ -119,7 +119,7 @@ internal object DownloadedTrackRegistry {
             }
 
         if (videoId != null) {
-            return "frxe-catalog://youtube/$videoId"
+            return "vitr-catalog://youtube/$videoId"
         }
 
         return track.streamUrl

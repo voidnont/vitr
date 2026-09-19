@@ -1,4 +1,4 @@
-package com.frxe.music.source
+package com.bloodvitr.vitr.source
 
 import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.CancellationException

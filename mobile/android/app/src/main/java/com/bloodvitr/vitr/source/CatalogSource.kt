@@ -1,7 +1,7 @@
-package com.frxe.music.source
+package com.bloodvitr.vitr.source
 
-import com.frxe.music.model.HomeSection
-import com.frxe.music.model.Track
+import com.bloodvitr.vitr.model.HomeSection
+import com.bloodvitr.vitr.model.Track
 
 interface CatalogSource {
     suspend fun home(): List<HomeSection>

@@ -1,4 +1,4 @@
-package com.frxe.music.source
+package com.bloodvitr.vitr.source
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -134,7 +134,7 @@ object PlaybackResolutionMonitor {
             trackId = trackId ?: current.trackId,
             stage = PlaybackResolutionStage.Failed,
             message = message.ifBlank {
-                "Frxe could not start this audio stream."
+                "Vitr could not start this audio stream."
             },
             resolver = current.resolver
         )

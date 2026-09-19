@@ -1,4 +1,4 @@
-package com.frxe.music.social
+package com.bloodvitr.vitr.social
 
 /** Pure synchronization state shared by all Listen Together transports. */
 data class SharedPlaybackState(

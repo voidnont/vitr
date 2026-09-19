@@ -1,4 +1,4 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
 import java.net.URI
 
@@ -17,7 +17,7 @@ fun outputFileName(title: String, format: SaveFormat): String {
         .replace(Regex("[\\\\/:*?\"<>|]"), "_")
         .replace(Regex("\\s+"), " ")
         .trim('.', ' ')
-        .ifBlank { "Frxe export" }
+        .ifBlank { "Vitr export" }
         .take(120)
     return "$cleaned.${format.extension}"
 }

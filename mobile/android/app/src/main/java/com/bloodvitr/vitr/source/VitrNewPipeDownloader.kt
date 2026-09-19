@@ -1,4 +1,4 @@
-package com.frxe.music.source
+package com.bloodvitr.vitr.source
 
 import java.util.concurrent.TimeUnit
 import okhttp3.MediaType.Companion.toMediaType
@@ -10,7 +10,7 @@ import org.schabi.newpipe.extractor.downloader.Request
 import org.schabi.newpipe.extractor.downloader.Response
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException
 
-internal object FrxeNewPipeDownloader : Downloader() {
+internal object VitrNewPipeDownloader : Downloader() {
     private val client = OkHttpClient.Builder()
         .connectTimeout(15, TimeUnit.SECONDS)
         .readTimeout(20, TimeUnit.SECONDS)
@@ -70,7 +70,7 @@ internal object FrxeNewPipeDownloader : Downloader() {
     }
 }
 
-internal object FrxeNewPipeRuntime {
+internal object VitrNewPipeRuntime {
     private val initLock = Any()
 
     @Volatile
@@ -83,7 +83,7 @@ internal object FrxeNewPipeRuntime {
             if (initialized) return
 
             org.schabi.newpipe.extractor.NewPipe.init(
-                FrxeNewPipeDownloader
+                VitrNewPipeDownloader
             )
 
             initialized = true

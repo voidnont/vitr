@@ -1,4 +1,4 @@
-package com.frxe.music.source
+package com.bloodvitr.vitr.source
 
 internal object PlaybackRecoveryDecision {
     fun shouldRefreshAndRetry(

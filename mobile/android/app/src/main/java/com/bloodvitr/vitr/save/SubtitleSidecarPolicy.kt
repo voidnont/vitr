@@ -1,4 +1,4 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
 import java.io.File
 
@@ -11,11 +11,11 @@ object SubtitleSidecarPolicy {
     fun destinationName(title: String, source: File): String {
         val safeTitle = title
             .trim()
-            .ifBlank { "Frxe" }
+            .ifBlank { "Vitr" }
             .replace(Regex("[^A-Za-z0-9._ -]+"), "_")
             .trim()
             .take(80)
-            .ifBlank { "Frxe" }
+            .ifBlank { "Vitr" }
         val safeSource = source.name
             .replace(Regex("[^A-Za-z0-9._-]+"), "_")
             .takeLast(100)

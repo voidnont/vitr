@@ -1,4 +1,4 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
 import android.content.ContentValues
 import android.content.Context
@@ -6,7 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import com.frxe.music.BuildConfig
+import com.bloodvitr.vitr.BuildConfig
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -74,7 +74,7 @@ internal class ZexlSaveEngine(
             job = JSONObject(requestJsonRetrying("/api/jobs/$id", "GET", null))
         }
 
-        val temp = File.createTempFile("frxe-zexl-", ".${request.format.extension}", context.cacheDir)
+        val temp = File.createTempFile("vitr-zexl-", ".${request.format.extension}", context.cacheDir)
         try {
             downloadFileRetrying("/api/jobs/$id/file", temp) { fraction ->
                 onState(
@@ -90,14 +90,14 @@ internal class ZexlSaveEngine(
                 SaveUiState(
                     stage = SaveStage.Exporting,
                     progress = 0.96f,
-                    message = "Saving to Music/Frxe",
+                    message = "Saving to Music/Vitr",
                     backend = DownloadBackend.Zexl
                 )
             )
             val uri = export(temp, request)
             val result = SaveResult(
                 uri = uri.toString(),
-                title = request.title.ifBlank { job.optString("title").ifBlank { "Frxe export" } },
+                title = request.title.ifBlank { job.optString("title").ifBlank { "Vitr export" } },
                 artist = request.artist.ifBlank { "Unknown artist" },
                 format = request.format
             )
@@ -105,7 +105,7 @@ internal class ZexlSaveEngine(
                 SaveUiState(
                     stage = SaveStage.Complete,
                     progress = 1f,
-                    message = "Saved to Music/Frxe",
+                    message = "Saved to Music/Vitr",
                     savedUri = result.uri,
                     savedTitle = result.title,
                     backend = DownloadBackend.Zexl
@@ -213,7 +213,7 @@ internal class ZexlSaveEngine(
             requestMethod = method
             connectTimeout = 90_000
             readTimeout = 90_000
-            setRequestProperty("User-Agent", "Frxe/${BuildConfig.VERSION_NAME}")
+            setRequestProperty("User-Agent", "Vitr/${BuildConfig.VERSION_NAME}")
             apiKey?.takeIf { it.isNotBlank() }?.let { setRequestProperty("Authorization", "Bearer $it") }
         }
 
@@ -223,9 +223,9 @@ internal class ZexlSaveEngine(
             val values = ContentValues().apply {
                 put(MediaStore.Audio.Media.DISPLAY_NAME, displayName)
                 put(MediaStore.Audio.Media.MIME_TYPE, request.format.mimeType)
-                put(MediaStore.Audio.Media.TITLE, request.title.ifBlank { "Frxe export" })
+                put(MediaStore.Audio.Media.TITLE, request.title.ifBlank { "Vitr export" })
                 put(MediaStore.Audio.Media.ARTIST, request.artist.ifBlank { "Unknown artist" })
-                put(MediaStore.Audio.Media.RELATIVE_PATH, "${Environment.DIRECTORY_MUSIC}/Frxe")
+                put(MediaStore.Audio.Media.RELATIVE_PATH, "${Environment.DIRECTORY_MUSIC}/Vitr")
                 put(MediaStore.Audio.Media.IS_PENDING, 1)
             }
             val resolver = context.contentResolver
@@ -245,7 +245,7 @@ internal class ZexlSaveEngine(
         }
 
         val root = context.getExternalFilesDir(Environment.DIRECTORY_MUSIC) ?: context.filesDir
-        val directory = File(root, "Frxe").apply { mkdirs() }
+        val directory = File(root, "Vitr").apply { mkdirs() }
         val destination = File(directory, displayName)
         source.copyTo(destination, overwrite = true)
         return Uri.fromFile(destination)

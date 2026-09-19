@@ -1,4 +1,4 @@
-package com.frxe.music.social
+package com.bloodvitr.vitr.social
 
 import android.content.Context
 import android.net.wifi.WifiManager
@@ -112,7 +112,7 @@ class ListenTogetherManager(
 
         runCatching {
             val wifi = app.getSystemService(Context.WIFI_SERVICE) as? WifiManager
-            multicastLock = wifi?.createMulticastLock("frxe-listen-together")?.apply {
+            multicastLock = wifi?.createMulticastLock("vitr-listen-together")?.apply {
                 setReferenceCounted(false)
                 acquire()
             }

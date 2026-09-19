@@ -1,4 +1,4 @@
-package com.frxe.music.source
+package com.bloodvitr.vitr.source
 
 class CatalogSearchCache<T>(
     private val ttlMs: Long,

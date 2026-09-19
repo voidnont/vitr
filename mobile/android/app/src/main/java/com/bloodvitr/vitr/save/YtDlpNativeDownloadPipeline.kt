@@ -1,9 +1,9 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
 import android.content.Context
-import com.frxe.music.ytdlp.YtDlpCore
-import com.frxe.music.ytdlp.YtDlpDownloadRequest
-import com.frxe.music.ytdlp.YtDlpMediaKind
+import com.bloodvitr.vitr.ytdlp.YtDlpCore
+import com.bloodvitr.vitr.ytdlp.YtDlpDownloadRequest
+import com.bloodvitr.vitr.ytdlp.YtDlpMediaKind
 import java.io.File
 import kotlinx.coroutines.CancellationException
 
@@ -11,8 +11,8 @@ internal class YtDlpNativeDownloadPipeline(
     context: Context
 ) {
     private val appContext = context.applicationContext
-    private val saveEngine = FrxeSaveEngine(appContext)
-    private val subtitleExporter = FrxeSubtitleSidecarExporter(appContext)
+    private val saveEngine = VitrSaveEngine(appContext)
+    private val subtitleExporter = VitrSubtitleSidecarExporter(appContext)
 
     @Volatile private var activeItemId: String? = null
     @Volatile private var activeProcessId: String? = null
@@ -96,9 +96,9 @@ internal class YtDlpNativeDownloadPipeline(
             .take(96)
             .ifBlank { "download" }
 
-    private fun processId(itemId: String): String = "frxe-download-${safeItemId(itemId)}"
+    private fun processId(itemId: String): String = "vitr-download-${safeItemId(itemId)}"
 
     private companion object {
-        const val WORK_ROOT = "frxe-native-downloads"
+        const val WORK_ROOT = "vitr-native-downloads"
     }
 }

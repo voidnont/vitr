@@ -1,10 +1,10 @@
-package com.frxe.music.source
+package com.bloodvitr.vitr.source
 
-import com.frxe.music.model.Track
-import com.frxe.music.playback.AudioOnlyPlaybackPolicy
-import com.frxe.music.playback.PlaybackPrefetchCache
-import com.frxe.music.playback.ResolvedStreamRequestHeaders
-import com.frxe.music.updates.YtDlpRuntimeUpdater
+import com.bloodvitr.vitr.model.Track
+import com.bloodvitr.vitr.playback.AudioOnlyPlaybackPolicy
+import com.bloodvitr.vitr.playback.PlaybackPrefetchCache
+import com.bloodvitr.vitr.playback.ResolvedStreamRequestHeaders
+import com.bloodvitr.vitr.updates.YtDlpRuntimeUpdater
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -210,7 +210,7 @@ class PlaybackStreamResolver {
 
     companion object {
         private const val YOUTUBE_CATALOG_PREFIX =
-            "frxe-catalog://youtube/"
+            "vitr-catalog://youtube/"
 
         fun youtubeVideoId(
             value: String?
