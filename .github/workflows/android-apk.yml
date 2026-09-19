@@ -59,7 +59,7 @@ jobs:
           APK="mobile/android/app/build/outputs/apk/release/app-release.apk"
           test -f "$APK"
           "$ANDROID_HOME/build-tools/37.0.0/aapt" dump badging "$APK" | tee /tmp/vitr-apk-badging.txt
-          grep -F "package: name='com.frxe.music' versionCode='1' versionName='0.1.0'" /tmp/vitr-apk-badging.txt
+          grep -F "package: name='com.bloodvitr.vitr' versionCode='1' versionName='0.1.0'" /tmp/vitr-apk-badging.txt
           cp "$APK" "Vitr-0.1.0-android.apk"
 
       - name: Upload Vitr APK
