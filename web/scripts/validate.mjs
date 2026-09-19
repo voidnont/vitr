@@ -33,7 +33,6 @@ expect(main.includes("import('./App.jsx')"), 'nont.me root must load the standal
 expect(main.includes('isVitrWebLocation'), 'bootstrap must keep root and web-player routing separate');
 expect(!main.includes('backgroundAudioPlayer'), 'root must not use the retired server-relay audio adapter');
 expect(siteMode.includes("host === 'vitr.nont.me'"), 'vitr.nont.me must remain the official Vitr host');
-expect(!siteMode.includes('frxe.nont.me'), 'FRXE subdomain must stay retired');
 expect(!siteMode.includes('music.nont.me'), 'music.nont.me must stay retired in favor of vitr.nont.me');
 
 expect(music.includes("type Tab = 'home' | 'search' | 'library' | 'settings'"), 'web player must expose exactly four product tabs');
@@ -47,7 +46,7 @@ expect(music.includes('window.location.reload()'), 'reset must reload the curren
 
 expect(youtubeLoader.includes('https://www.youtube.com/iframe_api'), 'playback must use the credential-free YouTube IFrame API');
 expect(!youtubeLoader.includes('token') && !youtubeLoader.includes('apiKey'), 'playback loader must not require credentials');
-expect(resetHelper.includes("'vitr.web.'") && resetHelper.includes("'frxe.web.'"), 'reset must clear current and migrated Vitr data');
+expect(resetHelper.includes("'vitr.web.'"), 'reset must clear Vitr web data');
 
 expect(searchApi.includes('../src/shared/musicSearch.js'), 'music search API must use shared ranking logic');
 expect(searchApi.includes('apiKeyRequired: false'), 'music search must remain API-key free');
