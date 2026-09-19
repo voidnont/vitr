@@ -28,5 +28,13 @@ android {
             res.setSrcDirs(listOf("src/standalone/res"))
             assets.setSrcDirs(listOf("src/standalone/assets"))
         }
+        getByName("test") {
+            java.setSrcDirs(emptyList<String>())
+            resources.setSrcDirs(emptyList<String>())
+        }
+        getByName("androidTest") {
+            java.setSrcDirs(emptyList<String>())
+            res.setSrcDirs(emptyList<String>())
+        }
     }
 }
