@@ -5,6 +5,10 @@ on:
     branches: [ main ]
     paths:
       - VERSION
+      - 'desktop/**'
+      - 'mobile/**'
+      - 'scripts/sync-version.mjs'
+      - 'package.json'
       - '.github/workflows/release-all.yml'
   pull_request:
     branches: [ main ]
