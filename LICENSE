@@ -25,10 +25,18 @@ The attribution and both links must be present in the modified application on
 every platform, operating system, device type, build, edition, and version on
 which that modified application is made available.
 
-The attribution may be placed in a reasonable location such as an About,
-Credits, Support, Settings, Help, or similar screen, provided that an ordinary
-user of the application can access it without modifying the application or its
-files.
+The attribution MUST appear visibly in the application's Settings screen.
+The Settings screen must visibly display "Blood" and both of these exact URLs:
+
+GitHub: https://github.com/bloodvitr
+Ko-fi:  https://ko-fi.com/bloodvitr
+
+Both URLs must be functional clickable or tappable links. This Settings
+attribution requirement applies to every modified version, fork, build,
+edition, platform, operating system, and device type on which the application
+is made available. Placing the attribution only in source files, documentation,
+an About page, a website, release notes, or another screen does not satisfy this
+requirement unless it is also present in Settings.
 
 The attribution and links may not be removed, hidden, intentionally obscured,
 made unreadable, replaced with misleading destinations, or restricted to only

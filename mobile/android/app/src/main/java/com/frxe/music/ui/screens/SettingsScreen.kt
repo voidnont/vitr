@@ -827,7 +827,7 @@ fun SettingsScreen(
                 )
 
                 Text(
-                    "Support Vitr or follow Vitr development.",
+                    "Blood · creator and maintainer of Vitr.",
                     color =
                         MaterialTheme
                             .colorScheme
@@ -861,7 +861,7 @@ fun SettingsScreen(
                             Icons.Default.OpenInNew,
                             contentDescription = null
                         )
-                        Text("  Ko-fi")
+                        Text("  Blood · Ko-fi")
                     }
 
                     OutlinedButton(
@@ -882,12 +882,12 @@ fun SettingsScreen(
                             Icons.Default.OpenInNew,
                             contentDescription = null
                         )
-                        Text("  GitHub")
+                        Text("  Blood · GitHub")
                     }
                 }
 
                 Text(
-                    "ko-fi.com/bloodvitr · github.com/bloodvitr/vitr",
+                    "Blood · github.com/bloodvitr · ko-fi.com/bloodvitr",
                     color =
                         MaterialTheme
                             .colorScheme

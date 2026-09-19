@@ -304,7 +304,7 @@ export function createView({
 
         <section class="settings-card glass about-card">
           <img class="brand-mark large" src="./vitr-icon.svg" alt="" aria-hidden="true" draggable="false" />
-          <div><span>ABOUT</span><h2>vitr 0.1.0</h2><p>Made with ♥ by blood.</p><div class="support-links"><a class="support-pill pill" href="https://github.com/bloodvitr/vitr" data-external="https://github.com/bloodvitr/vitr">Support</a><a class="support-pill pill" href="https://github.com/bloodvitr/vitr/releases" data-external="https://github.com/bloodvitr/vitr/releases">Releases</a><a class="support-pill pill ko-fi" href="https://ko-fi.com/bloodvitr" data-external="https://ko-fi.com/bloodvitr">Ko-fi</a></div></div>
+          <div><span>ABOUT</span><h2>vitr 0.1.0</h2><p>Made with ♥ by Blood.</p><div class="support-links"><a class="support-pill pill" href="https://github.com/bloodvitr" data-external="https://github.com/bloodvitr">Blood · GitHub · github.com/bloodvitr</a><a class="support-pill pill ko-fi" href="https://ko-fi.com/bloodvitr" data-external="https://ko-fi.com/bloodvitr">Blood · Ko-fi · ko-fi.com/bloodvitr</a><a class="support-pill pill" href="https://github.com/bloodvitr/vitr/releases" data-external="https://github.com/bloodvitr/vitr/releases">Releases</a></div></div>
         </section>
 
         <section class="settings-card glass reset-card">

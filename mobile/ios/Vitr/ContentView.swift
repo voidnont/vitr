@@ -62,19 +62,15 @@ private struct VitrInfoView: View {
                     }
                 }
 
-                Section("Links") {
-                    Button("Support Vitr on GitHub") {
-                        openURL(VitrLinks.support)
-                    }
-                    Button("Donate on Ko-fi") {
-                        openURL(VitrLinks.donation)
-                    }
+                Section("Blood") {
+                    Link("github.com/bloodvitr", destination: VitrLinks.support)
+                    Link("ko-fi.com/bloodvitr", destination: VitrLinks.donation)
                     Button("Open releases") {
                         openURL(VitrLinks.releasesPage)
                     }
                 }
             }
-            .navigationTitle("Vitr")
+            .navigationTitle("Settings")
         }
         .preferredColorScheme(.dark)
     }
