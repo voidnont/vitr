@@ -171,3 +171,26 @@ test('mobile web player has no page-level horizontal overflow', async ({ page })
   await expect(page.locator('.frxe-nav')).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
+
+
+test('Vitr Web adapts to compact windows without horizontal overflow', async ({ page }) => {
+  for (const viewport of [{ width: 1180, height: 720 }, { width: 960, height: 680 }, { width: 720, height: 700 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    await page.goto('/music');
+    await expect(page.getByRole('heading', { name: 'VITR' })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+  }
+});
+
+test('Search header and search bar stay visible while results scroll', async ({ page }) => {
+  await page.setViewportSize({ width: 1008, height: 678 });
+  await page.goto('/music');
+  await page.locator('.frxe-nav').getByRole('button', { name: 'Search' }).click();
+  await page.getByRole('textbox', { name: 'Search VITR' }).fill('Signal');
+  await page.getByRole('button', { name: 'Search music' }).click();
+  await expect(page.locator('.frxe069-sticky-search')).toBeVisible();
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  const top = await page.locator('.frxe069-sticky-search').evaluate((node) => node.getBoundingClientRect().top);
+  expect(top).toBeGreaterThanOrEqual(0);
+  expect(top).toBeLessThan(40);
+});

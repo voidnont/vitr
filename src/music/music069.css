@@ -43,3 +43,163 @@
 .frxe069-version{border-color:rgba(184,202,229,.12)}
 .frxe069-version strong{color:#fff}
 .frxe069-modal-backdrop{background:rgba(3,6,12,.76);backdrop-filter:blur(14px)}
+
+
+/* Sticky translucent web-player headers + fluid window sizing */
+.frxe069-app{
+  --frxe-sidebar-width:clamp(176px,18vw,218px);
+  width:100%;
+  max-width:100vw;
+  overflow-x:clip;
+  overflow-y:visible;
+}
+.frxe069-app .frxe069-stage{
+  min-width:0;
+}
+.frxe069-sticky-search,
+.frxe069-sticky-title{
+  position:sticky;
+  top:max(8px,env(safe-area-inset-top));
+  z-index:72;
+}
+.frxe069-sticky-search{
+  margin:0 0 20px;
+  padding:10px;
+  border:1px solid rgba(214,228,250,.16);
+  border-radius:20px;
+  background:rgba(5,8,17,.50);
+  backdrop-filter:blur(22px) saturate(1.16);
+  -webkit-backdrop-filter:blur(22px) saturate(1.16);
+  box-shadow:0 14px 42px rgba(0,0,0,.18);
+}
+.frxe069-sticky-search .frxe069-page-title{
+  margin:0 0 10px;
+  padding:4px 6px 8px;
+}
+.frxe069-search-bar.frxe-search-glass{
+  margin:0;
+  background:rgba(11,18,30,.50)!important;
+  border-color:rgba(214,228,250,.20);
+  box-shadow:0 10px 34px rgba(0,0,0,.16);
+}
+.frxe069-sticky-title{
+  margin:0 0 24px!important;
+  padding:14px 16px!important;
+  border:1px solid rgba(214,228,250,.16);
+  border-radius:18px;
+  background:rgba(5,8,17,.50)!important;
+  backdrop-filter:blur(22px) saturate(1.16);
+  -webkit-backdrop-filter:blur(22px) saturate(1.16);
+  box-shadow:0 14px 42px rgba(0,0,0,.16);
+}
+.frxe069-page-title h2{
+  font-size:clamp(30px,4.2vw,52px);
+}
+.frxe069-page-title p{
+  max-width:min(720px,74vw);
+}
+.frxe069-search-columns{
+  grid-template-columns:minmax(0,1.35fr) minmax(220px,.65fr);
+}
+.frxe069-artist-grid{
+  grid-template-columns:repeat(auto-fit,minmax(min(138px,100%),1fr));
+}
+.frxe069-mix-grid{
+  grid-template-columns:repeat(auto-fit,minmax(min(154px,100%),1fr));
+}
+.frxe069-playlist-grid{
+  grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));
+}
+.frxe069-track-rail{
+  grid-auto-columns:clamp(138px,16vw,190px);
+}
+.frxe069-editor,
+.frxe069-settings,
+.frxe069-save,
+.frxe069-modal,
+.frxe069-search-columns>*{
+  min-width:0;
+}
+
+@media(min-width:901px){
+  .frxe069-app .frxe-nav{
+    width:var(--frxe-sidebar-width);
+  }
+  .frxe069-app .frxe-stage{
+    width:calc(100% - var(--frxe-sidebar-width));
+    max-width:none;
+    margin-left:var(--frxe-sidebar-width);
+    margin-right:0;
+    padding-left:clamp(18px,2.5vw,36px);
+    padding-right:clamp(18px,2.5vw,36px);
+  }
+  .frxe069-app .frxe-mini-player{
+    left:calc(var(--frxe-sidebar-width) + 24px);
+    right:24px;
+    width:auto;
+    max-width:760px;
+    margin-inline:auto;
+    transform:none;
+  }
+}
+@media(max-width:1100px) and (min-width:901px){
+  .frxe069-search-columns{
+    grid-template-columns:1fr;
+  }
+  .frxe069-page-title p{
+    max-width:62vw;
+  }
+}
+@media(max-width:900px){
+  .frxe069-app .frxe069-stage{
+    width:100%;
+    max-width:100%;
+    margin:0;
+    padding-left:clamp(10px,2.7vw,18px);
+    padding-right:clamp(10px,2.7vw,18px);
+  }
+  .frxe069-sticky-search,
+  .frxe069-sticky-title{
+    top:max(6px,env(safe-area-inset-top));
+  }
+  .frxe069-page-title p{
+    max-width:100%;
+  }
+}
+@media(max-width:620px){
+  .frxe069-sticky-search{
+    margin-inline:-2px;
+    padding:7px;
+    border-radius:16px;
+  }
+  .frxe069-sticky-search .frxe069-page-title{
+    padding:3px 5px 7px;
+  }
+  .frxe069-sticky-title{
+    margin-inline:-2px!important;
+    padding:11px 12px!important;
+    border-radius:15px;
+  }
+  .frxe069-page-title h2{
+    font-size:clamp(28px,10vw,38px);
+  }
+  .frxe069-page-title p{
+    margin-top:6px;
+    font-size:11px;
+    line-height:1.35;
+  }
+  .frxe069-search-bar.frxe-search-glass form{
+    min-height:48px;
+  }
+  .frxe069-artist-grid,
+  .frxe069-mix-grid,
+  .frxe069-playlist-grid{
+    grid-template-columns:1fr;
+  }
+  .frxe069-editor-track{
+    grid-template-columns:auto minmax(0,1fr) auto auto;
+  }
+  .frxe069-editor-track>button:last-child{
+    grid-column:4;
+  }
+}

@@ -56,3 +56,24 @@ test('settings reset reloads the current Vitr route', () => {
   assert.match(app, /window\.location\.reload\(\)/);
   assert.doesNotMatch(app, /window\.location\.replace\('\/'\)/);
 });
+
+
+test('web player keeps Search, Library and Settings headers sticky and half-transparent', () => {
+  const app = read('src/music/MusicApp069.tsx');
+  const css = read('src/music/music069.css');
+  assert.match(app, /frxe069-sticky-search/);
+  assert.match(app, /Library[\s\S]*frxe069-sticky-title|frxe069-sticky-title[\s\S]*Library/);
+  assert.match(app, /Settings[\s\S]*frxe069-sticky-title|frxe069-sticky-title[\s\S]*Settings/);
+  assert.match(css, /\.frxe069-sticky-search[\s\S]*position:sticky/);
+  assert.match(css, /\.frxe069-search-bar\.frxe-search-glass[\s\S]*rgba\(11,18,30,\.50\)/);
+  assert.match(css, /\.frxe069-sticky-title[\s\S]*rgba\(5,8,17,\.50\)/);
+});
+
+test('web player layout is fluid across desktop and compact windows', () => {
+  const css = read('src/music/music069.css');
+  assert.match(css, /--frxe-sidebar-width:clamp\(/);
+  assert.match(css, /width:calc\(100% - var\(--frxe-sidebar-width\)\)/);
+  assert.match(css, /@media\(max-width:1100px\) and \(min-width:901px\)/);
+  assert.match(css, /grid-template-columns:repeat\(auto-fit/);
+  assert.match(css, /overflow-x:clip/);
+});
