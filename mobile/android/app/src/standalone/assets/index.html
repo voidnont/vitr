@@ -10,7 +10,7 @@
   --red:#f22f5d;--red2:#ff5578;--bg:#050507;--panel:rgba(19,18,24,.64);
   --panel2:rgba(30,28,36,.54);--line:rgba(255,255,255,.11);--text:#f8f8fb;
   --muted:#a5a2ad;--soft:#6f6b77;--shadow:0 24px 70px rgba(0,0,0,.42);
-  --blur:28px;--radius:24px;
+  --blur:28px;--radius:24px;--device-scale:1;--safe-top:0px;--safe-bottom:0px;--safe-left:0px;--safe-right:0px;
 }
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -114,6 +114,64 @@ body.normal .toggle-indicator{transform:translateX(100%)}
 @media(max-width:430px){
  .hero{min-height:420px}.hero h1{font-size:43px}.hero p{font-size:12px}.cards{gap:9px}.card{min-width:146px}.library-grid{grid-template-columns:1fr}.mode-toggle{min-width:138px}
 }
+
+/* Native Android device profile. The app sets these attributes from the real
+   window metrics/insets so phones, compact phones, tablets and landscape
+   layouts do not all share one fixed mobile geometry. */
+body[data-device-class="compact"]{--device-scale:.92}
+body[data-device-class="phone"]{--device-scale:1}
+body[data-device-class="tablet"]{--device-scale:1.08}
+
+body[data-device-class="compact"] .topbar{height:66px;padding:10px 10px 10px}
+body[data-device-class="compact"] .drop{width:30px;height:38px}
+body[data-device-class="compact"] .brand-copy strong{font-size:21px}
+body[data-device-class="compact"] .mode-toggle{min-width:128px;height:38px}
+body[data-device-class="compact"] .mode-toggle button{font-size:9px}
+body[data-device-class="compact"] .hero{padding:18px;min-height:390px}
+body[data-device-class="compact"] .hero h1{font-size:39px}
+body[data-device-class="compact"] .hero p{font-size:11px}
+body[data-device-class="compact"] .disc{width:150px;height:150px}
+body[data-device-class="compact"] .bottom-nav{left:8px;right:8px;height:64px}
+
+body[data-device-class="tablet"] .topbar{height:82px;padding:16px 22px}
+body[data-device-class="tablet"] .shell{padding-left:22px;padding-right:22px}
+body[data-device-class="tablet"] .hero{min-height:360px}
+body[data-device-class="tablet"] .cards{grid-template-columns:repeat(4,minmax(0,1fr))}
+body[data-device-class="tablet"] .library-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+
+/* A phone stays a phone in landscape; do not accidentally switch to the
+   desktop sidebar layout just because its current width exceeds 780dp. */
+body[data-device-class="phone"][data-orientation="landscape"] .sidebar,
+body[data-device-class="compact"][data-orientation="landscape"] .sidebar,
+body[data-device-class="phone"][data-orientation="landscape"] .trending,
+body[data-device-class="compact"][data-orientation="landscape"] .trending{display:none}
+body[data-device-class="phone"][data-orientation="landscape"] .shell,
+body[data-device-class="compact"][data-orientation="landscape"] .shell{display:block;padding:4px 14px 20px}
+body[data-device-class="phone"][data-orientation="landscape"] .top-search,
+body[data-device-class="compact"][data-orientation="landscape"] .top-search{display:none}
+body[data-device-class="phone"][data-orientation="landscape"] .bottom-nav,
+body[data-device-class="compact"][data-orientation="landscape"] .bottom-nav{
+ display:flex;position:fixed;z-index:30;left:12px;right:12px;bottom:12px;
+ height:64px;border-radius:22px;padding:7px;justify-content:space-around
+}
+body[data-device-class="phone"][data-orientation="landscape"] .bottom-nav button,
+body[data-device-class="compact"][data-orientation="landscape"] .bottom-nav button{
+ flex:1;border-radius:16px;color:var(--muted);font-size:9px;font-weight:700;
+ display:grid;place-items:center;gap:2px
+}
+body[data-device-class="phone"][data-orientation="landscape"] .bottom-nav button.active,
+body[data-device-class="compact"][data-orientation="landscape"] .bottom-nav button.active{
+ background:rgba(255,255,255,.085);color:#fff
+}
+body[data-device-class="phone"][data-orientation="landscape"] .hero,
+body[data-device-class="compact"][data-orientation="landscape"] .hero{
+ min-height:300px;grid-template-columns:1.1fr .9fr;padding:20px
+}
+body[data-device-class="phone"][data-orientation="landscape"] .hero h1,
+body[data-device-class="compact"][data-orientation="landscape"] .hero h1{font-size:40px}
+body[data-device-class="phone"][data-orientation="landscape"] .hero-art,
+body[data-device-class="compact"][data-orientation="landscape"] .hero-art{height:220px}
+
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
@@ -213,6 +271,19 @@ body.normal .toggle-indicator{transform:translateX(100%)}
   </section>
 </div>
 <script>
+
+window.__vitrApplyDeviceProfile = function(profile){
+  var b=document.body, r=document.documentElement;
+  b.dataset.deviceClass=profile.deviceClass||"phone";
+  b.dataset.orientation=profile.orientation||"portrait";
+  b.dataset.screenWidthDp=String(profile.widthDp||0);
+  b.dataset.screenHeightDp=String(profile.heightDp||0);
+  r.style.setProperty("--safe-top",(profile.safeTop||0)+"px");
+  r.style.setProperty("--safe-bottom",(profile.safeBottom||0)+"px");
+  r.style.setProperty("--safe-left",(profile.safeLeft||0)+"px");
+  r.style.setProperty("--safe-right",(profile.safeRight||0)+"px");
+};
+
 (function(){
   var tracks=[
     {title:"Red Light",artist:"Novae"},{title:"Velvet Skies",artist:"Lume"},{title:"Hollow",artist:"SYN"},
