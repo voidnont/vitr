@@ -4,11 +4,16 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
-val voidKeystore = providers.environmentVariable("VOID_KEYSTORE").orNull
-val voidStorePassword = providers.environmentVariable("VOID_STORE_PASSWORD").orNull
-val voidKeyAlias = providers.environmentVariable("VOID_KEY_ALIAS").orNull ?: "void"
-val voidKeyPassword = providers.environmentVariable("VOID_KEY_PASSWORD").orNull
-val hasVoidSigning = listOf(voidKeystore, voidStorePassword, voidKeyPassword).all { !it.isNullOrBlank() }
+val bloodKeystore = providers.environmentVariable("BLOOD_KEYSTORE").orNull
+    ?: providers.environmentVariable("VOID_KEYSTORE").orNull
+val bloodStorePassword = providers.environmentVariable("BLOOD_STORE_PASSWORD").orNull
+    ?: providers.environmentVariable("VOID_STORE_PASSWORD").orNull
+val bloodKeyAlias = providers.environmentVariable("BLOOD_KEY_ALIAS").orNull
+    ?: providers.environmentVariable("VOID_KEY_ALIAS").orNull
+    ?: "blood"
+val bloodKeyPassword = providers.environmentVariable("BLOOD_KEY_PASSWORD").orNull
+    ?: providers.environmentVariable("VOID_KEY_PASSWORD").orNull
+val hasBloodSigning = listOf(bloodKeystore, bloodStorePassword, bloodKeyPassword).all { !it.isNullOrBlank() }
 val ciReleaseDebugSigning =
     providers.environmentVariable("FRXE_CI_RELEASE_DEBUG_SIGNING").orNull == "1"
 val ciArm64Release =
@@ -43,9 +48,9 @@ android {
                 abiFilters += "arm64-v8a"
             }
         }
-        buildConfigField("String", "OWNER", "\"void\"")
-        buildConfigField("String", "PUBLISHER", "\"void\"")
-        buildConfigField("String", "AUTHOR", "\"void\"")
+        buildConfigField("String", "OWNER", "\"Blood\"")
+        buildConfigField("String", "PUBLISHER", "\"Blood\"")
+        buildConfigField("String", "AUTHOR", "\"Blood\"")
         buildConfigField("String", "ZEXL_BASE_URL", buildConfigString(zexlBaseUrl))
         buildConfigField("String", "ZEXL_API_KEY", buildConfigString(zexlApiKey))
         buildConfigField("String", "COBALT_BASE_URL", buildConfigString(cobaltBaseUrl))
@@ -54,12 +59,12 @@ android {
     }
 
     signingConfigs {
-        if (hasVoidSigning) {
-            create("voidRelease") {
-                storeFile = file(voidKeystore!!)
-                storePassword = voidStorePassword
-                keyAlias = voidKeyAlias
-                keyPassword = voidKeyPassword
+        if (hasBloodSigning) {
+            create("bloodRelease") {
+                storeFile = file(bloodKeystore!!)
+                storePassword = bloodStorePassword
+                keyAlias = bloodKeyAlias
+                keyPassword = bloodKeyPassword
             }
         }
     }
@@ -69,7 +74,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             signingConfig = when {
-                hasVoidSigning -> signingConfigs.getByName("voidRelease")
+                hasBloodSigning -> signingConfigs.getByName("bloodRelease")
                 ciReleaseDebugSigning -> signingConfigs.getByName("debug")
                 else -> null
             }
