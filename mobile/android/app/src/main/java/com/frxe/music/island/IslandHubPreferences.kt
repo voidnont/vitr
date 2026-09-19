@@ -10,7 +10,7 @@ data class IslandHubUiState(
 )
 
 object IslandHubPreferences {
-    const val PREFS = "frxe_island_hub"
+    const val PREFS = "vitr_island_hub"
     const val KEY_IN_APP = "in_app_enabled"
     const val KEY_FLOATING = "floating_enabled"
     const val KEY_REFRESH = "overlay_refresh"
