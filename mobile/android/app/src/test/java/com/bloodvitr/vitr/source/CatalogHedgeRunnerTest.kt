@@ -1,4 +1,4 @@
-package com.frxe.music.source
+package com.bloodvitr.vitr.source
 
 import kotlin.system.measureTimeMillis
 import kotlinx.coroutines.delay

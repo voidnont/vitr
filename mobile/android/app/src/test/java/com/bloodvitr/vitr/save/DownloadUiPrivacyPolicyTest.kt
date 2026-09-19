@@ -1,4 +1,4 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertEquals
@@ -37,8 +37,8 @@ class DownloadUiPrivacyPolicyTest {
             DownloadUiPrivacyPolicy.sanitize("Waiting for Wi-Fi")
         )
         assertEquals(
-            "Saved to Music/Frxe",
-            DownloadUiPrivacyPolicy.sanitize("Saved to Music/Frxe")
+            "Saved to Music/Vitr",
+            DownloadUiPrivacyPolicy.sanitize("Saved to Music/Vitr")
         )
     }
 

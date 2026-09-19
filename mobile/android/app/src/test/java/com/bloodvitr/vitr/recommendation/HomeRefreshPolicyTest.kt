@@ -1,6 +1,6 @@
-package com.frxe.music.recommendation
+package com.bloodvitr.vitr.recommendation
 
-import com.frxe.music.model.Track
+import com.bloodvitr.vitr.model.Track
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -11,7 +11,7 @@ class HomeRefreshPolicyTest {
         title = id,
         artist = "artist",
         album = "album",
-        streamUrl = "frxe-catalog://youtube/abcdefghijk",
+        streamUrl = "vitr-catalog://youtube/abcdefghijk",
         durationMs = 1_000L,
         artworkSeed = 1
     )

@@ -1,6 +1,6 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
-import com.frxe.music.ytdlp.YtDlpDownloadRequest
+import com.bloodvitr.vitr.ytdlp.YtDlpDownloadRequest
 import java.io.File
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull

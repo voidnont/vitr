@@ -1,4 +1,4 @@
-package com.frxe.music.source
+package com.bloodvitr.vitr.source
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

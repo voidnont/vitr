@@ -1,4 +1,4 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

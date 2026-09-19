@@ -1,4 +1,4 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -13,7 +13,7 @@ class DownloadRoutingTest {
             "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             automaticDownloadSource(
                 downloadUrl = null,
-                streamUrl = "frxe-catalog://youtube/dQw4w9WgXcQ"
+                streamUrl = "vitr-catalog://youtube/dQw4w9WgXcQ"
             )
         )
     }

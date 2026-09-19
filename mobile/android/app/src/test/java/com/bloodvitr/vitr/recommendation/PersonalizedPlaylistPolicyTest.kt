@@ -1,6 +1,6 @@
-package com.frxe.music.recommendation
+package com.bloodvitr.vitr.recommendation
 
-import com.frxe.music.model.Track
+import com.bloodvitr.vitr.model.Track
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -11,13 +11,13 @@ class PersonalizedPlaylistPolicyTest {
         title = "Song $id",
         artist = artist,
         album = "Catalog",
-        streamUrl = "frxe-catalog://youtube/abcdefghijk",
+        streamUrl = "vitr-catalog://youtube/abcdefghijk",
         durationMs = 180_000L,
         artworkSeed = id.hashCode()
     )
 
     @Test
-    fun buildsSpotifyInspiredFrxeMixesWithoutDuplicateTracks() {
+    fun buildsSpotifyInspiredVitrMixesWithoutDuplicateTracks() {
         val favorite = listOf(track("a", "Alpha"), track("b", "Alpha"))
         val discovery = listOf(track("c", "Beta"), track("d", "Gamma"))
         val trending = listOf(track("d", "Gamma"), track("e", "Delta"))
@@ -30,7 +30,7 @@ class PersonalizedPlaylistPolicyTest {
         )
 
         assertEquals(
-            listOf("FRXE Mix 1", "FRXE Mix 2", "Discovery Mix", "Trending Mix"),
+            listOf("VITR Mix 1", "VITR Mix 2", "Discovery Mix", "Trending Mix"),
             playlists.map { it.title }
         )
         assertTrue(playlists.all { it.tracks.isNotEmpty() })

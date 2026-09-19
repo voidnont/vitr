@@ -1,4 +1,4 @@
-package com.frxe.music.save
+package com.bloodvitr.vitr.save
 
 import java.io.File
 import org.junit.Assert.assertEquals
@@ -6,14 +6,14 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class FrxeSaveEnginePolicyTest {
+class VitrSaveEnginePolicyTest {
 
     @Test
     fun `caller owned local input is never a cleanup target`() {
         val input = File("caller-owned.media")
         val output = File("generated-output.mp3")
 
-        val cleanup = FrxeSaveEnginePolicy.cleanupFiles(
+        val cleanup = VitrSaveEnginePolicy.cleanupFiles(
             input = input,
             output = output,
             ownership = SaveInputOwnership.Caller
@@ -28,7 +28,7 @@ class FrxeSaveEnginePolicyTest {
         val input = File("engine-owned.media")
         val output = File("generated-output.mp3")
 
-        val cleanup = FrxeSaveEnginePolicy.cleanupFiles(
+        val cleanup = VitrSaveEnginePolicy.cleanupFiles(
             input = input,
             output = output,
             ownership = SaveInputOwnership.Engine
