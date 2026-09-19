@@ -102,3 +102,11 @@ test('web and desktop use the same supplied droplet icon source', () => {
   assert.match(webIcon, /#5b5b5b/i);
   assert.match(webIcon, /#e91f4f/i);
 });
+
+
+test('source adapter cannot overwrite the canonical 0.1.0 version', () => {
+  const adapter = read('scripts/adapt-sources.mjs');
+  assert.match(adapter, /const RELEASE_VERSION = '0\.1\.0'/);
+  assert.match(adapter, /version:\s*RELEASE_VERSION/);
+  assert.doesNotMatch(adapter, /version:\s*parseVitrVersion\(gradleText\)/);
+});
