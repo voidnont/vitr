@@ -15,9 +15,11 @@ val bloodKeyPassword = providers.environmentVariable("BLOOD_KEY_PASSWORD").orNul
     ?: providers.environmentVariable("VOID_KEY_PASSWORD").orNull
 val hasBloodSigning = listOf(bloodKeystore, bloodStorePassword, bloodKeyPassword).all { !it.isNullOrBlank() }
 val ciReleaseDebugSigning =
-    providers.environmentVariable("FRXE_CI_RELEASE_DEBUG_SIGNING").orNull == "1"
+    providers.environmentVariable("VITR_CI_RELEASE_DEBUG_SIGNING").orNull == "1" ||
+        providers.environmentVariable("FRXE_CI_RELEASE_DEBUG_SIGNING").orNull == "1"
 val ciArm64Release =
-    providers.environmentVariable("FRXE_CI_ARM64_RELEASE").orNull == "1"
+    providers.environmentVariable("VITR_CI_ARM64_RELEASE").orNull == "1" ||
+        providers.environmentVariable("FRXE_CI_ARM64_RELEASE").orNull == "1"
 
 val zexlBaseUrl = providers.gradleProperty("FRXE_ZEXL_BASE_URL").orNull
     ?: providers.environmentVariable("FRXE_ZEXL_BASE_URL").orNull
