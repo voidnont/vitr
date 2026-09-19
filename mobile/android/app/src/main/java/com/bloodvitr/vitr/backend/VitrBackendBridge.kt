@@ -1,6 +1,8 @@
 package com.bloodvitr.vitr.backend
 
 import android.content.ComponentName
+import android.content.Intent
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.webkit.JavascriptInterface
@@ -14,7 +16,16 @@ import com.frxe.music.model.Track
 import com.frxe.music.playback.FrxePlaybackService
 import com.frxe.music.playback.PlaybackQueueStore
 import com.frxe.music.playback.QueueRepeatMode
+import com.frxe.music.save.FrxeDownloadService
+import com.frxe.music.save.SaveFormat
+import com.frxe.music.save.defaultQualityFor
+import com.frxe.music.source.PlaybackStreamResolver
 import com.frxe.music.source.YouTubeCatalogSource
+import com.frxe.music.updates.FrxeUpdateRepository
+import com.frxe.music.updates.RuntimeHealthStore
+import com.frxe.music.updates.UpdateCheckResult
+import com.frxe.music.updates.YtDlpRuntimeUpdater
+import com.frxe.music.ytdlp.YtDlpDownloadRequest
 import java.util.concurrent.Executor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -216,6 +227,123 @@ class VitrBackendBridge(
                 replyError(requestId, error)
             }
         }
+    }
+
+    @JavascriptInterface
+    fun download(trackJson: String, formatName: String, requestId: String) {
+        scope.launch {
+            try {
+                val track = parseTrack(JSONObject(trackJson))
+                val format = when (formatName.trim().lowercase()) {
+                    "m4a" -> SaveFormat.M4A
+                    "mp3" -> SaveFormat.MP3
+                    "flac" -> SaveFormat.FLAC
+                    "wav" -> SaveFormat.WAV
+                    else -> throw IllegalArgumentException("Unsupported audio format")
+                }
+                val sourceUrl = track.downloadUrl
+                    ?: PlaybackStreamResolver.youtubeWatchUrl(track.streamUrl)
+                    ?: track.id.removePrefix("yt-")
+                        .takeIf { it.length == 11 }
+                        ?.let(PlaybackStreamResolver::youtubeWatchUrlFromId)
+                    ?: throw IllegalStateException("This track has no downloadable source.")
+
+                val result = FrxeDownloadService.enqueue(
+                    activity,
+                    YtDlpDownloadRequest(
+                        sourceUrl = sourceUrl,
+                        title = track.title,
+                        artist = track.artist,
+                        outputFormat = format,
+                        quality = defaultQualityFor(format),
+                        thumbnailUrl = track.artworkUrl,
+                        album = track.album
+                    )
+                )
+                reply(
+                    requestId,
+                    true,
+                    JSONObject()
+                        .put("queueId", result.item.id)
+                        .put("duplicate", result.duplicate)
+                        .put("format", format.extension)
+                )
+            } catch (error: Throwable) {
+                replyError(requestId, error)
+            }
+        }
+    }
+
+    @JavascriptInterface
+    fun runtimeStatus(requestId: String) {
+        val state = RuntimeHealthStore.state.value
+        reply(
+            requestId,
+            true,
+            JSONObject()
+                .put("ytDlpVersion", state.ytDlpVersion ?: JSONObject.NULL)
+                .put("lastStatus", state.lastYtDlpUpdateStatus ?: JSONObject.NULL)
+                .put("lastError", state.lastYtDlpUpdateError ?: JSONObject.NULL)
+        )
+    }
+
+    @JavascriptInterface
+    fun updateRuntime(requestId: String) {
+        scope.launch {
+            try {
+                val state = YtDlpRuntimeUpdater.updateNow(activity.applicationContext)
+                reply(
+                    requestId,
+                    true,
+                    JSONObject()
+                        .put("ytDlpVersion", state.ytDlpVersion ?: JSONObject.NULL)
+                        .put("lastStatus", state.lastYtDlpUpdateStatus ?: JSONObject.NULL)
+                        .put("lastError", state.lastYtDlpUpdateError ?: JSONObject.NULL)
+                )
+            } catch (error: Throwable) {
+                replyError(requestId, error)
+            }
+        }
+    }
+
+    @JavascriptInterface
+    fun checkClientUpdate(requestId: String) {
+        scope.launch {
+            try {
+                val payload = when (val result = FrxeUpdateRepository().check()) {
+                    is UpdateCheckResult.UpdateAvailable -> JSONObject()
+                        .put("updateAvailable", true)
+                        .put("latestVersion", result.version)
+                        .put("releaseUrl", result.pageUrl)
+                        .put("notes", result.notes)
+                    is UpdateCheckResult.UpToDate -> JSONObject()
+                        .put("updateAvailable", false)
+                        .put("latestVersion", result.latestVersion)
+                        .put("releaseUrl", FrxeUpdateRepository.RELEASES_PAGE)
+                        .put("notes", "")
+                    UpdateCheckResult.NoPublishedRelease -> JSONObject()
+                        .put("updateAvailable", false)
+                        .put("latestVersion", "")
+                        .put("releaseUrl", FrxeUpdateRepository.RELEASES_PAGE)
+                        .put("notes", "No published Vitr release is available yet.")
+                    is UpdateCheckResult.Error -> throw IllegalStateException(result.message)
+                }
+                reply(requestId, true, payload)
+            } catch (error: Throwable) {
+                replyError(requestId, error)
+            }
+        }
+    }
+
+    @JavascriptInterface
+    fun openReleasePage(url: String) {
+        val target = url
+            .takeIf { it.startsWith("https://github.com/bloodvitr/vitr/") }
+            ?: FrxeUpdateRepository.RELEASES_PAGE
+        activity.startActivity(
+            Intent(Intent.ACTION_VIEW, Uri.parse(target))
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        )
     }
 
     @JavascriptInterface
