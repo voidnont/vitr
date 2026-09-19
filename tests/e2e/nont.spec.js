@@ -79,7 +79,7 @@ test('nont.me keeps real downloads, search and official player links', async ({ 
   await page.goto('/');
   await expect(page.getByRole('textbox', { name: 'Search GitHub apps' })).toBeVisible();
   await expect(page.getByRole('link', { name: /Open Web Player/i })).toHaveAttribute('href', 'https://vitr.nont.me');
-  await expect(page.getByRole('link', { name: /ALL BUILDS/i }).first()).toHaveAttribute('href', 'https://github.com/bloodvitr/vitr/releases');
+  await expect(page.getByRole('link', { name: /ALL BUILDS/i }).first()).toHaveAttribute('href', 'https://github.com/voidnont/vitr/releases');
   await expect(page.locator('.frxe-nav')).toHaveCount(0);
 });
 
