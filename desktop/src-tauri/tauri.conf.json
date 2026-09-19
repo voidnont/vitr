@@ -28,20 +28,19 @@
         "label": "mini",
         "title": "vitr mini player",
         "url": "mini.html",
-        "width": 348,
-        "height": 108,
+        "width": 356,
+        "height": 88,
         "minWidth": 125,
         "minHeight": 34,
         "decorations": false,
-        "transparent": false,
+        "transparent": true,
         "resizable": false,
         "fullscreen": false,
         "center": false,
-        "shadow": true,
+        "shadow": false,
         "visible": false,
         "alwaysOnTop": true,
-        "skipTaskbar": true,
-        "backgroundColor": "#111116"
+        "skipTaskbar": true
       }
     ],
     "security": {

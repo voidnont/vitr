@@ -14,16 +14,25 @@
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent;color:var(--text);
 font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;user-select:none}
 button{font:inherit;color:inherit}
-.shell{width:100%;height:100%;position:relative;border-radius:22px;overflow:hidden;
+.shell{width:100%;height:100%;position:relative;overflow:hidden;
+ background:
+ linear-gradient(145deg,rgba(255,255,255,.115),rgba(255,255,255,.028) 40%,rgba(6,5,8,.78)),
+ var(--panel);
+ border:1px solid var(--line);
+ box-shadow:inset 0 1px rgba(255,255,255,.14),inset 0 -1px rgba(0,0,0,.22);
+ -webkit-backdrop-filter:blur(28px) saturate(1.5);backdrop-filter:blur(28px) saturate(1.5)}
+body.normal .shell{background:#111116;border-color:#292730;box-shadow:inset 0 1px rgba(255,255,255,.035);-webkit-backdrop-filter:none;backdrop-filter:none}
+body[data-mode="standard"] .shell,
+body[data-mode="tiny"] .shell,
+body[data-mode="ultra"] .shell{border-radius:999px}
+body[data-mode="lyrics"] .shell{border-radius:24px;
  background:
  radial-gradient(circle at 14% 4%,rgba(255,78,112,.24),transparent 26%),
  linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.025) 40%,rgba(6,5,8,.74)),
- var(--panel);
- border:1px solid var(--line);box-shadow:inset 0 1px rgba(255,255,255,.14),var(--shadow);
- -webkit-backdrop-filter:blur(28px) saturate(1.5);backdrop-filter:blur(28px) saturate(1.5)}
-body.normal .shell{background:#111116;border-color:#292730;box-shadow:0 18px 40px rgba(0,0,0,.36);-webkit-backdrop-filter:none;backdrop-filter:none}
-.shell:before{content:"";position:absolute;width:150px;height:150px;border-radius:50%;right:-70px;top:-80px;
+ var(--panel)}
+.shell:before{content:"";display:none;position:absolute;width:150px;height:150px;border-radius:50%;right:-70px;top:-80px;
  background:radial-gradient(circle,#ff6685 0,#bd183f 32%,transparent 68%);opacity:.38;filter:blur(12px);pointer-events:none}
+body[data-mode="lyrics"] .shell:before{display:block}
 body.normal .shell:before{opacity:.12}
 .content{position:relative;z-index:2;width:100%;height:100%;pointer-events:none}
 button,.menu,.menu *{pointer-events:auto}
@@ -39,13 +48,13 @@ button,.menu,.menu *{pointer-events:auto}
 .play{background:linear-gradient(135deg,var(--red2),var(--red));box-shadow:0 7px 18px rgba(242,47,93,.3)}
 .top-actions{display:flex;gap:6px;align-items:center}
 .progress{height:4px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden}.progress i{display:block;width:38%;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--red),#ff8aa2)}
-.standard{display:none;padding:10px 11px;grid-template-columns:72px minmax(0,1fr) auto;gap:10px;align-items:center}
+.standard{display:none;padding:8px 10px;grid-template-columns:68px minmax(0,1fr) auto;gap:10px;align-items:center}
 body[data-mode="standard"] .standard{display:grid;height:100%}
-.standard .cover{width:72px;height:72px;border-radius:16px}
+.standard .cover{width:68px;height:68px;border-radius:50%}
 .standard .title{font-size:14px}.standard .artist{font-size:10px;margin-top:2px}
-.standard .track{min-width:0}.standard .progress{margin-top:10px}.standard .time{display:flex;justify-content:space-between;color:#827d88;font-size:8px;margin-top:3px}
-.standard .controls{display:grid;grid-template-columns:repeat(3,32px);gap:5px}.standard .icon-btn{width:32px;height:32px;border-radius:50%;font-size:11px}.standard .play{font-size:13px}
-.standard .mode{position:absolute;right:8px;top:7px;width:24px;height:24px;border-radius:9px;background:rgba(255,255,255,.06);border:0;cursor:pointer}
+.standard .track{min-width:0}.standard .progress{margin-top:8px}.standard .time{display:flex;justify-content:space-between;color:#827d88;font-size:8px;margin-top:3px}
+.standard .controls{display:grid;grid-template-columns:repeat(3,34px);gap:5px;padding-right:2px}.standard .icon-btn{width:34px;height:34px;border-radius:50%;font-size:11px}.standard .play{font-size:13px}
+.standard .mode{position:absolute;right:5px;top:4px;width:23px;height:23px;border-radius:50%;background:rgba(255,255,255,.055);border:0;cursor:pointer}
 .lyrics{display:none;padding:11px;grid-template-rows:auto 1fr auto;gap:7px;height:100%}
 body[data-mode="lyrics"] .lyrics{display:grid}
 .lyrics-head{display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:8px;align-items:center}
@@ -56,10 +65,10 @@ body[data-mode="lyrics"] .lyrics{display:grid}
 .lyrics-lines .active{font-size:15px;color:#ff4168;font-weight:850;text-shadow:0 0 20px rgba(242,47,93,.26)}
 .lyrics-foot .progress{margin-bottom:8px}
 .lyrics-controls{display:flex;justify-content:center;gap:9px}.lyrics-controls .icon-btn{width:31px;height:31px;border-radius:50%;font-size:10px}.lyrics-controls .play{width:38px;height:38px}
-.tiny,.ultra{display:none;height:100%;align-items:center;padding:6px 8px;gap:8px}
+.tiny,.ultra{display:none;height:100%;align-items:center;padding:5px 9px;gap:8px}
 body[data-mode="tiny"] .tiny{display:grid;grid-template-columns:42px minmax(0,1fr) auto}
 body[data-mode="ultra"] .ultra{display:flex;padding:4px 10px}
-.tiny .cover{width:42px;height:42px;border-radius:12px}.tiny .title{font-size:11px}.tiny .artist{font-size:8px;margin-top:1px}
+.tiny .cover{width:40px;height:40px;border-radius:50%}.tiny .title{font-size:11px}.tiny .artist{font-size:8px;margin-top:1px}
 .tiny .icon-btn{width:32px;height:32px;border-radius:50%}
 .ultra .dot{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 12px rgba(242,47,93,.6);flex:0 0 auto}
 .ultra .title{font-size:10px;flex:1;min-width:0}
@@ -71,8 +80,7 @@ body.normal .menu{background:#17171d}
 .menu button{height:30px;border:0;border-radius:9px;background:transparent;text-align:left;padding:0 9px;color:#d9d5dd;font-size:10px;cursor:pointer}
 .menu button:hover{background:rgba(255,255,255,.07)}
 .menu .danger{color:#ff7893}.menu hr{width:100%;border:0;border-top:1px solid rgba(255,255,255,.08);margin:3px 0}
-.badge{position:absolute;z-index:5;left:8px;bottom:7px;font-size:8px;color:#9d98a4;opacity:0;transition:.2s}.shell:hover .badge{opacity:1}
-body[data-mode="ultra"] .badge,body[data-mode="tiny"] .badge{display:none}
+.badge{display:none}
 </style>
 </head>
 <body data-mode="standard">

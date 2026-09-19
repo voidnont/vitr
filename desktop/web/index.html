@@ -224,7 +224,7 @@ body[data-window-class="wide"] .library-grid{grid-template-columns:repeat(4,minm
       <div class="settings-panel glass">
         <div class="page-title"><div class="eyebrow">VITR</div><h1>Settings</h1><p>Appearance and project identity.</p></div>
         <div class="setting-row glass-soft"><div><h3>Interface finish</h3><p>Use the toggle above to switch between Liquid Glass and Normal UI.</p></div><strong id="modeLabel">Liquid Glass</strong></div>
-        <div class="setting-row glass-soft"><div><h3>Floating mini player</h3><p>Open a draggable Vitr popup that follows your saved Normal / Liquid Glass appearance.</p></div><button id="miniSettingsLaunch" class="link-pill" type="button">Open mini player</button></div>
+        <div class="setting-row glass-soft"><div><h3>Floating mini player</h3><p>Show or hide a draggable Vitr popup that follows your saved Normal / Liquid Glass appearance.</p></div><button id="miniSettingsLaunch" class="link-pill" type="button">Open mini player</button></div>
         <div class="setting-row glass-soft"><div><h3>Version</h3><p>Standalone UI build</p></div><strong>0.1.0</strong></div>
         <div class="setting-row glass-soft"><div><h3>Blood</h3><p>Creator and maintainer of Vitr.</p></div><div class="setting-links"><a class="link-pill" href="https://github.com/bloodvitr" target="_blank" rel="noreferrer">github.com/bloodvitr</a><a class="link-pill" href="https://ko-fi.com/bloodvitr" target="_blank" rel="noreferrer">ko-fi.com/bloodvitr</a></div></div>
       </div>
@@ -312,16 +312,16 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
   var playing=localStorage.getItem("vitr-playing")!=="false";
   localStorage.setItem("vitr-playing",playing?"true":"false");
   document.getElementById("playToggle").addEventListener("click",function(e){playing=!playing;localStorage.setItem("vitr-playing",playing?"true":"false");e.currentTarget.textContent=playing?"❚❚":"▶"});
-  async function openMini(){
+  async function toggleMini(){
     if(!invoke)return;
     var mode=localStorage.getItem("vitr-mini-mode")||"standard";
     var dock=localStorage.getItem("vitr-mini-dock")||"right";
-    try{await invoke("open_mini_player",{mode:mode,dock:dock});}catch(e){console.error(e);}
+    try{await invoke("toggle_mini_player",{mode:mode,dock:dock});}catch(e){console.error(e);}
   }
   var miniLaunch=document.getElementById("miniLaunch");
   var miniSettingsLaunch=document.getElementById("miniSettingsLaunch");
-  if(miniLaunch)miniLaunch.addEventListener("click",openMini);
-  if(miniSettingsLaunch)miniSettingsLaunch.addEventListener("click",openMini);
+  if(miniLaunch)miniLaunch.addEventListener("click",toggleMini);
+  if(miniSettingsLaunch)miniSettingsLaunch.addEventListener("click",toggleMini);
 
   function filter(q){q=(q||"").toLowerCase().trim();var list=!q?tracks:tracks.filter(function(t){return (t.title+" "+t.artist).toLowerCase().indexOf(q)>=0});renderTracks(list,document.getElementById("searchTracks"))}
   document.getElementById("searchInput").addEventListener("input",function(e){filter(e.target.value)});
