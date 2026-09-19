@@ -222,6 +222,10 @@ export function createBackend({ invoke, listen = null, convertFileSrc = (path) =
       return invoke('default_download_dir');
     },
 
+    chooseAudioDownloadDir() {
+      return invoke('choose_audio_download_dir');
+    },
+
     scanDownloads(dir) {
       return invoke('scan_downloads', { dir });
     },
