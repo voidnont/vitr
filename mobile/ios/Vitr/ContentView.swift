@@ -15,7 +15,7 @@ struct ContentView: View {
                 Image(systemName: "ellipsis.circle.fill")
                     .font(.system(size: 24, weight: .semibold))
                     .symbolRenderingMode(.hierarchical)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color(red: 0.949, green: 0.184, blue: 0.365))
                     .padding(14)
             }
             .accessibilityLabel("Vitr info")
@@ -33,6 +33,17 @@ private struct VitrInfoView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Section {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("vitr")
+                            .font(.title.bold())
+                        Text("/ by blood")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(Color(red: 0.949, green: 0.184, blue: 0.365))
+                    }
+                    .padding(.vertical, 4)
+                }
+
                 Section("Vitr") {
                     LabeledContent("Publisher", value: "Blood")
                     LabeledContent("Version", value: updateChecker.currentVersion)
@@ -72,6 +83,7 @@ private struct VitrInfoView: View {
             }
             .navigationTitle("Settings")
         }
+        .tint(Color(red: 0.949, green: 0.184, blue: 0.365))
         .preferredColorScheme(.dark)
     }
 }
