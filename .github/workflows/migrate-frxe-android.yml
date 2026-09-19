@@ -1,0 +1,246 @@
+name: Migrate FRXE Android into Vitr
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/migrate-frxe-android.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: vitr-frxe-android-migration
+  cancel-in-progress: false
+
+jobs:
+  migrate-build-and-verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Vitr
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+
+      - name: Install Android 17 SDK
+        run: sdkmanager "platforms;android-37.0" "build-tools;37.0.0"
+
+      - name: Set up Gradle 9.6.0
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.6.0'
+
+      - name: Replace temporary Android shell with native FRXE source
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/frxe
+          git clone --depth 1 https://github.com/voidnont/frxe.git /tmp/frxe
+
+          rm -rf mobile/android
+          mkdir -p mobile/android
+          rsync -a --delete --exclude '.git' --exclude '.github' /tmp/frxe/ mobile/android/
+
+      - name: Normalize native Android source to Vitr 0.1.0
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+
+          root = Path("mobile/android")
+          gradle = root / "app/build.gradle.kts"
+          text = gradle.read_text()
+          text = text.replace('versionCode = 30', 'versionCode = 1')
+          text = text.replace('versionName = "0.6.12"', 'versionName = "0.1.0"')
+          text = text.replace('buildConfigField("String", "OWNER", "\"void\"")', 'buildConfigField("String", "OWNER", "\"blood\"")')
+          text = text.replace('buildConfigField("String", "PUBLISHER", "\"void\"")', 'buildConfigField("String", "PUBLISHER", "\"blood\"")')
+          text = text.replace('buildConfigField("String", "AUTHOR", "\"void\"")', 'buildConfigField("String", "AUTHOR", "\"blood\"")')
+          gradle.write_text(text)
+
+          update_repo = root / "app/src/main/java/com/frxe/music/updates/FrxeUpdateRepository.kt"
+          text = update_repo.read_text()
+          text = text.replace(
+              "https://api.github.com/repos/voidnont/frxe/releases?per_page=10",
+              "https://api.github.com/repos/voidnont/vitr/releases?per_page=10",
+          )
+          text = text.replace(
+              "https://github.com/voidnont/frxe/releases",
+              "https://github.com/voidnont/vitr/releases",
+          )
+          update_repo.write_text(text)
+
+          support = root / "app/src/main/java/com/frxe/music/updates/RuntimeUpdatePolicy.kt"
+          text = support.read_text().replace(
+              "https://github.com/bloodvitr/vitr",
+              "https://github.com/voidnont/vitr",
+          )
+          support.write_text(text)
+
+          readme = root / "README.md"
+          readme.write_text("""# Vitr Android
+
+This is the native Android app migrated from `voidnont/frxe` into the Vitr monorepo.
+
+- Vitr version: **0.1.0**
+- Android versionCode: **1**
+- Application ID: `com.frxe.music`
+- Minimum SDK: 26
+- Target/compile SDK: 37
+- Java: 21
+- Gradle: 9.6.0
+
+The internal `com.frxe.music` package/class names are intentionally retained to preserve app compatibility and native functionality while the product branding is Vitr.
+
+Build from the repository root with:
+
+```sh
+npm run android:build
+```
+""")
+
+          package_path = Path("package.json")
+          package = json.loads(package_path.read_text())
+          package["version"] = "0.1.0"
+          package.setdefault("scripts", {})["android:build"] = (
+              "gradle -p mobile/android clean :app:assembleRelease"
+          )
+          package_path.write_text(json.dumps(package, indent=2) + "\n")
+
+          repo_readme = Path("README.md")
+          repo_text = repo_readme.read_text()
+          repo_text = repo_text.replace(
+              "- `android/` — native Android shell for the Vitr web player, including installable APK build configuration.",
+              "- `mobile/android/` — full native Android Vitr app migrated from `voidnont/frxe`, including playback, downloads, Android Auto, persistence, resolver logic and tests.",
+          )
+          repo_text = repo_text.replace(
+              "- `npm run android:build` — build the installable Android debug APK with a local Gradle 8.11.1+ installation.",
+              "- `npm run android:build` — build the native Android Vitr 0.1.0 APK.",
+          )
+          repo_readme.write_text(repo_text)
+          PY
+
+      - name: Install final Android APK workflow
+        shell: bash
+        run: |
+          cat > .github/workflows/android-apk.yml <<'YAML'
+          name: Build Vitr Android APK
+
+          on:
+            push:
+              branches: [main]
+              paths:
+                - 'mobile/android/**'
+                - '.github/workflows/android-apk.yml'
+            pull_request:
+              branches: [main]
+              paths:
+                - 'mobile/android/**'
+                - '.github/workflows/android-apk.yml'
+            workflow_dispatch:
+
+          permissions:
+            contents: read
+
+          concurrency:
+            group: vitr-android-${{ github.ref }}
+            cancel-in-progress: true
+
+          jobs:
+            build-apk:
+              runs-on: ubuntu-latest
+
+              steps:
+                - name: Checkout
+                  uses: actions/checkout@v4
+
+                - name: Set up Java 21
+                  uses: actions/setup-java@v5
+                  with:
+                    distribution: temurin
+                    java-version: '21'
+
+                - name: Set up Android SDK
+                  uses: android-actions/setup-android@v3
+                  with:
+                    packages: platform-tools
+
+                - name: Install Android 17 SDK
+                  run: sdkmanager "platforms;android-37.0" "build-tools;37.0.0"
+
+                - name: Set up Gradle 9.6.0
+                  uses: gradle/actions/setup-gradle@v4
+                  with:
+                    gradle-version: '9.6.0'
+
+                - name: Test and build installable release APK
+                  working-directory: mobile/android
+                  env:
+                    FRXE_CI_RELEASE_DEBUG_SIGNING: '1'
+                  run: gradle --no-daemon --stacktrace :app:testDebugUnitTest :app:assembleRelease
+
+                - name: Verify Vitr APK metadata
+                  shell: bash
+                  run: |
+                    APK="mobile/android/app/build/outputs/apk/release/app-release.apk"
+                    test -f "$APK"
+                    "$ANDROID_HOME/build-tools/37.0.0/aapt" dump badging "$APK" | tee /tmp/vitr-apk-badging.txt
+                    grep -F "package: name='com.frxe.music' versionCode='1' versionName='0.1.0'" /tmp/vitr-apk-badging.txt
+                    cp "$APK" "Vitr-0.1.0-android.apk"
+
+                - name: Upload Vitr APK
+                  uses: actions/upload-artifact@v4
+                  with:
+                    name: Vitr-0.1.0-APK
+                    path: Vitr-0.1.0-android.apk
+                    if-no-files-found: error
+                    retention-days: 30
+          YAML
+
+      - name: Test and build migrated native APK
+        working-directory: mobile/android
+        env:
+          FRXE_CI_RELEASE_DEBUG_SIGNING: '1'
+        run: gradle --no-daemon --stacktrace :app:testDebugUnitTest :app:assembleRelease
+
+      - name: Verify migrated APK metadata
+        shell: bash
+        run: |
+          APK="mobile/android/app/build/outputs/apk/release/app-release.apk"
+          test -f "$APK"
+          "$ANDROID_HOME/build-tools/37.0.0/aapt" dump badging "$APK" | tee /tmp/vitr-apk-badging.txt
+          grep -F "package: name='com.frxe.music' versionCode='1' versionName='0.1.0'" /tmp/vitr-apk-badging.txt
+          cp "$APK" /tmp/Vitr-0.1.0-android.apk
+
+      - name: Commit migrated FRXE Android source
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f .github/workflows/migrate-frxe-android.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "feat: migrate native FRXE Android app into Vitr"
+          git push origin HEAD:main
+
+      - name: Upload verified Vitr 0.1.0 APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Vitr-0.1.0-APK
+          path: /tmp/Vitr-0.1.0-android.apk
+          if-no-files-found: error
+          retention-days: 30
