@@ -27,6 +27,15 @@ function json(rel, mutate) {
 json('package.json', (data) => { data.version = version; });
 json('web/package.json', (data) => { data.version = version; });
 write('web/VERSION', version + '\n');
+
+let webApp = read('web/src/music/VitrWebApp.tsx');
+webApp = webApp.replace(/export const VITR_WEB_VERSION = '[^']+';/, `export const VITR_WEB_VERSION = '${version}';`);
+write('web/src/music/VitrWebApp.tsx', webApp);
+
+let adapter = read('web/scripts/adapt-sources.mjs');
+adapter = adapter.replace(/const RELEASE_VERSION = '[^']+';/, `const RELEASE_VERSION = '${version}';`);
+write('web/scripts/adapt-sources.mjs', adapter);
+
 json('desktop/package.json', (data) => { data.version = version; });
 json('desktop/package-lock.json', (data) => {
   data.version = version;
