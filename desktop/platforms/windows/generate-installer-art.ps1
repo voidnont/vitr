@@ -1,8 +1,13 @@
 param(
-  [string]$Version = "dev"
+  [string]$Version = ""
 )
 
 $ErrorActionPreference = 'Stop'
+
+if ([string]::IsNullOrWhiteSpace($Version)) {
+  $versionFile = Join-Path $PSScriptRoot "..\..\..\VERSION"
+  $Version = (Get-Content $versionFile -Raw).Trim()
+}
 Add-Type -AssemblyName System.Drawing
 
 $outDir = Join-Path $PSScriptRoot "..\..\src-tauri\installer"
