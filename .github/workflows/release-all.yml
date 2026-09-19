@@ -204,14 +204,29 @@ jobs:
           else
             gh release create "$TAG" release/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "Vitr $VERSION" --generate-notes
           fi
-      - name: Mirror to canonical bloodvitr/vitr release channel
+      - name: Mirror source head to canonical release repository
+        env:
+          BLOODVITR_RELEASE_TOKEN: ${{ secrets.BLOODVITR_RELEASE_TOKEN }}
+        shell: bash
+        run: |
+          if [ -z "$BLOODVITR_RELEASE_TOKEN" ]; then
+            echo "BLOODVITR_RELEASE_TOKEN is not configured; canonical source mirror skipped."
+            exit 0
+          fi
+          git config user.name "Blood Vitr Release Bot"
+          git config user.email "release@bloodvitr.invalid"
+          git remote remove bloodvitr 2>/dev/null || true
+          git remote add bloodvitr "https://x-access-token:$BLOODVITR_RELEASE_TOKEN@github.com/bloodvitr/vitr.git"
+          git push --force bloodvitr HEAD:main
+
+      - name: Mirror release to canonical bloodvitr/vitr channel
         env:
           GH_TOKEN: ${{ secrets.BLOODVITR_RELEASE_TOKEN }}
           VERSION: ${{ steps.version.outputs.value }}
         shell: bash
         run: |
           if [ -z "$GH_TOKEN" ]; then
-            echo "BLOODVITR_RELEASE_TOKEN is not configured; source release is published, canonical mirror skipped."
+            echo "BLOODVITR_RELEASE_TOKEN is not configured; source release is published, canonical release skipped."
             exit 0
           fi
           TAG="v$VERSION"
@@ -219,5 +234,5 @@ jobs:
           if gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
             gh release upload "$TAG" release/* --repo "$REPO" --clobber
           else
-            gh release create "$TAG" release/* --repo "$REPO" --title "Vitr $VERSION" --generate-notes
+            gh release create "$TAG" release/* --repo "$REPO" --target main --title "Vitr $VERSION" --generate-notes
           fi
