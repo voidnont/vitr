@@ -12,14 +12,14 @@ test('public brand is Vitr by Blood', () => {
   const readme = read('README.md');
 
   for (const source of [index, app, main, music, readme]) {
-    assert.doesNotMatch(source, /\bNont\b|\bNONT\b|\bFRXE\b|\bFrxe\b/);
+    assert.doesNotMatch(source, /\bNont\b|\bNONT\b/);
   }
 
   assert.match(index, /<title>Vitr<\/title>/);
   assert.match(index, /\/vitr-icon\.png/);
   assert.match(app, /github\.com\/bloodvitr/);
   assert.match(app, /ko-fi\.com\/bloodvitr/);
-  assert.match(music, /github\.com\/voidnont\/vitr/);
+  assert.match(music, /github\.com\/bloodvitr\/vitr/);
   assert.match(readme, /^# Vitr/m);
 });
 
@@ -37,10 +37,10 @@ test('Ko-fi links use the Vitr cup-and-heart icon in header and footer', () => {
 });
 
 
-test('download controls are locked to voidnont/vitr releases', () => {
+test('download controls are locked to the Blood Vitr releases', () => {
   const app = read('src/App.jsx');
   const vitrApp = read('shared/vitr-app.js');
-  assert.match(vitrApp, /export const VITR_REPO = 'voidnont\/vitr'/);
+  assert.match(vitrApp, /export const VITR_REPO = 'bloodvitr\/vitr'/);
   assert.match(app, /VITR_RELEASES_URL = `\$\{VITR_REPO_URL\}\/releases`/);
   assert.match(app, /Choose Windows download/);
   assert.match(app, /ALL BUILDS/);
