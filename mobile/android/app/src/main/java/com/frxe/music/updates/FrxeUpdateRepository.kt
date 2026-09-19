@@ -55,7 +55,7 @@ class FrxeUpdateRepository {
     }
 
     companion object {
-        const val RELEASES_API = "https://api.github.com/repos/voidnont/vitr/releases?per_page=10"
-        const val RELEASES_PAGE = "https://github.com/voidnont/vitr/releases"
+        const val RELEASES_API = "https://api.github.com/repos/bloodvitr/vitr/releases?per_page=10"
+        const val RELEASES_PAGE = "https://github.com/bloodvitr/vitr/releases"
     }
 }
