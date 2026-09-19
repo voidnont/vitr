@@ -80,7 +80,7 @@ body.normal .toggle-indicator{transform:translateX(100%)}
 .disc:after{content:"";position:absolute;inset:10%;border-radius:50%;border:1px solid rgba(255,255,255,.07);box-shadow:0 0 0 14px rgba(255,255,255,.015),0 0 0 30px rgba(255,255,255,.012)}
 @keyframes spin{to{transform:rotate(360deg)}}body.normal .disc{animation:none}
 .section{margin-top:28px}.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:12px}.section-head h2{margin:3px 0 0;font-size:21px;letter-spacing:-.035em}.section-head small{color:var(--muted)}
-.cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.card{border-radius:20px;padding:10px;min-width:0;transition:transform .22s ease,border-color .22s ease,background .22s ease}
+.cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.card{border-radius:20px;padding:10px;min-width:0;transition:transform .22s ease,border-color .22s ease,background .22s ease;position:relative}.card-mini{position:absolute;right:16px;top:16px;z-index:5;width:31px;height:31px;border:0;border-radius:50%;background:rgba(5,5,8,.76);backdrop-filter:blur(8px);font-size:13px}
 .card:hover{transform:translateY(-4px);border-color:rgba(242,47,93,.34)}.cover{aspect-ratio:1;border-radius:15px;position:relative;overflow:hidden;background:#17171d}
 .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:3}.cover:before,.cover:after{content:"";position:absolute;border-radius:50%;filter:blur(2px)}.cover:before{width:120%;height:70%;left:-24%;bottom:-25%;background:linear-gradient(30deg,#1b1016,#f22f5d);transform:rotate(-14deg)}.cover:after{width:55%;height:55%;right:-12%;top:-7%;background:radial-gradient(circle at 30% 30%,#ffadc0,#db2454 26%,#41101f 70%);box-shadow:0 0 44px rgba(242,47,93,.28)}
 .card:nth-child(2) .cover:before{background:linear-gradient(30deg,#10121b,#7659ff)}.card:nth-child(3) .cover:before{background:linear-gradient(30deg,#0f1213,#24b3b9)}.card:nth-child(4) .cover:before{background:linear-gradient(30deg,#161113,#ff8743)}.card:nth-child(5) .cover:before{background:linear-gradient(30deg,#111116,#d432a5)}
@@ -341,7 +341,7 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
 
   function cardMarkup(t,i){
     var key=trackKey(t,"card"+i);trackRegistry.set(key,t);var cover=coverUrl(t);
-    return '<article class="card glass-soft" data-track-key="'+esc(key)+'"><div class="cover">'+(cover?'<img src="'+esc(cover)+'" alt="">':"")+'</div><strong>'+esc(t&&t.title||"Unknown track")+'</strong><small>'+esc(t&&t.artist||"Unknown artist")+'</small></article>';
+    return '<article class="card glass-soft" data-track-key="'+esc(key)+'"><button class="card-mini" data-song-mini type="button" title="Open mini popup">▱</button><div class="cover">'+(cover?'<img src="'+esc(cover)+'" alt="">':"")+'</div><strong>'+esc(t&&t.title||"Unknown track")+'</strong><small>'+esc(t&&t.artist||"Unknown artist")+'</small></article>';
   }
   function renderTracks(list,target,emptyTitle){list=Array.isArray(list)?list:[];if(!list.length){empty(target,emptyTitle||"Nothing here yet","Play or save music and it will appear here.");return}target.innerHTML=list.map(trackMarkup).join("");bindPlayers(target)}
   function renderCards(list,target){list=Array.isArray(list)?list:[];if(!list.length){empty(target,"No discovery results yet","Search for music to fill this section.");return}target.innerHTML=list.slice(0,5).map(cardMarkup).join("");bindPlayers(target)}
