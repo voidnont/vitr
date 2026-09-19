@@ -1,0 +1,55 @@
+name: Build standalone Vitr Windows installer
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Install desktop dependencies
+        working-directory: desktop
+        run: npm ci
+
+      - name: Generate app icons
+        working-directory: desktop
+        run: npm run icons
+
+      - name: Generate installer art
+        working-directory: desktop
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File platforms/windows/generate-installer-art.ps1 -Version 0.1.0
+
+      - name: Build Windows installers
+        working-directory: desktop
+        run: npx tauri build --bundles nsis,msi
+
+      - name: Collect installers
+        shell: powershell
+        run: |
+          New-Item -ItemType Directory -Force -Path out | Out-Null
+          Get-ChildItem -Path desktop/src-tauri/target/release/bundle -Recurse -File |
+            Where-Object { $_.Extension -in ".exe", ".msi" } |
+            ForEach-Object { Copy-Item $_.FullName -Destination out }
+          Get-ChildItem out
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vitr-0.1.0-windows-installers
+          path: out/*
+          if-no-files-found: error
