@@ -28,39 +28,44 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - name: Set up Java 21
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '21'
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
 
-      - name: Install Android SDK 35
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Install Android 17 SDK
+        run: sdkmanager "platforms;android-37.0" "build-tools;37.0.0"
 
-      - name: Set up Gradle 8.11.1
+      - name: Set up Gradle 9.6.0
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.11.1'
+          gradle-version: '9.6.0'
 
-      - name: Build installable APK
-        run: gradle -p mobile/android :app:assembleDebug --no-daemon
+      - name: Test and build installable release APK
+        working-directory: mobile/android
+        env:
+          FRXE_CI_RELEASE_DEBUG_SIGNING: '1'
+        run: gradle --no-daemon --stacktrace :app:testDebugUnitTest :app:assembleRelease
 
-      - name: Verify APK metadata
+      - name: Verify Vitr 0.1.0 APK metadata
         shell: bash
         run: |
-          APK="mobile/android/app/build/outputs/apk/debug/app-debug.apk"
+          APK="mobile/android/app/build/outputs/apk/release/app-release.apk"
           test -f "$APK"
-          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | tee mobile/android/apk-badging.txt
-          grep -F "package: name='app.vitr.android' versionCode='1' versionName='0.1.0'" mobile/android/apk-badging.txt
-          cp "$APK" "vitr-0.1.0.apk"
+          "$ANDROID_HOME/build-tools/37.0.0/aapt" dump badging "$APK" | tee /tmp/vitr-apk-badging.txt
+          grep -F "package: name='com.frxe.music' versionCode='1' versionName='0.1.0'" /tmp/vitr-apk-badging.txt
+          cp "$APK" "Vitr-0.1.0-android.apk"
 
       - name: Upload Vitr APK
         uses: actions/upload-artifact@v4
         with:
-          name: vitr-0.1.0-Android
-          path: vitr-0.1.0.apk
+          name: Vitr-0.1.0-APK
+          path: Vitr-0.1.0-android.apk
           if-no-files-found: error
           retention-days: 30
