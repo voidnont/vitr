@@ -42,7 +42,7 @@
       "appimage",
       "dmg"
     ],
-    "publisher": "blood",
+    "publisher": "Blood",
     "category": "Music",
     "shortDescription": "vitr Music Player",
     "longDescription": "vitr brings the native vitr music experience to Windows, Linux and macOS.",
@@ -74,7 +74,7 @@
     "updater": {
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXkgRTA0QzFFQzE3MDNCODU3NwpSV1IzaFR0d3dSNU00T2ZiY3JObVQ1UitTN3BveHVJb2hyUStyRXh4cnNoMGRwdXdiU1FsdXFPLwo=",
       "endpoints": [
-        "https://github.com/voidnont/vitr/releases/latest/download/latest.json"
+        "https://github.com/bloodvitr/vitr/releases/latest/download/latest.json"
       ],
       "windows": {
         "installMode": "passive"
