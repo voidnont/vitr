@@ -1,4 +1,4 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
 object PlaybackRecoveryPolicy {
     fun shouldReresolve(
@@ -9,7 +9,7 @@ object PlaybackRecoveryPolicy {
             originalSource
                 ?.trim()
                 ?.startsWith(
-                    "frxe-catalog://",
+                    "vitr-catalog://",
                     ignoreCase = true
                 ) == true
 }
@@ -23,7 +23,7 @@ object PlaybackPersistencePolicy {
             ?.trim()
             ?.takeIf {
                 it.startsWith(
-                    "frxe-catalog://",
+                    "vitr-catalog://",
                     ignoreCase = true
                 )
             }
@@ -37,7 +37,7 @@ object PlaybackPersistencePolicy {
 
         if (
             normalized.startsWith(
-                "frxe-catalog://",
+                "vitr-catalog://",
                 ignoreCase = true
             )
         ) {
@@ -47,7 +47,7 @@ object PlaybackPersistencePolicy {
         if (mediaId.startsWith("yt-")) {
             val videoId = mediaId.removePrefix("yt-")
             if (videoId.length == 11) {
-                return "frxe-catalog://youtube/$videoId"
+                return "vitr-catalog://youtube/$videoId"
             }
         }
 

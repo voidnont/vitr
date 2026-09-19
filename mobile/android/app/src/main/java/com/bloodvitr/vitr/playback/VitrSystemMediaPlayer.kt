@@ -1,11 +1,11 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
 import androidx.media3.common.ForwardingSimpleBasePlayer
 import androidx.media3.common.Player
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 
-class FrxeSystemMediaPlayer(
+class VitrSystemMediaPlayer(
     player: Player,
     private val queueAvailability: () -> SystemMediaQueueAvailability,
     private val onPrevious: () -> Unit,

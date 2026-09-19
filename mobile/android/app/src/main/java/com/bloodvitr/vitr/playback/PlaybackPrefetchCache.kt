@@ -1,7 +1,7 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
-import com.frxe.music.model.Track
-import com.frxe.music.source.PlaybackResolverKind
+import com.bloodvitr.vitr.model.Track
+import com.bloodvitr.vitr.source.PlaybackResolverKind
 
 data class PrefetchedPlaybackTrack(
     val track: Track,

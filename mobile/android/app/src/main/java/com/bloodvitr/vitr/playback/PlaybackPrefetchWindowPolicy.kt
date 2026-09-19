@@ -1,4 +1,4 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
 object PlaybackPrefetchWindowPolicy {
     private const val DEFAULT_WINDOW_SIZE = 2

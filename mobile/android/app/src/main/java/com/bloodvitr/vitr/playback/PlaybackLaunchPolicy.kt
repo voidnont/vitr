@@ -1,6 +1,6 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
-import com.frxe.music.model.Track
+import com.bloodvitr.vitr.model.Track
 
 data class PlaybackLaunchPlan(
     val tracks: List<Track>,

@@ -1,7 +1,7 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
-import com.frxe.music.source.PlaybackResolverKind
-import com.frxe.music.source.PlaybackResolverOrder
+import com.bloodvitr.vitr.source.PlaybackResolverKind
+import com.bloodvitr.vitr.source.PlaybackResolverOrder
 
 object PlaybackPrefetchPolicy {
     const val MAX_AGE_MS:

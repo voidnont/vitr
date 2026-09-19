@@ -1,4 +1,4 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
 import java.nio.charset.StandardCharsets
 import java.util.Base64
@@ -24,7 +24,7 @@ data class PlaybackSnapshot(
     val playbackSpeed: Float
 )
 
-private const val SNAPSHOT_VERSION = "frxe-playback-v1"
+private const val SNAPSHOT_VERSION = "vitr-playback-v1"
 private val encoder = Base64.getUrlEncoder().withoutPadding()
 private val decoder = Base64.getUrlDecoder()
 

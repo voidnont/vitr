@@ -1,7 +1,7 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
 import android.content.Context
-import com.frxe.music.model.Track
+import com.bloodvitr.vitr.model.Track
 import java.util.UUID
 import kotlin.random.Random
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -277,7 +277,7 @@ object PlaybackQueueStore {
             originalStreamUrl = track.originalStreamUrl
                 ?: source.takeIf {
                     it.startsWith(
-                        "frxe-catalog://",
+                        "vitr-catalog://",
                         ignoreCase = true
                     )
                 }

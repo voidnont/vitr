@@ -1,8 +1,8 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
-import com.frxe.music.source.PlaybackResolutionResult
-import com.frxe.music.source.PlaybackStreamResolver
-import com.frxe.music.source.YouTubeAudioResolverRuntime
+import com.bloodvitr.vitr.source.PlaybackResolutionResult
+import com.bloodvitr.vitr.source.PlaybackStreamResolver
+import com.bloodvitr.vitr.source.YouTubeAudioResolverRuntime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

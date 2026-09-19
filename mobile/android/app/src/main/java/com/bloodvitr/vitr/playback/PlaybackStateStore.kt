@@ -1,4 +1,4 @@
-package com.frxe.music.playback
+package com.bloodvitr.vitr.playback
 
 import android.content.Context
 import android.net.Uri
@@ -6,11 +6,11 @@ import android.os.Bundle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
-import com.frxe.music.model.EXTRA_ARTWORK_SEED
-import com.frxe.music.model.EXTRA_DOWNLOAD_URL
-import com.frxe.music.model.EXTRA_DURATION_MS
-import com.frxe.music.model.EXTRA_ORIGINAL_STREAM_URL
-import com.frxe.music.model.Track
+import com.bloodvitr.vitr.model.EXTRA_ARTWORK_SEED
+import com.bloodvitr.vitr.model.EXTRA_DOWNLOAD_URL
+import com.bloodvitr.vitr.model.EXTRA_DURATION_MS
+import com.bloodvitr.vitr.model.EXTRA_ORIGINAL_STREAM_URL
+import com.bloodvitr.vitr.model.Track
 
 class PlaybackStateStore(context: Context) {
     private val preferences = context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
@@ -67,7 +67,7 @@ class PlaybackStateStore(context: Context) {
             artworkUrl = mediaItem.mediaMetadata.artworkUri?.toString(),
             downloadUrl = extras?.getString(EXTRA_DOWNLOAD_URL),
             originalStreamUrl = source.takeIf {
-                it.startsWith("frxe-catalog://", ignoreCase = true)
+                it.startsWith("vitr-catalog://", ignoreCase = true)
             }
         )
     }
@@ -89,7 +89,7 @@ class PlaybackStateStore(context: Context) {
             artworkUrl = artworkUri,
             downloadUrl = downloadUrl,
             originalStreamUrl = source.takeIf {
-                it.startsWith("frxe-catalog://", ignoreCase = true)
+                it.startsWith("vitr-catalog://", ignoreCase = true)
             }
         )
     }
