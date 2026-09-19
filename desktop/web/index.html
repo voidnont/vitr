@@ -272,13 +272,15 @@ if(window.visualViewport){window.visualViewport.addEventListener("resize",applyW
     {title:"Fading",artist:"Kairo"},{title:"A Quieter Tomorrow",artist:"Vitr"}
   ];
   var body=document.body, liquidBtn=document.getElementById("liquidBtn"), normalBtn=document.getElementById("normalBtn"), modeLabel=document.getElementById("modeLabel");
+  var invoke=window.__TAURI__&&window.__TAURI__.core&&window.__TAURI__.core.invoke;
   function setMode(mode){
     var normal=mode==="normal"; body.classList.toggle("normal",normal);
     liquidBtn.classList.toggle("active",!normal); normalBtn.classList.toggle("active",normal);
     if(modeLabel) modeLabel.textContent=normal?"Normal":"Liquid Glass";
     localStorage.setItem("vitr-ui-mode",normal?"normal":"liquid");
   }
-  setMode(localStorage.getItem("vitr-ui-mode")==="normal"?"normal":"liquid");\n  if(!localStorage.getItem("vitr-current-track"))rememberTrack("Red Light","Novae");
+  setMode(localStorage.getItem("vitr-ui-mode")==="normal"?"normal":"liquid");
+  if(!localStorage.getItem("vitr-current-track"))rememberTrack("Red Light","Novae");
   liquidBtn.addEventListener("click",function(){setMode("liquid")}); normalBtn.addEventListener("click",function(){setMode("normal")});
 
   function trackMarkup(t,i){
