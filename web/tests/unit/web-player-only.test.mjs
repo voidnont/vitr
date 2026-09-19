@@ -92,7 +92,7 @@ test('web player exposes v0.1.0 and a real clear-search control', () => {
   assert.match(app, /aria-label="Clear search"/);
   assert.match(app, /function clearSearch\(\)/);
   assert.match(app, /searchRequestRef\.current \+= 1/);
-  assert.match(app, /https:\/\/github\.com\/voidnont\/vitr/);
+  assert.match(app, /https:\/\/github\.com\/bloodvitr\/vitr/);
 });
 
 test('web and desktop use only the supplied PNG icon asset', () => {

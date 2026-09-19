@@ -73,13 +73,13 @@
 
         <meta-data
             android:name="vitr.owner"
-            android:value="void" />
+            android:value="blood" />
         <meta-data
             android:name="vitr.publisher"
-            android:value="void" />
+            android:value="blood" />
         <meta-data
             android:name="vitr.author"
-            android:value="void" />
+            android:value="blood" />
 
         <meta-data
             android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"

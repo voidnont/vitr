@@ -25,7 +25,7 @@ test('Home and About include canonical Ko-fi and Vitr repository pill links', as
   const ui = await uiSource();
   assert.match(ui, /home-links/);
   assert.match(ui, /https:\/\/ko-fi\.com\/bloodvitr/);
-  assert.match(ui, /https:\/\/github\.com\/voidnont\/vitr/);
+  assert.match(ui, /https:\/\/github\.com\/bloodvitr\/vitr/);
   assert.match(ui, /support-links/);
   assert.doesNotMatch(ui, /vitr-windows/i);
 });
