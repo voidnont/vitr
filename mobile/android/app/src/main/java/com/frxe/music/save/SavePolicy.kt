@@ -99,6 +99,16 @@ fun buildFfmpegArguments(
         }
 
     when (format) {
+        SaveFormat.M4A -> {
+            val bitrate = when (quality) {
+                SaveQuality.Mp3K128 -> "128k"
+                SaveQuality.Mp3K192 -> "192k"
+                SaveQuality.Mp3K256 -> "256k"
+                SaveQuality.Mp3K320 -> "320k"
+                else -> "256k"
+            }
+            common += listOf("-c:a", "aac", "-b:a", bitrate, "-movflags", "+faststart")
+        }
         SaveFormat.MP3 -> {
             val bitrate = when (quality) {
                 SaveQuality.Mp3K128 -> "128k"
