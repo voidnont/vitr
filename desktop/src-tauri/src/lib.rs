@@ -96,7 +96,6 @@ fn open_mini_player(app: AppHandle, mode: String, dock: String) -> Result<(), St
         .always_on_top(true)
         .skip_taskbar(true)
         .shadow(true)
-        .transparent(true)
         .visible(true)
         .build()
         .map_err(|error| format!("Could not create mini player: {error}"))?;
