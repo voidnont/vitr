@@ -21,7 +21,7 @@
     "desktop:build:windows": "npm --prefix desktop run tauri:build:windows",
     "desktop:build:linux": "npm --prefix desktop run tauri:build:linux",
     "desktop:build:macos": "npm --prefix desktop run tauri:build:macos",
-    "android:build": "gradle -p android :app:assembleDebug"
+    "android:build": "gradle -p mobile/android :app:assembleDebug"
   },
   "license": "SEE LICENSE IN LICENSE"
 }

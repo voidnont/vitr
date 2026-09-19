@@ -15,13 +15,11 @@ Vitr Android packages the live Vitr player in a small native Android WebView she
 With JDK 17, Android SDK 35 and Gradle 8.11.1 installed:
 
 ```sh
-gradle -p android :app:assembleDebug
+gradle -p mobile/android :app:assembleDebug
 ```
 
 The APK is generated at:
 
 ```
-android/app/build/outputs/apk/debug/app-debug.apk
+mobile/android/app/build/outputs/apk/debug/app-debug.apk
 ```
-
-GitHub Actions also builds and uploads it as `vitr-0.1.0.apk`.
