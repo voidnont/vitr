@@ -1,7 +1,7 @@
 {
   "name": "vitr",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.1",
   "description": "vitr standalone UI for Windows",
   "author": "Blood",
   "scripts": {
