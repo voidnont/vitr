@@ -3,16 +3,18 @@ package com.bloodvitr.vitr;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Insets;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowInsets;
-import android.graphics.Insets;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 
 public final class MainActivity extends Activity {
     private WebView webView;
@@ -24,6 +26,9 @@ public final class MainActivity extends Activity {
         Window window = getWindow();
         window.setStatusBarColor(Color.rgb(5, 5, 7));
         window.setNavigationBarColor(Color.rgb(5, 5, 7));
+
+        FrameLayout root = new FrameLayout(this);
+        root.setBackgroundColor(Color.rgb(5, 5, 7));
 
         webView = new WebView(this);
         webView.setBackgroundColor(Color.rgb(5, 5, 7));
@@ -68,28 +73,50 @@ public final class MainActivity extends Activity {
             }
         });
 
-        setContentView(webView);
+        FrameLayout.LayoutParams webParams = new FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        );
+        root.addView(webView, webParams);
+        setContentView(root);
 
-        webView.setOnApplyWindowInsetsListener((view, insets) -> {
+        final int extraTopGap = Math.round(8f * getResources().getDisplayMetrics().density);
+
+        root.setOnApplyWindowInsetsListener((view, insets) -> {
+            int top;
+            int bottom;
+            int left;
+            int right;
+
             if (android.os.Build.VERSION.SDK_INT >= 30) {
                 Insets safe = insets.getInsets(
                     WindowInsets.Type.statusBars()
                         | WindowInsets.Type.navigationBars()
                         | WindowInsets.Type.displayCutout()
                 );
-                view.setPadding(0, safe.top, 0, safe.bottom);
+                top = safe.top;
+                bottom = safe.bottom;
+                left = safe.left;
+                right = safe.right;
             } else {
-                view.setPadding(
-                    0,
-                    insets.getSystemWindowInsetTop(),
-                    0,
-                    insets.getSystemWindowInsetBottom()
-                );
+                top = insets.getSystemWindowInsetTop();
+                bottom = insets.getSystemWindowInsetBottom();
+                left = insets.getSystemWindowInsetLeft();
+                right = insets.getSystemWindowInsetRight();
             }
+
+            FrameLayout.LayoutParams params =
+                (FrameLayout.LayoutParams) webView.getLayoutParams();
+            params.topMargin = top + extraTopGap;
+            params.bottomMargin = bottom;
+            params.leftMargin = left;
+            params.rightMargin = right;
+            webView.setLayoutParams(params);
+
             return insets;
         });
-        webView.requestApplyInsets();
 
+        root.requestApplyInsets();
         webView.loadUrl("file:///android_asset/index.html");
     }
 
