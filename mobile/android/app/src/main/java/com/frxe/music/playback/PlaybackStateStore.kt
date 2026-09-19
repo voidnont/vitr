@@ -116,7 +116,7 @@ class PlaybackStateStore(context: Context) {
     }
 
     companion object {
-        private const val PREFS = "frxe_playback_state"
+        private const val PREFS = "vitr_playback_state"
         private const val KEY_SNAPSHOT = "snapshot"
     }
 }
