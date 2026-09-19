@@ -1,3 +1,11 @@
+mod downloads;
+mod lyrics;
+mod media_controls;
+mod models;
+mod runtime;
+mod search;
+mod tray;
+
 use tauri::{AppHandle, LogicalPosition, LogicalSize, Manager, WebviewWindow};
 
 fn mini_dimensions(mode: &str) -> (f64, f64, bool) {
@@ -190,7 +198,34 @@ fn show_main_window(app: AppHandle) -> Result<(), String> {
 
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_opener::init())
+        .manage(downloads::DownloadManager::default())
+        .setup(|app| {
+            if let Err(error) = tray::install(app) {
+                eprintln!("vitr system tray unavailable: {error}");
+            }
+            if let Err(error) = media_controls::install(app) {
+                eprintln!("vitr native media controls unavailable: {error}");
+            }
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
+            search::innertube_search,
+            search::innertube_catalog_search,
+            search::ytdlp_search,
+            search::resolve_stream_url,
+            downloads::authorize_media_path,
+            downloads::scan_downloads,
+            downloads::clear_removed_downloads,
+            downloads::download_already_exists,
+            downloads::download_track,
+            downloads::cancel_download,
+            downloads::remove_download,
+            lyrics::fetch_metadata_lyrics,
+            runtime::update_runtime_dependencies,
+            runtime::current_runtime_status,
+            tray::set_tray_enabled,
+            media_controls::update_media_controls,
             toggle_mini_player,
             set_mini_mode,
             start_mini_drag,
