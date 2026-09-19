@@ -17,7 +17,7 @@ body{min-height:100vh;overflow-x:hidden}
 button,input,select{font:inherit}
 button,a{color:inherit}
 button{border:0}
-.frxe-app{min-height:100vh;position:relative;overflow:hidden;background:#090303;color:var(--frxe-text)}
+.frxe-app{min-height:100vh;position:relative;overflow:visible;background:#090303;color:var(--frxe-text)}
 .frxe-ambient{position:fixed;inset:-12%;z-index:0;pointer-events:none;background:
   radial-gradient(circle at 20% 18%,rgba(126,19,13,.24),transparent 28%),
   radial-gradient(circle at 76% 16%,rgba(86,10,7,.18),transparent 30%),

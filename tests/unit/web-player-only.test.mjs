@@ -77,3 +77,10 @@ test('web player layout is fluid across desktop and compact windows', () => {
   assert.match(css, /grid-template-columns:repeat\(auto-fit/);
   assert.match(css, /overflow-x:clip/);
 });
+
+
+test('web player base container does not break sticky headers with overflow clipping', () => {
+  const css = read('src/music/music.css');
+  assert.match(css, /\.frxe-app\{[^}]*overflow:visible/);
+  assert.doesNotMatch(css, /\.frxe-app\{[^}]*overflow:hidden/);
+});
