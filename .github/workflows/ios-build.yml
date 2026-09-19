@@ -42,7 +42,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             build
 
-      - name: Build unsigned iOS device app
+      - name: Build sideload device app
         run: |
           xcodebuild \
             -project mobile/ios/Vitr.xcodeproj \
@@ -54,7 +54,7 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             build
 
-      - name: Verify Vitr 0.1.0 metadata
+      - name: Verify Vitr 0.1.0 Blood metadata
         shell: bash
         run: |
           SIM_APP="build/ios-simulator/Build/Products/Release-iphonesimulator/Vitr.app"
@@ -67,12 +67,17 @@ jobs:
             VERSION=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$APP/Info.plist")
             BUILD=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$APP/Info.plist")
             BUNDLE=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist")
+            PUBLISHER=$(/usr/libexec/PlistBuddy -c 'Print :VitrPublisher' "$APP/Info.plist")
             test "$VERSION" = "0.1.0"
             test "$BUILD" = "1"
             test "$BUNDLE" = "com.bloodvitr.vitr"
+            test "$PUBLISHER" = "Blood"
           done
 
-      - name: Package artifacts
+          test ! -d "$DEVICE_APP/_CodeSignature"
+          test ! -f "$DEVICE_APP/embedded.mobileprovision"
+
+      - name: Package simulator and sideload IPA
         shell: bash
         run: |
           ditto -c -k --sequesterRsrc --keepParent \
@@ -82,7 +87,12 @@ jobs:
           rm -rf Payload
           mkdir Payload
           cp -R build/ios-device/Build/Products/Release-iphoneos/Vitr.app Payload/
-          zip -qry Vitr-0.1.0-unsigned.ipa Payload
+          rm -rf Payload/Vitr.app/_CodeSignature
+          rm -f Payload/Vitr.app/embedded.mobileprovision
+          zip -qry Vitr-0.1.0-sideload.ipa Payload
+
+          unzip -l Vitr-0.1.0-sideload.ipa | grep -F 'Payload/Vitr.app/'
+          test -s Vitr-0.1.0-sideload.ipa
 
       - name: Upload simulator app
         uses: actions/upload-artifact@v4
@@ -92,10 +102,10 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-      - name: Upload unsigned IPA
+      - name: Upload sideload IPA
         uses: actions/upload-artifact@v4
         with:
-          name: Vitr-0.1.0-iOS-Unsigned-IPA
-          path: Vitr-0.1.0-unsigned.ipa
+          name: Vitr-0.1.0-iOS-Sideload
+          path: Vitr-0.1.0-sideload.ipa
           if-no-files-found: error
           retention-days: 30
