@@ -120,11 +120,14 @@ fn dedupe_catalog(items: Vec<CatalogItem>) -> Vec<CatalogItem> {
 
 fn classify_catalog_entity(renderer: &Value) -> Option<(&'static str, f64)> {
     let page_type = first_named_string(renderer, "pageType").unwrap_or_default().to_uppercase();
-    let subtitle = renderer
-        .get("subtitle")
-        .map(first_run_text)
-        .unwrap_or_default()
-        .to_lowercase();
+    let subtitle = {
+        let direct = renderer
+            .get("subtitle")
+            .map(first_run_text)
+            .unwrap_or_default();
+        if direct.is_empty() { flex_text(renderer, 1) } else { direct }
+    }
+    .to_lowercase();
     let browse_id = first_named_string(renderer, "browseId").unwrap_or_default();
 
     if page_type.contains("ARTIST") {
@@ -178,14 +181,20 @@ fn classify_catalog_entity(renderer: &Value) -> Option<(&'static str, f64)> {
 }
 
 fn catalog_item(renderer: &Value, kind: &str, confidence: f64) -> Option<CatalogItem> {
-    let title = renderer
-        .get("title")
-        .or_else(|| renderer.get("buttonText"))
-        .map(first_run_text)
-        .unwrap_or_default();
+    let title = {
+        let direct = renderer
+            .get("title")
+            .or_else(|| renderer.get("buttonText"))
+            .map(first_run_text)
+            .unwrap_or_default();
+        if direct.is_empty() { flex_text(renderer, 0) } else { direct }
+    };
     if title.is_empty() { return None; }
 
-    let subtitle = renderer.get("subtitle").map(first_run_text).unwrap_or_default();
+    let subtitle = {
+        let direct = renderer.get("subtitle").map(first_run_text).unwrap_or_default();
+        if direct.is_empty() { flex_text(renderer, 1) } else { direct }
+    };
     let browse_id = first_named_string(renderer, "browseId");
     let id = browse_id
         .clone()
@@ -542,13 +551,18 @@ mod tests {
         let json = json!({
             "items": [{
                 "musicResponsiveListItemRenderer": {
-                    "flexColumns": [{
-                        "musicResponsiveListItemFlexColumnRenderer": {
-                            "text": { "runs": [{ "text": "Metadata Artist" }] }
+                    "flexColumns": [
+                        {
+                            "musicResponsiveListItemFlexColumnRenderer": {
+                                "text": { "runs": [{ "text": "Metadata Artist" }] }
+                            }
+                        },
+                        {
+                            "musicResponsiveListItemFlexColumnRenderer": {
+                                "text": { "runs": [{ "text": "Artist" }] }
+                            }
                         }
-                    }],
-                    "title": { "runs": [{ "text": "Metadata Artist" }] },
-                    "subtitle": { "runs": [{ "text": "Artist" }] },
+                    ],
                     "navigationEndpoint": {
                         "browseEndpoint": {
                             "browseId": "UCmetadataartist",
