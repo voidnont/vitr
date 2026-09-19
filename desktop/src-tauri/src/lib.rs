@@ -8,6 +8,7 @@ mod tray;
 mod updates;
 
 use tauri::{AppHandle, LogicalPosition, LogicalSize, Manager, WebviewWindow};
+use tauri_plugin_dialog::DialogExt;
 
 fn mini_dimensions(mode: &str) -> (f64, f64, bool) {
     match mode {
@@ -178,6 +179,20 @@ fn hide_mini_player(app: AppHandle, window: WebviewWindow) -> Result<(), String>
 }
 
 #[tauri::command]
+async fn choose_audio_download_dir(app: AppHandle) -> Result<Option<String>, String> {
+    let selected = app.dialog().file().blocking_pick_folder();
+    let Some(selected) = selected else {
+        return Ok(None);
+    };
+    let path = selected
+        .into_path()
+        .map_err(|error| format!("Could not read selected folder: {error}"))?;
+    std::fs::create_dir_all(&path)
+        .map_err(|error| format!("Could not create selected audio folder: {error}"))?;
+    Ok(Some(path.to_string_lossy().into_owned()))
+}
+
+#[tauri::command]
 fn show_main_window(app: AppHandle) -> Result<(), String> {
     let Some(window) = app.get_webview_window("main") else {
         return Err("Main vitr window is unavailable".to_string());
@@ -251,6 +266,7 @@ fn mini_player_volume(app: AppHandle, delta: f64) -> Result<(), String> {
 
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .manage(downloads::DownloadManager::default())
         .setup(|app| {
@@ -296,6 +312,7 @@ pub fn run() {
             runtime::current_runtime_status,
             updates::check_client_update,
             updates::open_release_page,
+            choose_audio_download_dir,
             tray::set_tray_enabled,
             media_controls::update_media_controls,
             toggle_mini_player,
