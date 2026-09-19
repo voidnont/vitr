@@ -1,6 +1,6 @@
 [package]
 name = "vitr"
-version = "0.2.0"
+version = "0.3.1"
 description = "vitr for Windows, Linux and macOS"
 authors = ["Blood"]
 edition = "2021"
