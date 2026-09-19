@@ -59,7 +59,7 @@ type SaveChallenge = {
 };
 
 const VITR_REPO = 'https://github.com/bloodvitr/vitr';
-const VITR_SOURCE_VERSION = '0.6.12';
+const VITR_SOURCE_VERSION = '0.1.0';
 const LIBRARY_KEY = 'vitr.web.library.v1';
 const LEGACY_VITR_LIBRARY_KEY = 'frxe.web.library.v1';
 const HISTORY_KEY = 'vitr.web.history.v1';

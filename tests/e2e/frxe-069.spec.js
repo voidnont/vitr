@@ -50,7 +50,7 @@ async function mockMusicSearch(page, seen = []) {
   });
 }
 
-test('VITR 0.6.9 separates songs, artists, genres and related mixes', async ({ page }) => {
+test('VITR 0.1.0 separates songs, artists, genres and related mixes', async ({ page }) => {
   const seen = [];
   await mockMusicSearch(page, seen);
   await page.goto('/music');
@@ -70,7 +70,7 @@ test('VITR 0.6.9 separates songs, artists, genres and related mixes', async ({ p
   await expect.poll(() => seen.some((query) => query === 'Daft Punk songs')).toBe(true);
 });
 
-test('VITR 0.6.9 creates a manual playlist, adds a searched song and plays it', async ({ page }) => {
+test('VITR 0.1.0 creates a manual playlist, adds a searched song and plays it', async ({ page }) => {
   await mockMusicSearch(page);
   await page.goto('/music');
 

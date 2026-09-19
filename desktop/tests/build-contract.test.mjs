@@ -82,7 +82,7 @@ test('Home and About use canonical vitr support links', async () => {
   assert.doesNotMatch(app, /github\.com\/voidnont\/vitr-windows/i);
 });
 
-test('release version mirrors remain 1.3.2 while package names are derived dynamically', async () => {
+test('release version mirrors remain 0.1.0 while package names are derived dynamically', async () => {
   const [pkg, cargo, config, winScript, linuxScript, macScript, windowsWorkflow, linuxWorkflow, macWorkflow, ui, runtime, search] = await Promise.all([
     read('package.json'),
     read('src-tauri/Cargo.toml'),
@@ -97,20 +97,20 @@ test('release version mirrors remain 1.3.2 while package names are derived dynam
     read('src-tauri/src/runtime.rs'),
     read('src-tauri/src/search.rs'),
   ]);
-  assert.match(pkg, /"version"\s*:\s*"1\.3\.2"/);
-  assert.match(cargo, /^version\s*=\s*"1\.3\.2"/m);
-  assert.match(config, /"version"\s*:\s*"1\.3\.2"/);
-  assert.match(ui, /vitr 1\.3\.2/);
-  assert.match(runtime, /vitr\/1\.3\.2/);
-  assert.match(search, /vitr\/1\.3\.2/);
+  assert.match(pkg, /"version"\s*:\s*"0\.1\.0"/);
+  assert.match(cargo, /^version\s*=\s*"0\.1\.0"/m);
+  assert.match(config, /"version"\s*:\s*"0\.1\.0"/);
+  assert.match(ui, /vitr 0\.1\.0/);
+  assert.match(runtime, /vitr\/0\.1\.0/);
+  assert.match(search, /vitr\/0\.1\.0/);
 
   for (const script of [winScript, linuxScript, macScript]) {
     assert.match(script, /release-metadata\.mjs/);
-    assert.doesNotMatch(script, /1\.3\.2/);
+    assert.doesNotMatch(script, /0\.1\.0/);
   }
   for (const workflow of [windowsWorkflow, linuxWorkflow, macWorkflow]) {
     assert.match(workflow, /steps\.release\.outputs\.version/);
-    assert.doesNotMatch(workflow, /vitr-1\.3\.2/);
+    assert.doesNotMatch(workflow, /vitr-0\.1\.0/);
   }
 });
 
@@ -156,7 +156,7 @@ test('vitr uses signed automatic updates', async () => {
   assert.match(manifest, /darwin-x86_64/);
 });
 
-test('one-off v1.2.2 release publisher is removed after release', async () => {
+test('one-off legacy release publisher is removed after release', async () => {
   assert.equal(await exists('.github/workflows/release-installers.yml'), false);
 });
 
@@ -214,7 +214,7 @@ test('platform build scripts use locked installs, canonical version metadata and
   }
   for (const script of [win, linux, mac]) {
     assert.match(script, /release-metadata\.mjs/);
-    assert.doesNotMatch(script, /1\.3\.2/);
+    assert.doesNotMatch(script, /0\.1\.0/);
   }
   assert.match(win, /smoke-test\.ps1/i);
   assert.match(linux, /smoke-test\.sh/);

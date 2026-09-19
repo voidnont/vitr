@@ -6,12 +6,12 @@ const main = await readFile(new URL('../../src/main.jsx', import.meta.url), 'utf
 let app = '';
 try { app = await readFile(new URL('../../src/music/MusicApp069.tsx', import.meta.url), 'utf8'); } catch {}
 
-test('VITR boots the dedicated 0.6.9 composition app', () => {
+test('VITR boots the dedicated 0.1.0 composition app', () => {
   assert.match(main, /MusicApp069\.tsx/);
   assert.match(app, /VITR_WEB_VERSION\s*=\s*['"]0\.6\.9['"]/);
 });
 
-test('0.6.9 composition wires discovery taxonomy and playlists', () => {
+test('0.1.0 composition wires discovery taxonomy and playlists', () => {
   assert.match(app, /from ['"]\.\/recommendations\.js['"]/);
   assert.match(app, /from ['"]\.\/searchTaxonomy\.js['"]/);
   assert.match(app, /from ['"]\.\/playlists\.js['"]/);
@@ -25,7 +25,7 @@ test('0.6.9 composition wires discovery taxonomy and playlists', () => {
   assert.match(app, /Add to playlist/);
 });
 
-test('0.6.9 composition uses credential-free browser playback without the retired relay', () => {
+test('0.1.0 composition uses credential-free browser playback without the retired relay', () => {
   assert.match(app, /loadYouTubeIframeApi/);
   assert.doesNotMatch(app, /\/api\/audio-stream|EXTRACTOR_WORKER|backgroundAudioPlayer/);
   assert.match(app, /This track does not allow embedded web playback/);

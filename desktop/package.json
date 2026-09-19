@@ -1,7 +1,7 @@
 {
   "name": "vitr",
   "private": true,
-  "version": "1.3.2",
+  "version": "0.1.0",
   "description": "vitr for Windows, Linux and macOS",
   "author": "blood",
   "scripts": {
@@ -11,7 +11,7 @@
     "icons": "tauri icon web/vitr-icon.svg --output src-tauri/icons",
     "tauri:dev": "npm run icons && tauri dev",
     "tauri:build": "npm run tauri:build:windows",
-    "tauri:build:windows": "npm run icons && powershell -NoProfile -ExecutionPolicy Bypass -File platforms/windows/generate-installer-art.ps1 -Version 1.3.2 && tauri build --bundles msi,nsis",
+    "tauri:build:windows": "npm run icons && powershell -NoProfile -ExecutionPolicy Bypass -File platforms/windows/generate-installer-art.ps1 -Version 0.1.0 && tauri build --bundles msi,nsis",
     "tauri:build:linux": "npm run icons && tauri build --bundles deb,appimage",
     "tauri:build:macos": "npm run icons && tauri build --bundles dmg"
   },

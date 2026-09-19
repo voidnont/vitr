@@ -18,7 +18,7 @@ import { normalizeGithubRepo } from '../shared/github-repo.js';
 import { recommendAsset } from '../shared/release-classifier.js';
 import { VITR_REPO } from '../shared/vitr-app.js';
 
-const VERSION = '0.8.7';
+const VERSION = '0.1.0';
 const VITR_REPO_URL = `https://github.com/${VITR_REPO}`;
 const VITR_RELEASES_URL = `${VITR_REPO_URL}/releases`;
 const PLATFORM_OPTIONS = ['recommended', 'windows', 'android', 'macos', 'linux', 'ios'];

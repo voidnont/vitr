@@ -6,7 +6,7 @@ test('Vitr contract follows the Android liquid-glass player source tree', () => 
   const contract = inferSourceContract({
     repo: 'bloodvitr/vitr',
     pkg: {
-      version: '0.6.12',
+      version: '0.1.0',
       name: 'vitr',
       description: 'Vitr liquid-glass music player',
       scripts: { android: 'gradle' },
