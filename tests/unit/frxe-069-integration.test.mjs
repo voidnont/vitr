@@ -8,7 +8,7 @@ try { app = await readFile(new URL('../../src/music/MusicApp069.tsx', import.met
 
 test('VITR boots the dedicated 0.1.0 composition app', () => {
   assert.match(main, /MusicApp069\.tsx/);
-  assert.match(app, /VITR_WEB_VERSION\s*=\s*['"]0\.6\.9['"]/);
+  assert.match(app, /VITR_WEB_VERSION\s*=\s*['"]0\.1\.0['"]/);
 });
 
 test('0.1.0 composition wires discovery taxonomy and playlists', () => {
