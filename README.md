@@ -6,7 +6,7 @@ Vitr is a cross-platform music project by **Blood**. The repository version is *
 
 - `web/` — complete Vitr Web source, serverless API implementation, tests, Vite/Playwright config, public assets and web deployment config.
 - `desktop/` — complete Tauri desktop source, including native Rust code, desktop UI, and platform tooling for Windows, Linux and macOS.
-- `mobile/android/` — full native Android Vitr app migrated from `voidnont/frxe`, including playback, downloads, Android Auto, persistence, resolver logic and tests.
+- `mobile/android/` — native Android Vitr app with playback, downloads, Android Auto, persistence, resolver logic and tests.
 - `mobile/ios/` — native SwiftUI/WebKit iOS app and Xcode project.
 - `.github/workflows/` — repository CI and release orchestration.
 - `api/` — tiny Vercel entry-point shims only; the real API implementation lives in `web/api/`.
