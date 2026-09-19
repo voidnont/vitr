@@ -159,8 +159,8 @@ class LyricsRepository(
 
     private fun execute(url: String): String? {
         val clientIdentity =
-            "Frxe ${BuildConfig.VERSION_NAME} " +
-                "(https://github.com/voidnont/Frxe)"
+            "Vitr ${BuildConfig.VERSION_NAME} " +
+                "(https://github.com/bloodvitr/vitr)"
 
         val request = Request.Builder()
             .url(url)
