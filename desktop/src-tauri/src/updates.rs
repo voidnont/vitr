@@ -13,7 +13,9 @@ use tokio::{fs::File, io::AsyncWriteExt};
 use crate::models::ClientUpdateStatus;
 
 const RELEASES_API: &str = "https://api.github.com/repos/bloodvitr/vitr/releases/latest";
+const SOURCE_RELEASES_API: &str = "https://api.github.com/repos/voidnont/vitr/releases/latest";
 const RELEASES_PAGE: &str = "https://github.com/bloodvitr/vitr/releases";
+const SOURCE_RELEASES_PAGE: &str = "https://github.com/voidnont/vitr/releases";
 
 fn version_parts(value: &str) -> Vec<u64> {
     value
@@ -38,9 +40,9 @@ fn github_client() -> Result<reqwest::Client, String> {
         .map_err(|e| format!("Could not initialize Vitr update client: {e}"))
 }
 
-async fn latest_release() -> Result<Option<Value>, String> {
+async fn fetch_release(api: &str) -> Result<Option<Value>, String> {
     let response = github_client()?
-        .get(RELEASES_API)
+        .get(api)
         .header("Accept", "application/vnd.github+json")
         .header("X-GitHub-Api-Version", "2022-11-28")
         .send()
@@ -60,6 +62,13 @@ async fn latest_release() -> Result<Option<Value>, String> {
         .await
         .map(Some)
         .map_err(|e| format!("Could not read Vitr release metadata: {e}"))
+}
+
+async fn latest_release() -> Result<Option<Value>, String> {
+    if let Some(release) = fetch_release(RELEASES_API).await? {
+        return Ok(Some(release));
+    }
+    fetch_release(SOURCE_RELEASES_API).await
 }
 
 fn release_version(value: &Value) -> String {
@@ -104,8 +113,10 @@ async fn download_release_asset(release: &Value, version: &str) -> Result<PathBu
         .get("browser_download_url")
         .and_then(Value::as_str)
         .ok_or_else(|| "Vitr release asset has no download URL.".to_string())?;
-    if !download_url.starts_with("https://github.com/bloodvitr/vitr/") {
-        return Err("Refusing an update asset outside the official Vitr GitHub repository.".to_string());
+    if !download_url.starts_with("https://github.com/bloodvitr/vitr/")
+        && !download_url.starts_with("https://github.com/voidnont/vitr/")
+    {
+        return Err("Refusing an update asset outside the Vitr GitHub release channels.".to_string());
     }
 
     let expected_digest = asset
@@ -269,7 +280,7 @@ pub async fn install_client_update(app: AppHandle) -> Result<String, String> {
 #[tauri::command]
 pub fn open_release_page(url: Option<String>) -> Result<(), String> {
     let url = url
-        .filter(|value| value.starts_with("https://github.com/bloodvitr/vitr/"))
+        .filter(|value| value.starts_with("https://github.com/bloodvitr/vitr/") || value.starts_with("https://github.com/voidnont/vitr/"))
         .unwrap_or_else(|| RELEASES_PAGE.to_string());
 
     #[cfg(target_os = "windows")]
