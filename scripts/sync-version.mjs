@@ -26,6 +26,7 @@ function json(rel, mutate) {
 
 json('package.json', (data) => { data.version = version; });
 json('web/package.json', (data) => { data.version = version; });
+write('web/VERSION', version + '\n');
 json('desktop/package.json', (data) => { data.version = version; });
 json('desktop/package-lock.json', (data) => {
   data.version = version;
