@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Vitr">
         <activity
-            android:name="com.bloodvitr.vitr.MainActivity"
+            android:name="com.frxe.music.MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="unspecified">
