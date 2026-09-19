@@ -88,9 +88,13 @@ fn expected_asset_name(version: &str) -> Result<String, String> {
     {
         return Ok(format!("Vitr-{version}-linux-x64.AppImage"));
     }
-    #[cfg(target_os = "macos")]
+    #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
     {
-        return Ok(format!("Vitr-{version}-macos.dmg"));
+        return Ok(format!("Vitr-{version}-macos-arm64.dmg"));
+    }
+    #[cfg(all(target_os = "macos", target_arch = "x86_64"))]
+    {
+        return Ok(format!("Vitr-{version}-macos-x64.dmg"));
     }
     #[allow(unreachable_code)]
     Err("Automatic Vitr installation is not packaged for this platform/architecture yet.".to_string())
@@ -324,7 +328,8 @@ mod tests {
         #[cfg(any(
             all(target_os = "windows", target_arch = "x86_64"),
             all(target_os = "linux", target_arch = "x86_64"),
-            target_os = "macos"
+            all(target_os = "macos", target_arch = "aarch64"),
+            all(target_os = "macos", target_arch = "x86_64")
         ))]
         assert!(asset.unwrap().starts_with("Vitr-0.3.1-"));
     }
