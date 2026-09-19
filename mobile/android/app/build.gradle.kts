@@ -2,6 +2,13 @@ plugins {
     id("com.android.application")
 }
 
+val vitrVersion = rootProject.file("../../VERSION").readText().trim()
+val vitrVersionParts = vitrVersion.substringBefore('-').split('.').map { it.toIntOrNull() ?: 0 }
+val vitrVersionCode =
+    (vitrVersionParts.getOrElse(0) { 0 } * 10000) +
+    (vitrVersionParts.getOrElse(1) { 0 } * 100) +
+    vitrVersionParts.getOrElse(2) { 0 }
+
 android {
     namespace = "com.bloodvitr.vitr"
     compileSdk = 35
@@ -10,8 +17,8 @@ android {
         applicationId = "com.bloodvitr.vitr"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = vitrVersionCode
+        versionName = vitrVersion
     }
 
     buildTypes {
