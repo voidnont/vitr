@@ -29,7 +29,7 @@ val cobaltApiKey = providers.gradleProperty("VITR_COBALT_API_KEY").orNull
 fun buildConfigString(value: String): String = "\"" + value.replace("\\", "\\\\").replace("\"", "\\\"") + "\""
 
 android {
-    namespace = "com.frxe.music"
+    namespace = "com.bloodvitr.vitr"
     compileSdk = 37
 
     defaultConfig {

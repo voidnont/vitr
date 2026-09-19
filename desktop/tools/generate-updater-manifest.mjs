@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 import { readReleaseMetadata } from './release-metadata.mjs';
 
 const root = process.argv[2] ? resolve(process.argv[2]) : resolve('release-assets');
-const repo = String(process.env.GITHUB_REPOSITORY || 'voidnont/Frxe-Desktop').trim();
+const repo = String(process.env.GITHUB_REPOSITORY || 'bloodvitr/vitr').trim();
 const { version } = await readReleaseMetadata();
 
 async function signature(name) {

@@ -6,13 +6,6 @@ const KEYS = Object.freeze({
   session: 'vitr.desktop.session.v1',
 });
 
-const LEGACY_KEYS = Object.freeze([
-  'frxe.desktop.preferences.v1',
-  'frxe.desktop.favorites.v1',
-  'frxe.desktop.history.v1',
-  'frxe.desktop.playlists.v1',
-  'frxe.desktop.session.v1',
-]);
 
 const LIMITS = Object.freeze({
   favorites: 300,
@@ -118,7 +111,7 @@ export function createPersistence(storage) {
 
     resetAll() {
       let success = true;
-      for (const key of [...Object.values(KEYS), ...LEGACY_KEYS]) {
+      for (const key of Object.values(KEYS)) {
         if (!safeRemove(storage, key)) success = false;
       }
       return success;

@@ -17,7 +17,7 @@
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
     <application
-        android:name=".FrxeApplication"
+        android:name=".VitrApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:extractNativeLibs="true"
@@ -26,7 +26,7 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/vitr_logo"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Frxe">
+        android:theme="@style/Theme.Vitr">
 
         <activity
             android:name=".MainActivity"
@@ -46,7 +46,7 @@
         </activity>
 
         <service
-            android:name=".playback.FrxePlaybackService"
+            android:name=".playback.VitrPlaybackService"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback"
             android:stopWithTask="false">
@@ -58,7 +58,7 @@
         </service>
 
         <service
-            android:name=".save.FrxeDownloadService"
+            android:name=".save.VitrDownloadService"
             android:exported="false"
             android:foregroundServiceType="dataSync"
             android:stopWithTask="false" />
@@ -72,18 +72,18 @@
         </receiver>
 
         <meta-data
-            android:name="frxe.owner"
+            android:name="vitr.owner"
             android:value="void" />
         <meta-data
-            android:name="frxe.publisher"
+            android:name="vitr.publisher"
             android:value="void" />
         <meta-data
-            android:name="frxe.author"
+            android:name="vitr.author"
             android:value="void" />
 
         <meta-data
             android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
-            android:value="com.frxe.music.cast.FrxeCastOptionsProvider" />
+            android:value="com.bloodvitr.vitr.cast.VitrCastOptionsProvider" />
 
         <meta-data
             android:name="com.google.android.gms.car.application"

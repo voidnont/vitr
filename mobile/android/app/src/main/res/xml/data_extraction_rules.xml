@@ -3,7 +3,7 @@
     <cloud-backup>
         <include domain="database" path="." />
         <include domain="sharedpref" path="." />
-        <exclude domain="file" path="frxe_downloads/" />
+        <exclude domain="file" path="vitr_downloads/" />
     </cloud-backup>
     <device-transfer>
         <include domain="database" path="." />

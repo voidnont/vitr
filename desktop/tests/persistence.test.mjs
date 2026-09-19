@@ -70,14 +70,9 @@ test('desktop app uses hardened persistence and saves playback position at whole
 });
 
 
-test('reset clears vitr state and legacy Frxe keys without touching unrelated storage', () => {
+test('reset clears VITR state without touching unrelated storage', () => {
   const values = new Map([
     ...Object.values(PERSISTENCE_KEYS).map((key) => [key, '{"saved":true}']),
-    ['frxe.desktop.preferences.v1', '{"legacy":true}'],
-    ['frxe.desktop.favorites.v1', '[]'],
-    ['frxe.desktop.history.v1', '[]'],
-    ['frxe.desktop.playlists.v1', '[]'],
-    ['frxe.desktop.session.v1', '{"legacy":true}'],
     ['unrelated.key', 'keep-me'],
   ]);
   const storage = {
@@ -90,6 +85,5 @@ test('reset clears vitr state and legacy Frxe keys without touching unrelated st
   assert.equal(persistence.resetAll(), true);
 
   for (const key of Object.values(PERSISTENCE_KEYS)) assert.equal(values.has(key), false);
-  assert.equal([...values.keys()].some((key) => key.startsWith('frxe.desktop.')), false);
   assert.equal(values.get('unrelated.key'), 'keep-me');
 });

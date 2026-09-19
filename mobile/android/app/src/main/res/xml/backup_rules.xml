@@ -2,5 +2,5 @@
 <full-backup-content>
     <include domain="database" path="." />
     <include domain="sharedpref" path="." />
-    <exclude domain="file" path="frxe_downloads/" />
+    <exclude domain="file" path="vitr_downloads/" />
 </full-backup-content>

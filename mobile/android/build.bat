@@ -2,32 +2,32 @@
 setlocal EnableExtensions EnableDelayedExpansion
 cd /d "%~dp0"
 
-set "APP_NAME=Frxe"
+set "APP_NAME=Vitr"
 set "VERSION=0.6.7"
-set "SIGNER=void"
+set "SIGNER=blood"
 set "GRADLE_VERSION=9.6.0"
-set "TOOLS=.frxe-tools"
+set "TOOLS=.vitr-tools"
 set "GRADLE_HOME=%TOOLS%\gradle-%GRADLE_VERSION%"
 set "ZIP=%TOOLS%\gradle-%GRADLE_VERSION%-bin.zip"
-set "SIGN_DIR=.frxe-signing"
-set "KEYSTORE=%CD%\%SIGN_DIR%\void-release.jks"
+set "SIGN_DIR=.vitr-signing"
+set "KEYSTORE=%CD%\%SIGN_DIR%\blood-release.jks"
 set "SIGN_PROPS=%SIGN_DIR%\signing.properties"
 set "LOG_DIR=%CD%\build-logs"
 if not exist "%LOG_DIR%" mkdir "%LOG_DIR%"
 for /f %%T in ('powershell -NoProfile -Command "Get-Date -Format yyyyMMdd-HHmmss-fff"') do set "BUILD_STAMP=%%T"
 if not defined BUILD_STAMP set "BUILD_STAMP=unknown-time"
-set "BUILD_LOG=%LOG_DIR%\Frxe-%VERSION%-%BUILD_STAMP%.log"
+set "BUILD_LOG=%LOG_DIR%\Vitr-%VERSION%-%BUILD_STAMP%.log"
 set "LATEST_FAIL=%LOG_DIR%\latest-failure.log"
 
 >"%BUILD_LOG%" echo ============================================================
->>"%BUILD_LOG%" echo FRXE RELEASE BUILD LOG
+>>"%BUILD_LOG%" echo VITR RELEASE BUILD LOG
 >>"%BUILD_LOG%" echo Version: %VERSION%
 >>"%BUILD_LOG%" echo Started: %DATE% %TIME%
 >>"%BUILD_LOG%" echo Working directory: %CD%
 >>"%BUILD_LOG%" echo ============================================================
 
 call :say "============================================================"
-call :say "                FRXE RELEASE BUILD - VOID"
+call :say "                VITR RELEASE BUILD - BLOOD"
 call :say "============================================================"
 call :say "[INFO] Build log: %BUILD_LOG%"
 
@@ -59,53 +59,53 @@ call :say "[OK] Android SDK: %ANDROID_HOME%"
 
 if not exist "%SIGN_DIR%" mkdir "%SIGN_DIR%"
 if not exist "%SIGN_PROPS%" (
-  for /f %%P in ('powershell -NoProfile -Command "[guid]::NewGuid().ToString('N') + [guid]::NewGuid().ToString('N')"') do set "VOID_PASSWORD=%%P"
-  if not defined VOID_PASSWORD (
+  for /f %%P in ('powershell -NoProfile -Command "[guid]::NewGuid().ToString('N') + [guid]::NewGuid().ToString('N')"') do set "BLOOD_PASSWORD=%%P"
+  if not defined BLOOD_PASSWORD (
     call :fail "Could not generate the local signing password." 1
     goto :eof
   )
-  >"%SIGN_PROPS%" echo STORE_PASSWORD=!VOID_PASSWORD!
-  >>"%SIGN_PROPS%" echo KEY_PASSWORD=!VOID_PASSWORD!
-  >>"%SIGN_PROPS%" echo KEY_ALIAS=void
+  >"%SIGN_PROPS%" echo STORE_PASSWORD=!BLOOD_PASSWORD!
+  >>"%SIGN_PROPS%" echo KEY_PASSWORD=!BLOOD_PASSWORD!
+  >>"%SIGN_PROPS%" echo KEY_ALIAS=blood
 )
 
 for /f "usebackq tokens=1,* delims==" %%A in ("%SIGN_PROPS%") do (
-  if /i "%%A"=="STORE_PASSWORD" set "VOID_STORE_PASSWORD=%%B"
-  if /i "%%A"=="KEY_PASSWORD" set "VOID_KEY_PASSWORD=%%B"
-  if /i "%%A"=="KEY_ALIAS" set "VOID_KEY_ALIAS=%%B"
+  if /i "%%A"=="STORE_PASSWORD" set "BLOOD_STORE_PASSWORD=%%B"
+  if /i "%%A"=="KEY_PASSWORD" set "BLOOD_KEY_PASSWORD=%%B"
+  if /i "%%A"=="KEY_ALIAS" set "BLOOD_KEY_ALIAS=%%B"
 )
-set "VOID_KEYSTORE=%KEYSTORE%"
+set "BLOOD_KEYSTORE=%KEYSTORE%"
 
-if not defined VOID_STORE_PASSWORD (
+if not defined BLOOD_STORE_PASSWORD (
   call :fail "Signing password is missing from %SIGN_PROPS%." 1
   goto :eof
 )
-if not defined VOID_KEY_PASSWORD set "VOID_KEY_PASSWORD=%VOID_STORE_PASSWORD%"
-if not defined VOID_KEY_ALIAS set "VOID_KEY_ALIAS=void"
+if not defined BLOOD_KEY_PASSWORD set "BLOOD_KEY_PASSWORD=%BLOOD_STORE_PASSWORD%"
+if not defined BLOOD_KEY_ALIAS set "BLOOD_KEY_ALIAS=blood"
 
 if not exist "%KEYSTORE%" (
-  call :say "[INFO] Creating persistent release signing key: void"
-  keytool -genkeypair -v -keystore "%KEYSTORE%" -storetype PKCS12 -storepass "%VOID_STORE_PASSWORD%" -keypass "%VOID_KEY_PASSWORD%" -alias "%VOID_KEY_ALIAS%" -keyalg RSA -keysize 3072 -validity 10000 -dname "CN=void, OU=void, O=void, L=void, ST=void, C=CH" >>"%BUILD_LOG%" 2>&1
+  call :say "[INFO] Creating persistent release signing key: blood"
+  keytool -genkeypair -v -keystore "%KEYSTORE%" -storetype PKCS12 -storepass "%BLOOD_STORE_PASSWORD%" -keypass "%BLOOD_KEY_PASSWORD%" -alias "%BLOOD_KEY_ALIAS%" -keyalg RSA -keysize 3072 -validity 10000 -dname "CN=blood, OU=blood, O=blood, L=blood, ST=blood, C=CH" >>"%BUILD_LOG%" 2>&1
   if errorlevel 1 (
-    call :fail "Could not create the void release signing key." 1
+    call :fail "Could not create the blood release signing key." 1
     goto :eof
   )
 )
 
-call :say "[OK] Signing identity: void"
+call :say "[OK] Signing identity: blood"
 call :say "[OK] Download priority: InnerTube -> NewPipe -> yt-dlp -> Zexl -> Cobalt"
-if defined FRXE_ZEXL_BASE_URL (
-  call :say "[OK] Zexl fallback endpoint: configured by FRXE_ZEXL_BASE_URL"
+if defined VITR_ZEXL_BASE_URL (
+  call :say "[OK] Zexl fallback endpoint: configured by VITR_ZEXL_BASE_URL"
 ) else (
   call :say "[INFO] Zexl fallback endpoint: https://zexl.onrender.com"
 )
-if defined FRXE_ZEXL_API_KEY call :say "[OK] Zexl API key: configured"
-if defined FRXE_COBALT_BASE_URL (
-  call :say "[OK] Cobalt fallback endpoint: configured by FRXE_COBALT_BASE_URL"
+if defined VITR_ZEXL_API_KEY call :say "[OK] Zexl API key: configured"
+if defined VITR_COBALT_BASE_URL (
+  call :say "[OK] Cobalt fallback endpoint: configured by VITR_COBALT_BASE_URL"
 ) else (
   call :say "[INFO] Cobalt fallback endpoint: not configured"
 )
-if defined FRXE_COBALT_API_KEY call :say "[OK] Cobalt API key: configured"
+if defined VITR_COBALT_API_KEY call :say "[OK] Cobalt API key: configured"
 
 if not exist "%GRADLE_HOME%\bin\gradle.bat" (
   if not exist "%TOOLS%" mkdir "%TOOLS%"
@@ -131,7 +131,7 @@ set "BUILD_EXIT=!ERRORLEVEL!"
 if not "!BUILD_EXIT!"=="0" (
   copy /y "%BUILD_LOG%" "%LATEST_FAIL%" >nul
   echo.
-  echo [ERROR] Frxe release build failed with exit code !BUILD_EXIT!.
+  echo [ERROR] Vitr release build failed with exit code !BUILD_EXIT!.
   echo [ERROR] Full log: "%BUILD_LOG%"
   echo [ERROR] Latest failure copy: "%LATEST_FAIL%"
   echo.
@@ -147,8 +147,8 @@ if not exist "%APK%" (
   goto :eof
 )
 
-copy /y "%APK%" "%CD%\Frxe-%VERSION%-void-release.apk" >nul
-call :say "[SUCCESS] Signed release APK: %CD%\Frxe-%VERSION%-void-release.apk"
+copy /y "%APK%" "%CD%\Vitr-%VERSION%-blood-release.apk" >nul
+call :say "[SUCCESS] Signed release APK: %CD%\Vitr-%VERSION%-blood-release.apk"
 call :say "[SUCCESS] Build log: %BUILD_LOG%"
 call :say "[IMPORTANT] Keep %SIGN_DIR% backed up. Android updates must use the same signing key."
 exit /b 0
