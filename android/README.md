@@ -1,7 +1,27 @@
 # Vitr Android
 
-Reserved for the future Vitr Android source.
+Vitr Android packages the live Vitr player in a small native Android WebView shell.
 
-Current repository version: **0.1.0**.
+- App ID: `app.vitr.android`
+- Version name: **0.1.0**
+- Version code: **1**
+- Minimum Android API: **26**
+- Target/compile API: **35**
+- Player URL: `https://vitr.nont.me/music`
+- APK type: debug-signed, installable APK for direct testing
 
-When Android development starts, keep the complete Android project inside this folder so platform code remains separated from `web/` and `desktop/`.
+## Build
+
+With JDK 17, Android SDK 35 and Gradle 8.11.1 installed:
+
+```sh
+gradle -p android :app:assembleDebug
+```
+
+The APK is generated at:
+
+```
+android/app/build/outputs/apk/debug/app-debug.apk
+```
+
+GitHub Actions also builds and uploads it as `vitr-0.1.0.apk`.
