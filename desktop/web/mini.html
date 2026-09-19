@@ -42,8 +42,8 @@ body[data-mode="tiny"] .tiny{display:grid;grid-template-columns:40px minmax(0,1f
 body[data-mode="ultra"] .ultra{display:flex;padding:4px 10px}
 .tiny .cover{width:40px;height:40px;border-radius:50%}.tiny .title{font-size:11px}.tiny .artist{font-size:8px;margin-top:1px}.tiny .icon-btn{width:32px;height:32px;border-radius:50%}
 .ultra .dot{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 12px rgba(242,47,93,.6);flex:0 0 auto}.ultra .title{font-size:10px;flex:1;min-width:0}.ultra .icon-btn{width:26px;height:26px;border-radius:50%;font-size:9px}
-.menu{display:none;position:absolute;z-index:20;right:8px;top:8px;min-width:154px;padding:7px;border-radius:14px;background:rgba(15,14,19,.96);border:1px solid rgba(255,255,255,.1);box-shadow:0 16px 38px rgba(0,0,0,.48)}
-body.normal .menu{background:#17171d}.menu.open{display:grid;gap:3px}.menu button{height:30px;border:0;border-radius:9px;background:transparent;text-align:left;padding:0 9px;color:#d9d5dd;font-size:10px;cursor:pointer}.menu button:hover{background:rgba(255,255,255,.07)}.menu .danger{color:#ff7893}.menu hr{width:100%;border:0;border-top:1px solid rgba(255,255,255,.08);margin:3px 0}
+.mini-options{height:30px;max-width:94px;border:1px solid rgba(255,255,255,.09);border-radius:10px;background:rgba(255,255,255,.06);color:#ddd9e2;font-size:9px;padding:0 7px;outline:none;cursor:pointer}
+.mini-options option{background:#17171d;color:#f4f1f6}.tiny .mini-options,.ultra .mini-options{max-width:72px;height:28px;padding:0 4px}
 </style>
 </head>
 <body data-mode="standard">
@@ -53,30 +53,32 @@ body.normal .menu{background:#17171d}.menu.open{display:grid;gap:3px}.menu butto
       <div class="cover empty" data-cover></div>
       <div class="track"><div class="title" data-title>Nothing playing</div><div class="artist" data-artist>Open Vitr and play a track</div><div class="progress"><i></i></div><div class="time"><span>0:00</span><input data-mini-volume type="range" min="0" max="100" value="70" aria-label="Volume"><span>0:00</span></div></div>
       <div class="controls"><button class="icon-btn" data-prev>◀</button><button class="icon-btn play" data-play>▶</button><button class="icon-btn" data-next>▶</button></div>
-      <button class="mode" data-menu-button>•••</button>
+      <select class="mini-options" data-mini-options aria-label="Mini player options">
+        <option value="">Options</option>
+        <option value="standard">Standard</option>
+        <option value="lyrics">Lyrics</option>
+        <option value="tiny">Tiny</option>
+        <option value="ultra">Ultra tiny</option>
+        <option value="open">Open Vitr</option>
+        <option value="hide">Hide mini</option>
+      </select>
     </section>
 
     <section class="lyrics">
-      <div class="lyrics-head"><div class="cover empty" data-cover></div><div><div class="title" data-title>Nothing playing</div><div class="artist" data-artist>Open Vitr and play a track</div></div><button class="icon-btn" data-menu-button style="width:28px;height:28px;border-radius:9px">•••</button></div>
+      <div class="lyrics-head"><div class="cover empty" data-cover></div><div><div class="title" data-title>Nothing playing</div><div class="artist" data-artist>Open Vitr and play a track</div></div><select class="mini-options" data-mini-options aria-label="Mini player options"><option value="">Options</option><option value="standard">Standard</option><option value="lyrics">Lyrics</option><option value="tiny">Tiny</option><option value="ultra">Ultra tiny</option><option value="open">Open Vitr</option><option value="hide">Hide mini</option></select></div>
       <div class="lyrics-lines" id="lyricsLines"><div class="lyrics-empty">No lyrics available.</div></div>
       <div class="lyrics-foot"><div class="progress"><i></i></div><div class="lyrics-controls"><button class="icon-btn" data-prev>◀</button><button class="icon-btn play" data-play>▶</button><button class="icon-btn" data-next>▶</button></div></div>
     </section>
 
-    <section class="tiny"><div class="cover empty" data-cover></div><div><div class="title" data-title>Nothing playing</div><div class="artist" data-artist>Open Vitr</div></div><button class="icon-btn play" data-play>▶</button></section>
-    <section class="ultra"><div class="dot"></div><div class="title" data-title>Nothing playing</div><button class="icon-btn play" data-play>▶</button></section>
-  </div>
-
-  <div class="menu" id="menu">
-    <button data-mode-item="standard">Standard mini</button><button data-mode-item="lyrics">Lyrics 1×1</button><button data-mode-item="tiny">Tiny</button><button data-mode-item="ultra">Ultra tiny</button>
-    <hr><button data-pin>Always on top ✓</button><button data-dock="left">Dock bottom left</button><button data-dock="right">Dock bottom right</button>
-    <hr><button data-open-main>Open Vitr</button><button class="danger" data-hide>Hide mini player</button>
+    <section class="tiny"><div class="cover empty" data-cover></div><div><div class="title" data-title>Nothing playing</div><div class="artist" data-artist>Open Vitr</div></div><button class="icon-btn play" data-play>▶</button><select class="mini-options" data-mini-options aria-label="Mini player options"><option value="">⋮</option><option value="standard">Standard</option><option value="lyrics">Lyrics</option><option value="tiny">Tiny</option><option value="ultra">Ultra</option><option value="open">Open</option><option value="hide">Hide</option></select></section>
+    <section class="ultra"><div class="dot"></div><div class="title" data-title>Nothing playing</div><button class="icon-btn play" data-play>▶</button><select class="mini-options" data-mini-options aria-label="Mini player options"><option value="">⋮</option><option value="standard">Standard</option><option value="lyrics">Lyrics</option><option value="tiny">Tiny</option><option value="ultra">Ultra</option><option value="open">Open</option><option value="hide">Hide</option></select></section>
   </div>
 </div>
 <script>
 (function(){
   var invoke=window.__TAURI__&&window.__TAURI__.core&&window.__TAURI__.core.invoke;
-  var body=document.body,menu=document.getElementById("menu"),modes=["standard","lyrics","tiny","ultra"];
-  var pinned=localStorage.getItem("vitr-mini-on-top")!=="false",saveTick=0,lastLyricsKey="";
+  var body=document.body,modes=["standard","lyrics","tiny","ultra"];
+  var lastLyricsKey="";
 
   function clock(value){value=Math.max(0,Math.floor(Number(value)||0));return Math.floor(value/60)+":"+String(value%60).padStart(2,"0")}
   function readJson(key,fallback){try{return JSON.parse(localStorage.getItem(key))||fallback}catch(e){return fallback}}
@@ -114,31 +116,22 @@ body.normal .menu{background:#17171d}.menu.open{display:grid;gap:3px}.menu butto
     renderLyrics(state);
   }
 
-  async function setMode(mode){if(modes.indexOf(mode)<0)mode="standard";body.dataset.mode=mode;localStorage.setItem("vitr-mini-mode",mode);menu.classList.remove("open");if(invoke)try{await invoke("set_mini_mode",{mode:mode})}catch(e){}}
-  async function savePosition(){if(!invoke)return;try{var p=await invoke("mini_position");if(Array.isArray(p)&&p.length===2)localStorage.setItem("vitr-mini-position",JSON.stringify(p))}catch(e){}}
-  async function restorePosition(){if(!invoke)return;var p=readJson("vitr-mini-position",null);if(Array.isArray(p)&&p.length===2){try{await invoke("set_mini_position",{x:Number(p[0]),y:Number(p[1])});return}catch(e){}}try{await invoke("dock_mini_player",{side:localStorage.getItem("vitr-mini-dock")||"right"})}catch(e){}}
+  async function setMode(mode){if(modes.indexOf(mode)<0)mode="standard";body.dataset.mode=mode;localStorage.setItem("vitr-mini-mode",mode);if(invoke)try{await invoke("set_mini_mode",{mode:mode});await invoke("dock_mini_player",{side:"right"})}catch(e){}}
+  async function dockRight(){if(invoke)try{await invoke("dock_mini_player",{side:"right"})}catch(e){}}
   function action(name){if(invoke)invoke("mini_player_action",{action:name}).catch(function(){})}
 
   document.querySelectorAll("[data-play]").forEach(function(el){el.addEventListener("click",function(e){e.stopPropagation();action("toggle")})});
   document.querySelectorAll("[data-mini-volume]").forEach(function(el){el.addEventListener("input",function(e){e.stopPropagation();if(!invoke)return;var state=currentState(),target=Math.max(0,Math.min(1,Number(el.value)/100)),current=Math.max(0,Math.min(1,Number(state.volume==null?0.7:state.volume)));invoke("mini_player_volume",{delta:target-current}).catch(function(){})})});
   document.querySelectorAll("[data-prev]").forEach(function(el){el.addEventListener("click",function(e){e.stopPropagation();action("previous")})});
   document.querySelectorAll("[data-next]").forEach(function(el){el.addEventListener("click",function(e){e.stopPropagation();action("next")})});
-  document.querySelectorAll("[data-menu-button]").forEach(function(el){el.addEventListener("click",function(e){e.stopPropagation();menu.classList.toggle("open")})});
-  document.querySelectorAll("[data-mode-item]").forEach(function(el){el.addEventListener("click",function(){setMode(el.dataset.modeItem)})});
-  document.querySelectorAll("[data-dock]").forEach(function(el){el.addEventListener("click",async function(){var side=el.dataset.dock;localStorage.setItem("vitr-mini-dock",side);menu.classList.remove("open");if(invoke)try{await invoke("dock_mini_player",{side:side});await savePosition()}catch(e){}})});
-  document.querySelector("[data-pin]").addEventListener("click",async function(e){pinned=!pinned;localStorage.setItem("vitr-mini-on-top",pinned?"true":"false");e.currentTarget.textContent="Always on top "+(pinned?"✓":"");if(invoke)try{await invoke("set_mini_always_on_top",{enabled:pinned})}catch(err){}});
-  document.querySelector("[data-open-main]").addEventListener("click",function(){menu.classList.remove("open");if(invoke)invoke("show_main_window").catch(function(){})});
-  document.querySelector("[data-hide]").addEventListener("click",function(){menu.classList.remove("open");if(invoke)invoke("hide_mini_player").catch(function(){})});
-  document.getElementById("shell").addEventListener("pointerdown",async function(e){if(e.button!==0||!invoke||e.target.closest("button,.menu,a,input,textarea,select,[contenteditable='true']"))return;try{await invoke("start_mini_drag");setTimeout(savePosition,250)}catch(err){}});
-  document.addEventListener("contextmenu",function(e){e.preventDefault();menu.classList.add("open")});
-  document.addEventListener("click",function(e){if(!menu.contains(e.target)&&!e.target.closest("[data-menu-button]"))menu.classList.remove("open")});
-  document.getElementById("shell").addEventListener("dblclick",function(e){if(e.target.closest("button"))return;if(invoke)invoke("show_main_window").catch(function(){})});
+  document.querySelectorAll("[data-mini-options]").forEach(function(el){el.addEventListener("change",function(e){e.stopPropagation();var value=el.value;el.value="";if(modes.indexOf(value)>=0){setMode(value);return}if(value==="open"&&invoke)invoke("show_main_window").catch(function(){});if(value==="hide"){localStorage.setItem("vitr-mini-enabled","false");if(invoke)invoke("hide_mini_player").catch(function(){})}})});
+  document.getElementById("shell").addEventListener("dblclick",function(e){if(e.target.closest("button,select,input"))return;if(invoke)invoke("show_main_window").catch(function(){})});
   document.addEventListener("wheel",function(e){if(Math.abs(e.deltaY)<1||!invoke)return;invoke("mini_player_volume",{delta:e.deltaY<0?.04:-.04}).catch(function(){})},{passive:true});
 
-  syncTheme();syncState();document.querySelector("[data-pin]").textContent="Always on top "+(pinned?"✓":"");
-  setMode(localStorage.getItem("vitr-mini-mode")||"standard").then(restorePosition);
-  if(invoke)invoke("set_mini_always_on_top",{enabled:pinned}).catch(function(){});
-  setInterval(function(){syncTheme();syncState();if(++saveTick%8===0)savePosition()},250);
+  syncTheme();syncState();localStorage.setItem("vitr-mini-enabled","true");localStorage.setItem("vitr-mini-dock","right");localStorage.setItem("vitr-mini-on-top","true");
+  setMode(localStorage.getItem("vitr-mini-mode")||"standard").then(dockRight);
+  if(invoke)invoke("set_mini_always_on_top",{enabled:true}).catch(function(){});
+  setInterval(function(){syncTheme();syncState();dockRight()},1000);
 })();
 </script>
 </body>

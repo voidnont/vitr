@@ -1,0 +1,238 @@
+name: Publish Vitr Release
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - VERSION
+      - '.github/workflows/release-all.yml'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: vitr-release
+  cancel-in-progress: false
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - uses: dtolnay/rust-toolchain@stable
+      - run: node scripts/sync-version.mjs
+      - working-directory: desktop
+        run: npm ci
+      - working-directory: desktop
+        run: npm run icons
+      - working-directory: desktop
+        shell: pwsh
+        run: ./platforms/windows/generate-installer-art.ps1
+      - working-directory: desktop
+        run: npx tauri build --bundles nsis,msi
+      - shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path release | Out-Null
+          $version = (Get-Content VERSION -Raw).Trim()
+          Get-ChildItem desktop/src-tauri/target/release/bundle -Recurse -File |
+            Where-Object { $_.Extension -in ".exe", ".msi" } |
+            ForEach-Object {
+              $ext = $_.Extension
+              Copy-Item $_.FullName "release/Vitr-$version-windows-x64$ext"
+            }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-windows
+          path: release/*
+
+  linux:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Tauri system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libssl-dev
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - uses: dtolnay/rust-toolchain@stable
+      - run: node scripts/sync-version.mjs
+      - working-directory: desktop
+        run: npm ci
+      - working-directory: desktop
+        run: npm run icons
+      - working-directory: desktop
+        run: npx tauri build --bundles deb,appimage
+      - shell: bash
+        run: |
+          mkdir -p release
+          VERSION=$(tr -d '\r\n' < VERSION)
+          find desktop/src-tauri/target/release/bundle -type f \( -name '*.deb' -o -name '*.AppImage' \) -print0 |
+            while IFS= read -r -d '' file; do
+              case "$file" in
+                *.deb) cp "$file" "release/Vitr-$VERSION-linux-x64.deb" ;;
+                *.AppImage) cp "$file" "release/Vitr-$VERSION-linux-x64.AppImage" ;;
+              esac
+            done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-linux
+          path: release/*
+
+  macos:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - uses: dtolnay/rust-toolchain@stable
+      - run: node scripts/sync-version.mjs
+      - working-directory: desktop
+        run: npm ci
+      - working-directory: desktop
+        run: npm run icons
+      - working-directory: desktop
+        run: npx tauri build --bundles app,dmg
+      - shell: bash
+        run: |
+          mkdir -p release
+          VERSION=$(tr -d '\r\n' < VERSION)
+          DMG=$(find desktop/src-tauri/target/release/bundle -type f -name '*.dmg' | head -1)
+          test -n "$DMG"
+          cp "$DMG" "release/Vitr-$VERSION-macos.dmg"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-macos
+          path: release/*
+
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+      - run: sdkmanager "platforms;android-37.0" "build-tools;37.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.6.0"
+      - name: Build Android release APK
+        env:
+          VITR_CI_RELEASE_DEBUG_SIGNING: "1"
+        run: gradle -p mobile/android :app:assembleRelease --stacktrace
+      - shell: bash
+        run: |
+          mkdir -p release
+          VERSION=$(tr -d '\r\n' < VERSION)
+          cp mobile/android/app/build/outputs/apk/release/app-release.apk "release/Vitr-$VERSION-android.apk"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-android
+          path: release/*
+
+  ios:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - run: node scripts/sync-version.mjs
+      - name: Build unsigned sideload app
+        run: |
+          xcodebuild \
+            -project mobile/ios/Vitr.xcodeproj \
+            -scheme Vitr \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build/ios-device \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            build
+      - shell: bash
+        run: |
+          VERSION=$(tr -d '\r\n' < VERSION)
+          rm -rf Payload release
+          mkdir -p Payload release
+          cp -R build/ios-device/Build/Products/Release-iphoneos/Vitr.app Payload/
+          rm -rf Payload/Vitr.app/_CodeSignature
+          rm -f Payload/Vitr.app/embedded.mobileprovision
+          zip -qry "release/Vitr-$VERSION-ios-sideload.ipa" Payload
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-ios
+          path: release/*
+
+  publish:
+    if: ${{ github.event_name != 'pull_request' }}
+    needs: [windows, linux, macos, android, ios]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: release-*
+          path: release
+          merge-multiple: true
+      - id: version
+        shell: bash
+        run: echo "value=$(tr -d '\r\n' < VERSION)" >> "$GITHUB_OUTPUT"
+      - name: Publish source-repository release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.value }}
+        shell: bash
+        run: |
+          TAG="v$VERSION"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$TAG" release/* --repo "$GITHUB_REPOSITORY" --clobber
+          else
+            gh release create "$TAG" release/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "Vitr $VERSION" --generate-notes
+          fi
+      - name: Mirror source head to canonical release repository
+        env:
+          BLOODVITR_RELEASE_TOKEN: ${{ secrets.BLOODVITR_RELEASE_TOKEN }}
+        shell: bash
+        run: |
+          if [ -z "$BLOODVITR_RELEASE_TOKEN" ]; then
+            echo "BLOODVITR_RELEASE_TOKEN is not configured; canonical source mirror skipped."
+            exit 0
+          fi
+          git config user.name "Blood Vitr Release Bot"
+          git config user.email "release@bloodvitr.invalid"
+          git remote remove bloodvitr 2>/dev/null || true
+          git remote add bloodvitr "https://x-access-token:$BLOODVITR_RELEASE_TOKEN@github.com/bloodvitr/vitr.git"
+          git push --force bloodvitr HEAD:main
+
+      - name: Mirror release to canonical bloodvitr/vitr channel
+        env:
+          GH_TOKEN: ${{ secrets.BLOODVITR_RELEASE_TOKEN }}
+          VERSION: ${{ steps.version.outputs.value }}
+        shell: bash
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "BLOODVITR_RELEASE_TOKEN is not configured; source release is published, canonical release skipped."
+            exit 0
+          fi
+          TAG="v$VERSION"
+          REPO="bloodvitr/vitr"
+          if gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
+            gh release upload "$TAG" release/* --repo "$REPO" --clobber
+          else
+            gh release create "$TAG" release/* --repo "$REPO" --target main --title "Vitr $VERSION" --generate-notes
+          fi

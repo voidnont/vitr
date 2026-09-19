@@ -5,6 +5,7 @@ mod models;
 mod runtime;
 mod search;
 mod tray;
+mod updates;
 
 use tauri::{AppHandle, LogicalPosition, LogicalSize, Manager, WebviewWindow};
 
@@ -73,7 +74,7 @@ fn clamp_mini_position(window: &WebviewWindow, x: f64, y: f64) -> Result<(f64, f
 }
 
 #[tauri::command]
-fn toggle_mini_player(app: AppHandle, mode: String, dock: String) -> Result<(), String> {
+fn toggle_mini_player(app: AppHandle, mode: String, _dock: String) -> Result<(), String> {
     let (width, height, resizable) = mini_dimensions(&mode);
 
     let Some(window) = app.get_webview_window("mini") else {
@@ -107,10 +108,7 @@ fn toggle_mini_player(app: AppHandle, mode: String, dock: String) -> Result<(), 
         .set_focus()
         .map_err(|error| format!("Could not focus mini player: {error}"))?;
 
-    if dock == "left" || dock == "right" {
-        dock_mini(&window, &dock)?;
-    }
-
+    dock_mini(&window, "right")?;
     Ok(())
 }
 
@@ -124,17 +122,7 @@ fn set_mini_mode(window: WebviewWindow, mode: String) -> Result<(), String> {
         .set_resizable(resizable)
         .map_err(|error| format!("Could not update resize mode: {error}"))?;
 
-    let position = window
-        .outer_position()
-        .map_err(|error| format!("Could not read mini player position: {error}"))?;
-    let scale = window
-        .scale_factor()
-        .map_err(|error| format!("Could not read scale factor: {error}"))?;
-    let logical = position.to_logical::<f64>(scale);
-    let (x, y) = clamp_mini_position(&window, logical.x, logical.y)?;
-    window
-        .set_position(LogicalPosition::new(x, y))
-        .map_err(|error| format!("Could not keep mini player visible: {error}"))
+    dock_mini(&window, "right")
 }
 
 #[tauri::command]
@@ -203,6 +191,40 @@ fn show_main_window(app: AppHandle) -> Result<(), String> {
 }
 
 #[tauri::command]
+fn set_mini_player_enabled(app: AppHandle, enabled: bool, layout: String) -> Result<(), String> {
+    let mode = match layout.as_str() {
+        "lyrics" => "lyrics",
+        "tiny" => "tiny",
+        "ultra" => "ultra",
+        _ => "standard",
+    };
+    let Some(window) = app.get_webview_window("mini") else {
+        return Err("Mini player window is unavailable".to_string());
+    };
+    if !enabled {
+        return window
+            .hide()
+            .map_err(|error| format!("Could not hide mini player: {error}"));
+    }
+
+    let (width, height, resizable) = mini_dimensions(mode);
+    window
+        .set_size(LogicalSize::new(width, height))
+        .map_err(|error| format!("Could not resize mini player: {error}"))?;
+    window
+        .set_resizable(resizable)
+        .map_err(|error| format!("Could not update mini player resize mode: {error}"))?;
+    window
+        .set_always_on_top(true)
+        .map_err(|error| format!("Could not pin mini player: {error}"))?;
+    window
+        .show()
+        .map_err(|error| format!("Could not show mini player: {error}"))?;
+    dock_mini(&window, "right")?;
+    Ok(())
+}
+
+#[tauri::command]
 fn mini_player_action(app: AppHandle, action: String) -> Result<(), String> {
     let Some(main) = app.get_webview_window("main") else {
         return Err("Main vitr window is unavailable".to_string());
@@ -262,6 +284,7 @@ pub fn run() {
             search::ytdlp_search,
             search::resolve_stream_url,
             downloads::authorize_media_path,
+            downloads::default_download_dir,
             downloads::scan_downloads,
             downloads::clear_removed_downloads,
             downloads::download_already_exists,
@@ -271,6 +294,8 @@ pub fn run() {
             lyrics::fetch_metadata_lyrics,
             runtime::update_runtime_dependencies,
             runtime::current_runtime_status,
+            updates::check_client_update,
+            updates::open_release_page,
             tray::set_tray_enabled,
             media_controls::update_media_controls,
             toggle_mini_player,
@@ -282,6 +307,7 @@ pub fn run() {
             dock_mini_player,
             hide_mini_player,
             show_main_window,
+            set_mini_player_enabled,
             mini_player_action,
             mini_player_volume
         ])

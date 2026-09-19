@@ -86,7 +86,7 @@ body.normal .toggle-indicator{transform:translateX(100%)}
 .track:hover{transform:translateX(3px);background:rgba(255,255,255,.075)}.thumb{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,#32111c,#e82958);position:relative;overflow:hidden}
 .thumb:after{content:"";position:absolute;width:28px;height:28px;border-radius:50%;right:-8px;bottom:-6px;background:#ff829d;filter:blur(4px)}.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2}
 .track:nth-child(2n) .thumb{background:linear-gradient(135deg,#111735,#6656ff)}.track:nth-child(3n) .thumb{background:linear-gradient(135deg,#0e2829,#2bd0c4)}
-.track-copy{min-width:0}.track-copy strong,.track-copy small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.track-copy strong{font-size:12px}.track-copy small{font-size:10px;color:var(--muted);margin-top:4px}.play-pill{border:0;border-radius:999px;width:35px;height:35px;background:rgba(255,255,255,.08)}
+.track-copy{min-width:0}.track-copy strong,.track-copy small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.track-copy strong{font-size:12px}.track-copy small{font-size:10px;color:var(--muted);margin-top:4px}.play-pill{border:0;border-radius:999px;width:35px;height:35px;background:rgba(255,255,255,.08)}.player-mode-row{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap}.player-mode-row button.active{background:rgba(242,47,93,.2);border-color:rgba(242,47,93,.42);color:#fff}.lyrics-panel{margin-top:16px;max-height:220px;overflow:auto;border-radius:18px;padding:14px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06)}.lyrics-panel .lyric-line{display:block;padding:5px 2px;color:var(--muted);font-size:12px;line-height:1.45}.lyrics-panel .lyric-line.active{color:#fff;font-weight:750}.lyrics-panel .lyrics-empty{color:var(--muted);font-size:11px}.app-pill{position:fixed;z-index:45;left:12px;right:12px;bottom:calc(max(12px,env(safe-area-inset-bottom)) + 76px);height:62px;border-radius:999px;padding:7px 10px;display:none;grid-template-columns:46px minmax(0,1fr) auto;align-items:center;gap:9px;box-shadow:0 18px 46px rgba(0,0,0,.46)}.app-pill.visible{display:grid}.app-pill .pill-art{width:46px;height:46px;border-radius:50%;overflow:hidden;background:#21121a}.app-pill .pill-art img{width:100%;height:100%;object-fit:cover}.app-pill .pill-copy{min-width:0}.app-pill .pill-copy strong,.app-pill .pill-copy small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.app-pill .pill-copy strong{font-size:11px}.app-pill .pill-copy small{font-size:9px;color:var(--muted)}.app-pill .pill-controls{display:flex;gap:5px}.app-pill button{width:32px;height:32px;border:0;border-radius:50%;background:rgba(255,255,255,.07);font-size:10px}.app-pill .pill-play{background:linear-gradient(135deg,var(--red2),var(--red))}
 .trending h3{margin:8px 0 2px;font-size:19px}.trend{display:grid;grid-template-columns:22px 38px minmax(0,1fr);align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06)}.trend>span{font-size:10px;color:#716d79}.trend .thumb{width:38px;height:38px;border-radius:11px}.trend strong,.trend small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.trend strong{font-size:11px}.trend small{font-size:9px;color:var(--muted);margin-top:3px}
 .quote{margin-top:24px;padding:16px;border-radius:20px;background:linear-gradient(145deg,rgba(242,47,93,.12),rgba(255,255,255,.025));font-size:12px;line-height:1.6;color:#d9d5df}
 .search-panel,.library-panel,.settings-panel{border-radius:28px;padding:24px;min-height:calc(100vh - 115px)}
@@ -94,7 +94,7 @@ body.normal .toggle-indicator{transform:translateX(100%)}
 .big-search{margin:22px 0;display:flex;align-items:center;height:58px;border-radius:20px;padding:0 16px}.big-search input{flex:1;background:transparent;border:0;outline:0;color:#fff;font-size:14px}.big-search span{color:var(--muted);margin-right:10px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}.chip{border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.045);height:34px;border-radius:999px;padding:0 12px;font-size:10px;color:var(--muted)}.chip.active{background:rgba(242,47,93,.16);border-color:rgba(242,47,93,.35);color:#fff}.catalog-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:0 0 16px}.catalog-item{min-height:82px;border-radius:18px;padding:12px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}.catalog-item strong,.catalog-item small{position:relative;z-index:2;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.catalog-item strong{font-size:12px}.catalog-item small{font-size:9px;color:var(--muted);margin-top:4px}.catalog-item:before{content:"";position:absolute;width:70px;height:70px;border-radius:50%;right:-18px;top:-18px;background:radial-gradient(circle,#ff6f8f,#8c1536 48%,transparent 72%);opacity:.55}
 .library-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin-top:22px}.library-tile{min-height:136px;border-radius:22px;padding:16px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}.library-tile:before{content:"";position:absolute;width:100px;height:100px;border-radius:50%;right:-25px;top:-25px;background:radial-gradient(circle,#ff6f8f,#a81740 50%,transparent 70%);opacity:.75}.library-tile strong{font-size:15px}.library-tile small{font-size:10px;color:var(--muted);margin-top:4px}
-.settings-panel{display:grid;gap:14px;align-content:start}.setting-row{border-radius:20px;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:14px}.setting-row h3{font-size:13px;margin:0}.setting-row p{font-size:10px;color:var(--muted);margin:4px 0 0}.setting-links{display:flex;gap:8px;flex-wrap:wrap}.link-pill{border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);padding:10px 12px;border-radius:13px;font-size:10px}.empty-state{border-radius:18px;padding:16px;color:var(--muted);font-size:11px;line-height:1.55}.card[data-track-key]{cursor:pointer}.player .progress{cursor:pointer}
+.settings-panel{display:grid;gap:14px;align-content:start}.setting-row{border-radius:20px;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:14px}.setting-row h3{font-size:13px;margin:0}.setting-row p{font-size:10px;color:var(--muted);margin:4px 0 0}.setting-links{display:flex;gap:8px;flex-wrap:wrap}.brand-link{display:inline-flex;align-items:center;gap:7px}.brand-icon{width:14px;height:14px;flex:0 0 14px;display:block}.link-pill{border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);padding:10px 12px;border-radius:13px;font-size:10px;color:inherit}.setting-select{min-width:150px;border:1px solid rgba(255,255,255,.1);background:#15151b;color:#fff;border-radius:13px;padding:10px 12px}.setting-check{display:flex;align-items:center;gap:7px;margin-top:7px;font-size:9px;color:var(--muted)}.download-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:13px}.download-row span{font-size:9px;color:var(--muted)}.empty-state{border-radius:18px;padding:16px;color:var(--muted);font-size:11px;line-height:1.55}.card[data-track-key]{cursor:pointer}.player .progress{cursor:pointer}
 .now-playing{position:fixed;z-index:50;inset:0;background:rgba(4,4,6,.74);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);display:grid;place-items:center;padding:18px;opacity:0;pointer-events:none;transition:opacity .3s ease}
 .now-playing.open{opacity:1;pointer-events:auto}.player{width:min(920px,96vw);max-height:92vh;overflow:auto;border-radius:32px;padding:22px;display:grid;grid-template-columns:minmax(250px,.8fr) 1.2fr;gap:24px;transform:scale(.94) translateY(15px);transition:transform .35s cubic-bezier(.2,.9,.2,1)}
 .now-playing.open .player{transform:none}.player-art{aspect-ratio:1;border-radius:28px;background:#111116;position:relative;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.44)}.player-art img{width:100%;height:100%;object-fit:cover;display:block}.player-art.empty:before{content:"♪";position:absolute;inset:0;display:grid;place-items:center;font-size:72px;color:#6e6874}.player-art.empty img{display:none}
@@ -213,6 +213,7 @@ body[data-device-class="compact"][data-orientation="landscape"] .hero-art{height
       <section class="section"><div class="section-head"><div><div class="eyebrow">DISCOVER</div><h2>From Vitr</h2></div><small>Live results</small></div>
         <div id="featuredTracks" class="cards"></div>
       </section>
+      <section class="section"><div class="section-head"><div><div class="eyebrow">FOR YOU</div><h2>Recommended for you</h2></div><small id="recommendationWhy">Based on your Vitr activity</small></div><div id="recommendedTracks" class="cards"></div></section>
       <section class="section"><div class="section-head"><div><div class="eyebrow">RECENT</div><h2>Recently played</h2></div><small>Recent</small></div><div id="homeTracks" class="track-list"></div></section>
     </section>
     <section id="search" class="screen">
@@ -235,8 +236,13 @@ body[data-device-class="compact"][data-orientation="landscape"] .hero-art{height
       <div class="settings-panel glass">
         <div class="page-title"><div class="eyebrow">VITR</div><h1>Settings</h1><p>Appearance and project identity.</p></div>
         <div class="setting-row glass-soft"><div><h3>Interface finish</h3><p>Use the toggle above to switch between Liquid Glass and Normal UI.</p></div><strong id="modeLabel">Liquid Glass</strong></div>
-        <div class="setting-row glass-soft"><div><h3>Version</h3><p>Native backend build</p></div><strong>0.2.3</strong></div>
-        <div class="setting-row glass-soft"><div><h3>Blood</h3><p>Creator and maintainer of Vitr.</p></div><div class="setting-links"><a class="link-pill" href="https://github.com/bloodvitr">github.com/bloodvitr</a><a class="link-pill" href="https://ko-fi.com/bloodvitr">ko-fi.com/bloodvitr</a></div></div>
+        <div class="setting-row glass-soft"><div><h3>In-app mini player</h3><p>Keep the pill player visible while music is active.</p></div><select id="pillPlayerSetting" class="setting-select"><option value="on">On</option><option value="off">Off</option></select></div>
+        <div class="setting-row glass-soft"><div><h3>Download format</h3><p>Used by the Download button and remembered until you change it.</p></div><select id="downloadFormat" class="setting-select"><option value="m4a">M4A</option><option value="mp3">MP3</option><option value="flac">FLAC</option><option value="wav">WAV</option></select></div>
+        <div class="setting-row glass-soft"><div><h3>Language</h3><p id="languageStatus">Auto-detecting your system language.</p></div><select id="languageSelect" class="setting-select"><option value="auto">Auto (system)</option><option value="en">English</option><option value="de">Deutsch</option><option value="fr">Français</option><option value="it">Italiano</option><option value="es">Español</option><option value="pt">Português</option><option value="ja">日本語</option><option value="ko">한국어</option></select></div>
+        <div class="setting-row glass-soft"><div><h3>Runtime dependencies</h3><p id="runtimeStatus">Checking Android yt-dlp runtime…</p></div><button id="runtimeUpdate" class="link-pill" type="button">Update runtime</button></div>
+        <div class="setting-row glass-soft"><div><h3>Client updates</h3><p id="clientUpdateStatus">Automatically checks github.com/bloodvitr/vitr releases.</p><label class="setting-check"><input id="autoUpdateCheck" type="checkbox" checked> Auto-detect updates</label></div><div class="setting-links"><button id="checkClientUpdate" class="link-pill" type="button">Check now</button><button id="openClientUpdate" class="link-pill" type="button">Releases</button></div></div>
+        <div class="setting-row glass-soft"><div><h3>Version</h3><p>Native backend build</p></div><strong>0.3.0</strong></div>
+        <div class="setting-row glass-soft"><div><h3>Blood</h3><p>Creator and maintainer of Vitr.</p></div><div class="setting-links"><a class="link-pill brand-link" href="https://github.com/bloodvitr"><svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .7a11.3 11.3 0 0 0-3.57 22c.56.1.77-.24.77-.54v-2.1c-3.13.69-3.79-1.36-3.79-1.36-.51-1.33-1.25-1.68-1.25-1.68-1.03-.71.08-.7.08-.7 1.13.08 1.73 1.18 1.73 1.18 1.01 1.76 2.65 1.25 3.3.96.1-.75.39-1.25.72-1.54-2.5-.29-5.13-1.27-5.13-5.64 0-1.25.44-2.27 1.16-3.07-.12-.29-.5-1.46.11-3.04 0 0 .95-.31 3.1 1.17A10.6 10.6 0 0 1 12 6c.96 0 1.93.13 2.83.38 2.15-1.48 3.1-1.17 3.1-1.17.62 1.58.23 2.75.12 3.04.72.8 1.16 1.82 1.16 3.07 0 4.38-2.64 5.34-5.15 5.62.4.35.76 1.04.76 2.11v3.12c0 .3.2.65.78.54A11.3 11.3 0 0 0 12 .7Z"/></svg><span>github.com/bloodvitr</span></a><a class="link-pill brand-link" href="https://ko-fi.com/bloodvitr"><svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 5.5h13.8v8.4A5.1 5.1 0 0 1 11.7 19H8.1A5.1 5.1 0 0 1 3 13.9V5.5Zm13.8 2.1h1.5a3.7 3.7 0 0 1 0 7.4h-2v-2h2a1.7 1.7 0 1 0 0-3.4h-1.5v-2ZM6.2 9.1c0-1.7 2.1-2.5 3.2-1.2l.5.6.5-.6c1.1-1.3 3.2-.5 3.2 1.2 0 .6-.2 1.1-.6 1.5l-3.1 3-3.1-3c-.4-.4-.6-.9-.6-1.5Z"/></svg><span>ko-fi.com/bloodvitr</span></a></div></div>
       </div>
     </section>
   </main>
@@ -249,6 +255,11 @@ body[data-device-class="compact"][data-orientation="landscape"] .hero-art{height
   <button data-tab="settings"><b>⚙</b><span>Settings</span></button>
 </nav>
 </div>
+<div id="appPill" class="app-pill glass" aria-label="Now playing">
+  <div class="pill-art"><img id="pillArtwork" alt=""></div>
+  <div class="pill-copy"><strong id="pillTitle">Nothing playing</strong><small id="pillArtist">Choose a track</small></div>
+  <div class="pill-controls"><button id="pillPrev" type="button">◀</button><button id="pillPlay" class="pill-play" type="button">▶</button><button id="pillNext" type="button">▶</button></div>
+</div>
 <div id="playerOverlay" class="now-playing">
   <button class="close" id="closePlayer">×</button>
   <section class="player glass">
@@ -257,6 +268,9 @@ body[data-device-class="compact"][data-orientation="landscape"] .hero-art{height
       <div class="progress" id="playerProgress"><i></i></div><div class="times"><span>0:00</span><span>0:00</span></div>
       <div class="volume-row"><span class="volume-icon" id="volumeIcon">🔊</span><input id="volumeSlider" type="range" min="0" max="100" value="100" aria-label="Volume"><span id="volumeValue">100%</span></div>
       <div class="controls"><button id="rewind10">↶</button><button id="playerPrev">◀</button><button class="main-play" id="playToggle">▶</button><button id="playerNext">▶</button><button id="forward10">↻</button><button id="favoriteToggle">♡</button></div>
+      <div class="player-mode-row"><button id="shuffleToggle" class="link-pill" type="button">Shuffle</button><button id="repeatToggle" class="link-pill" type="button">Repeat off</button><button id="pillToggle" class="link-pill" type="button">Pill on</button></div>
+      <div id="playerLyrics" class="lyrics-panel"><div class="lyrics-empty">Lyrics will appear here when available.</div></div>
+      <div class="download-row"><button id="downloadTrack" class="link-pill" type="button">↓ Download</button><span id="downloadStatus">Uses your saved audio format.</span></div>
     </div>
   </section>
 </div>
@@ -276,14 +290,17 @@ window.__vitrApplyDeviceProfile = function(profile){
 };
 
 (function(){
-  var backend=window.vitrPlatformBackend||null,trackRegistry=new Map(),catalogRegistry=new Map(),discoveryTracks=[],currentQueue=[],currentTrack=null,currentState={track:null,playing:false,positionMs:0,durationMs:0,volume:1},libraryTracks=[],searchKind="all",lastSearchQuery="",lastCatalog=null;
+  var backend=window.vitrPlatformBackend||null,trackRegistry=new Map(),catalogRegistry=new Map(),discoveryTracks=[],currentQueue=[],currentTrack=null,currentState={track:null,playing:false,positionMs:0,durationMs:0,volume:1,shuffle:false,repeatMode:"off"},libraryTracks=[],historyTracks=[],currentLyrics=null,lastLyricsTrackId="",searchKind="all",lastSearchQuery="",lastCatalog=null;
   var body=document.body,liquidBtn=document.getElementById("liquidBtn"),normalBtn=document.getElementById("normalBtn"),modeLabel=document.getElementById("modeLabel");
   var overlay=document.getElementById("playerOverlay"),pt=document.getElementById("playerTitle"),pa=document.getElementById("playerArtist"),playToggle=document.getElementById("playToggle"),art=document.getElementById("playerArt"),artImg=document.getElementById("playerArtwork"),progress=document.getElementById("playerProgress"),volumeSlider=document.getElementById("volumeSlider"),volumeValue=document.getElementById("volumeValue"),volumeIcon=document.getElementById("volumeIcon");
+  var appPill=document.getElementById("appPill"),pillArtwork=document.getElementById("pillArtwork"),pillTitle=document.getElementById("pillTitle"),pillArtist=document.getElementById("pillArtist"),pillPlay=document.getElementById("pillPlay"),playerLyrics=document.getElementById("playerLyrics"),shuffleToggle=document.getElementById("shuffleToggle"),repeatToggle=document.getElementById("repeatToggle"),pillToggle=document.getElementById("pillToggle"),pillPlayerSetting=document.getElementById("pillPlayerSetting");
+  var downloadFormat=document.getElementById("downloadFormat"),downloadTrack=document.getElementById("downloadTrack"),downloadStatus=document.getElementById("downloadStatus"),runtimeUpdate=document.getElementById("runtimeUpdate"),runtimeStatus=document.getElementById("runtimeStatus"),languageSelect=document.getElementById("languageSelect"),languageStatus=document.getElementById("languageStatus"),autoUpdateCheck=document.getElementById("autoUpdateCheck"),checkClientUpdateButton=document.getElementById("checkClientUpdate"),openClientUpdate=document.getElementById("openClientUpdate"),clientUpdateStatus=document.getElementById("clientUpdateStatus"),latestReleaseUrl="https://github.com/bloodvitr/vitr/releases";
 
   function esc(value){return String(value==null?"":value).replace(/[&<>"']/g,function(ch){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[ch]})}
   function clock(ms){var seconds=Math.max(0,Math.floor((Number(ms)||0)/1000));return Math.floor(seconds/60)+":"+String(seconds%60).padStart(2,"0")}
   function coverUrl(t){return t&&(t.cover||t.artworkUrl||t.thumbnail)||""}
   function key(t,i){return String(t&&t.id?t.id:"track-"+i+"-"+(t&&t.title||"unknown"))}
+  function readJson(storageKey,fallback){try{var value=JSON.parse(localStorage.getItem(storageKey));return value==null?fallback:value}catch(e){return fallback}}
   function setMode(mode){var normal=mode==="normal";body.classList.toggle("normal",normal);liquidBtn.classList.toggle("active",!normal);normalBtn.classList.toggle("active",normal);if(modeLabel)modeLabel.textContent=normal?"Normal":"Liquid Glass";localStorage.setItem("vitr-ui-mode",normal?"normal":"liquid")}
   setMode(localStorage.getItem("vitr-ui-mode")==="normal"?"normal":"liquid");liquidBtn.addEventListener("click",function(){setMode("liquid")});normalBtn.addEventListener("click",function(){setMode("normal")});
 
@@ -339,20 +356,56 @@ window.__vitrApplyDeviceProfile = function(profile){
     side.innerHTML=libraryTracks.length?'<p>Liked Songs · '+libraryTracks.length+'</p>':'<p>Your library is empty.</p>';
     renderTracks(libraryTracks,trackHost,"No liked songs yet");refreshFavorite();
   }
-  async function loadLibrary(){if(!backend)return;try{libraryTracks=await backend.library();renderLibrary()}catch(e){empty(document.getElementById("libraryTracks"),"Library unavailable",e&&e.message||"Backend error")}}
-  async function loadHistory(){if(!backend)return;try{var history=await backend.history();renderTracks((history||[]).slice(0,6),document.getElementById("homeTracks"),"No recently played music")}catch(e){empty(document.getElementById("homeTracks"),"History unavailable",e&&e.message||"Backend error")}}
+  async function loadLibrary(){if(!backend)return;try{libraryTracks=await backend.library();renderLibrary();setTimeout(loadRecommendations,120)}catch(e){empty(document.getElementById("libraryTracks"),"Library unavailable",e&&e.message||"Backend error")}}
+  async function loadHistory(){if(!backend)return;try{historyTracks=await backend.history();renderTracks((historyTracks||[]).slice(0,6),document.getElementById("homeTracks"),"No recently played music");setTimeout(loadRecommendations,120)}catch(e){empty(document.getElementById("homeTracks"),"History unavailable",e&&e.message||"Backend error")}}
 
+  function pillEnabled(){return localStorage.getItem("vitr-pill-enabled")!=="false"}
+  function syncPillSetting(){var enabled=pillEnabled();if(pillPlayerSetting)pillPlayerSetting.value=enabled?"on":"off";if(pillToggle){pillToggle.classList.toggle("active",enabled);pillToggle.textContent=enabled?"Pill on":"Pill off"}if(appPill)appPill.classList.toggle("visible",enabled&&!!currentTrack)}
+  if(pillPlayerSetting)pillPlayerSetting.addEventListener("change",function(){localStorage.setItem("vitr-pill-enabled",pillPlayerSetting.value==="off"?"false":"true");syncPillSetting()});
+  if(pillToggle)pillToggle.addEventListener("click",function(){localStorage.setItem("vitr-pill-enabled",pillEnabled()?"false":"true");syncPillSetting()});
+
+  function renderLyrics(){
+    if(!playerLyrics)return;
+    var lines=currentLyrics&&Array.isArray(currentLyrics.lines)?currentLyrics.lines:[];
+    if(!lines.length){playerLyrics.innerHTML='<div class="lyrics-empty">'+esc(currentLyrics&&currentLyrics.message||"No lyrics available for this track.")+'</div>';return}
+    var position=Number(currentState.positionMs||0),active=-1;
+    for(var i=0;i<lines.length;i++){var row=lines[i]||{},start=Number(row.startMs||-1),end=Number(row.endMs||-1);if(start>=0&&position>=start&&(end<0||position<=end))active=i}
+    var from=active>=0?Math.max(0,active-4):0,to=active>=0?Math.min(lines.length,active+8):Math.min(lines.length,40);
+    playerLyrics.innerHTML=lines.slice(from,to).map(function(row,j){return '<span class="lyric-line '+(from+j===active?'active':'')+'">'+esc(row&&row.text||"♪")+'</span>'}).join("");
+    var activeEl=playerLyrics.querySelector(".active");if(activeEl)activeEl.scrollIntoView({block:"nearest"});
+  }
+  async function loadLyrics(track){
+    if(!backend||!backend.lyrics||!track)return;
+    lastLyricsTrackId=track.id;currentLyrics=null;renderLyrics();
+    try{currentLyrics=await backend.lyrics(track);if(currentTrack&&currentTrack.id===track.id)renderLyrics()}catch(e){currentLyrics={lines:[],message:e&&e.message||"Lyrics unavailable."};renderLyrics()}
+  }
+  function syncPlaybackModes(){
+    var shuffle=!!currentState.shuffle,repeat=String(currentState.repeatMode||"off");
+    if(shuffleToggle){shuffleToggle.classList.toggle("active",shuffle);shuffleToggle.textContent=shuffle?"Shuffle on":"Shuffle"}
+    if(repeatToggle){repeatToggle.classList.toggle("active",repeat!=="off");repeatToggle.textContent=repeat==="one"?"Repeat 1":repeat==="all"?"Repeat playlist":"Repeat off"}
+  }
+  function syncPill(){
+    if(!appPill)return;var has=!!(currentTrack&&currentTrack.title),cover=coverUrl(currentTrack);
+    appPill.classList.toggle("visible",pillEnabled()&&has);pillTitle.textContent=has?currentTrack.title:"Nothing playing";pillArtist.textContent=has?(currentTrack.artist||"Unknown artist"):"Choose a track";pillPlay.textContent=currentState.playing?"❚❚":"▶";
+    if(cover){pillArtwork.src=cover;pillArtwork.alt=currentTrack.title||""}else{pillArtwork.removeAttribute("src");pillArtwork.alt=""}
+  }
   function applyPlayerState(state){
+    var previousId=currentTrack&&currentTrack.id;
     currentState=state||{};currentTrack=currentState.track||null;
     pt.textContent=currentTrack&&currentTrack.title?currentTrack.title:"Nothing playing";pa.textContent=currentTrack&&currentTrack.artist?currentTrack.artist:"Choose a track";
     var cover=coverUrl(currentTrack);art.classList.toggle("empty",!cover);if(cover){artImg.src=cover;artImg.alt=currentTrack.title||""}else{artImg.removeAttribute("src");artImg.alt=""}
     playToggle.textContent=currentState.playing?"❚❚":"▶";
     var pct=currentState.durationMs?Math.max(0,Math.min(100,Number(currentState.positionMs||0)/Number(currentState.durationMs)*100)):0;var bar=overlay.querySelector(".progress i");if(bar)bar.style.width=pct+"%";
     var spans=overlay.querySelectorAll(".times span");if(spans[0])spans[0].textContent=clock(currentState.positionMs);if(spans[1])spans[1].textContent=clock(currentState.durationMs);
-    var volume=Math.max(0,Math.min(1,Number(currentState.volume==null?1:currentState.volume)));if(volumeSlider)volumeSlider.value=String(Math.round(volume*100));if(volumeValue)volumeValue.textContent=Math.round(volume*100)+"%";if(volumeIcon)volumeIcon.textContent=volume===0?"🔇":volume<.45?"🔉":"🔊";localStorage.setItem("vitr-player-state",JSON.stringify({track:currentTrack,playing:!!currentState.playing,positionSeconds:Number(currentState.positionMs||0)/1000,durationSeconds:Number(currentState.durationMs||0)/1000,volume:volume,artwork:cover}));
-    if(currentTrack)localStorage.setItem("vitr-current-track",JSON.stringify(currentTrack));else localStorage.removeItem("vitr-current-track");localStorage.setItem("vitr-playing",currentState.playing?"true":"false");refreshFavorite();
+    var volume=Math.max(0,Math.min(1,Number(currentState.volume==null?1:currentState.volume)));if(volumeSlider)volumeSlider.value=String(Math.round(volume*100));if(volumeValue)volumeValue.textContent=Math.round(volume*100)+"%";if(volumeIcon)volumeIcon.textContent=volume===0?"🔇":volume<.45?"🔉":"🔊";localStorage.setItem("vitr-player-state",JSON.stringify({track:currentTrack,playing:!!currentState.playing,positionSeconds:Number(currentState.positionMs||0)/1000,durationSeconds:Number(currentState.durationMs||0)/1000,volume:volume,artwork:cover,shuffle:!!currentState.shuffle,repeatMode:currentState.repeatMode||"off"}));
+    if(currentTrack)localStorage.setItem("vitr-current-track",JSON.stringify(currentTrack));else localStorage.removeItem("vitr-current-track");localStorage.setItem("vitr-playing",currentState.playing?"true":"false");refreshFavorite();syncPlaybackModes();syncPill();renderLyrics();
+    if(currentTrack&&currentTrack.id!==previousId&&currentTrack.id!==lastLyricsTrackId)loadLyrics(currentTrack);
   }
-  async function openTrack(track,queue){if(!backend||!track||!track.id)return;currentQueue=Array.isArray(queue)&&queue.length?queue:[track];overlay.classList.add("open");try{await backend.play(track,currentQueue);setTimeout(loadHistory,1200)}catch(error){console.error("Vitr Android playback failed",error)}}
+  async function openTrack(track,queue){
+    if(!backend||!track||!track.id)return;currentQueue=Array.isArray(queue)&&queue.length?queue:[track];overlay.classList.add("open");
+    if(currentTrack&&currentTrack.id===track.id){return}
+    try{await backend.play(track,currentQueue);setTimeout(loadHistory,1200)}catch(error){console.error("Vitr Android playback failed",error)}
+  }
   function bindPlayers(root){(root||document).querySelectorAll("[data-track-key]").forEach(function(el){if(el.dataset.bound==="1")return;el.dataset.bound="1";el.addEventListener("click",function(){var track=trackRegistry.get(el.getAttribute("data-track-key"));var queue=el.closest("#searchTracks")?Array.from(el.parentElement.querySelectorAll("[data-track-key]")).map(function(x){return trackRegistry.get(x.getAttribute("data-track-key"))}).filter(Boolean):discoveryTracks;openTrack(track,queue)})})}
 
   document.getElementById("closePlayer").addEventListener("click",function(){overlay.classList.remove("open")});overlay.addEventListener("click",function(e){if(e.target===overlay)overlay.classList.remove("open")});
@@ -362,15 +415,39 @@ window.__vitrApplyDeviceProfile = function(profile){
   document.getElementById("rewind10").addEventListener("click",function(){if(backend)backend.seek(Math.max(0,Number(currentState.positionMs||0)-10000))});
   document.getElementById("forward10").addEventListener("click",function(){if(backend)backend.seek(Math.min(Number(currentState.durationMs||Infinity),Number(currentState.positionMs||0)+10000))});
   document.getElementById("favoriteToggle").addEventListener("click",async function(){if(!backend||!currentTrack)return;try{await backend.toggleFavorite(currentTrack);await loadLibrary()}catch(e){}});
+  if(shuffleToggle)shuffleToggle.addEventListener("click",function(){if(backend&&backend.setShuffle)backend.setShuffle(!currentState.shuffle)});
+  if(repeatToggle)repeatToggle.addEventListener("click",function(){if(!backend||!backend.setRepeat)return;var current=String(currentState.repeatMode||"off"),next=current==="off"?"all":current==="all"?"one":"off";backend.setRepeat(next)});
   progress.addEventListener("click",function(e){if(!backend||!currentState.durationMs)return;var r=progress.getBoundingClientRect(),ratio=(e.clientX-r.left)/Math.max(1,r.width);backend.seek(Math.max(0,Math.min(Number(currentState.durationMs),ratio*Number(currentState.durationMs))))});
   if(volumeSlider)volumeSlider.addEventListener("input",function(){if(!backend)return;var value=Math.max(0,Math.min(1,Number(volumeSlider.value)/100));localStorage.setItem("vitr-volume",String(value));backend.setVolume(value)});
   if(volumeIcon)volumeIcon.addEventListener("click",function(){if(!backend)return;var current=Math.max(0,Math.min(1,Number(currentState.volume==null?1:currentState.volume)));var before=Number(localStorage.getItem("vitr-volume-before-mute")||.72);if(current>0){localStorage.setItem("vitr-volume-before-mute",String(current));backend.setVolume(0)}else backend.setVolume(Math.max(.05,Math.min(1,before)))});
+  if(appPill){appPill.addEventListener("click",function(){if(currentTrack)overlay.classList.add("open")});appPill.querySelectorAll("button").forEach(function(button){button.addEventListener("click",function(e){e.stopPropagation()})})}
+  document.getElementById("pillPrev").addEventListener("click",function(){if(backend)backend.previous()});
+  pillPlay.addEventListener("click",function(){if(backend)backend.togglePlay()});
+  document.getElementById("pillNext").addEventListener("click",function(){if(backend)backend.next()});
   window.addEventListener("vitr-player-state",function(e){applyPlayerState(e.detail)});
 
+  function detectedLanguage(){var raw=(navigator.languages&&navigator.languages[0])||navigator.language||"en";return String(raw).toLowerCase().split("-")[0]||"en"}
+  function applyLanguage(){var saved=localStorage.getItem("vitr-language")||"auto",resolved=saved==="auto"?detectedLanguage():saved,supported=["en","de","fr","it","es","pt","ja","ko"];if(supported.indexOf(resolved)<0)resolved="en";document.documentElement.lang=resolved;if(languageSelect)languageSelect.value=saved;if(languageStatus)languageStatus.textContent=(saved==="auto"?"System language: ":"Selected language: ")+resolved.toUpperCase()}
+  if(languageSelect)languageSelect.addEventListener("change",function(){localStorage.setItem("vitr-language",languageSelect.value);applyLanguage()});
+
+  var savedFormat=localStorage.getItem("vitr-download-format")||"m4a";if(["m4a","mp3","flac","wav"].indexOf(savedFormat)<0)savedFormat="m4a";if(downloadFormat)downloadFormat.value=savedFormat;
+  if(downloadFormat)downloadFormat.addEventListener("change",function(){localStorage.setItem("vitr-download-format",downloadFormat.value);if(downloadStatus)downloadStatus.textContent="Saved format: "+downloadFormat.value.toUpperCase()});
+  if(downloadTrack)downloadTrack.addEventListener("click",async function(){if(!backend||!currentTrack||!currentTrack.id){downloadStatus.textContent="Play a track first.";return}var format=(downloadFormat&&downloadFormat.value)||localStorage.getItem("vitr-download-format")||"m4a";localStorage.setItem("vitr-download-format",format);downloadTrack.disabled=true;downloadStatus.textContent="Queueing "+format.toUpperCase()+" download…";try{var result=await backend.download(currentTrack,format);downloadStatus.textContent=result&&result.duplicate?"Already queued/downloaded.":"Downloading in background · Music/Vitr"}catch(e){downloadStatus.textContent=e&&e.message||"Download failed."}downloadTrack.disabled=false});
+
+  async function refreshRuntimeStatus(){if(!backend||!backend.runtimeStatus)return;try{var s=await backend.runtimeStatus();runtimeStatus.textContent=s&&s.ytDlpVersion?("yt-dlp "+s.ytDlpVersion+(s.lastStatus?" · "+s.lastStatus:"")):"Android runtime ready."}catch(e){runtimeStatus.textContent=e&&e.message||"Runtime status unavailable."}}
+  if(runtimeUpdate)runtimeUpdate.addEventListener("click",async function(){if(!backend||!backend.updateRuntime)return;runtimeUpdate.disabled=true;runtimeStatus.textContent="Updating Android runtime…";try{var s=await backend.updateRuntime();runtimeStatus.textContent=s&&s.ytDlpVersion?("yt-dlp "+s.ytDlpVersion+" · "+(s.lastStatus||"Updated")):"Runtime updated."}catch(e){runtimeStatus.textContent=e&&e.message||"Runtime update failed."}runtimeUpdate.disabled=false});
+
+  async function checkUpdates(silent){if(!backend||!backend.checkClientUpdate)return;if(!silent)clientUpdateStatus.textContent="Checking Vitr releases…";try{var s=await backend.checkClientUpdate();latestReleaseUrl=s.releaseUrl||latestReleaseUrl;clientUpdateStatus.textContent=s.updateAvailable?("Vitr "+s.latestVersion+" is available."):(s.latestVersion?("Vitr "+s.latestVersion+" is up to date."):"No published release yet.");openClientUpdate.textContent=s.updateAvailable?("Get "+s.latestVersion):"Releases"}catch(e){if(!silent)clientUpdateStatus.textContent=e&&e.message||"Update check failed."}}
+  if(autoUpdateCheck){autoUpdateCheck.checked=localStorage.getItem("vitr-auto-update-check")!=="false";autoUpdateCheck.addEventListener("change",function(){localStorage.setItem("vitr-auto-update-check",autoUpdateCheck.checked?"true":"false")})}
+  if(checkClientUpdateButton)checkClientUpdateButton.addEventListener("click",function(){checkUpdates(false)});
+  if(openClientUpdate)openClientUpdate.addEventListener("click",function(){if(backend&&backend.openReleasePage)backend.openReleasePage(latestReleaseUrl)});
+
+  function rememberSearch(q){q=String(q||"").trim();if(!q)return;var history=readJson("vitr-search-history",[]);history=[q].concat(history.filter(function(x){return String(x).toLowerCase()!==q.toLowerCase()})).slice(0,30);localStorage.setItem("vitr-search-history",JSON.stringify(history))}
   var searchTimer=0,searchSerial=0;
   async function searchVitr(q){
     q=(q||"").trim();lastSearchQuery=q;var trackHost=document.getElementById("searchTracks"),catalogHost=document.getElementById("searchCatalog");
     if(!q){catalogHost.innerHTML="";empty(trackHost,"Search Vitr","Type a song, artist, album, playlist or genre above.");return}
+    rememberSearch(q);
     var serial=++searchSerial;if(!backend){catalogHost.innerHTML="";empty(trackHost,"Backend unavailable","Restart Vitr and try again.");return}
     catalogHost.innerHTML="";trackHost.innerHTML='<div class="empty-state glass-soft">Searching Vitr…</div>';
     try{var catalog=backend.discover?await backend.discover(q,preferredEntityType()):{tracks:await backend.search(q),items:[],artists:[],albums:[],playlists:[],genres:[]};if(serial!==searchSerial)return;renderSearchResult(catalog)}
@@ -379,8 +456,26 @@ window.__vitrApplyDeviceProfile = function(profile){
   function queueSearch(value){clearTimeout(searchTimer);searchTimer=setTimeout(function(){searchVitr(value)},320)}
   document.getElementById("searchInput").addEventListener("input",function(e){queueSearch(e.target.value)});document.getElementById("globalSearch").addEventListener("input",function(e){switchTab("search");document.getElementById("searchInput").value=e.target.value;queueSearch(e.target.value)});document.querySelectorAll("[data-search-kind]").forEach(function(btn){btn.addEventListener("click",function(){setActiveSearchKind(btn.dataset.searchKind);var q=document.getElementById("searchInput").value.trim()||lastSearchQuery||"music";if(!document.getElementById("searchInput").value.trim())document.getElementById("searchInput").value=q;searchVitr(q)})});
 
-  async function loadDiscovery(){var featured=document.getElementById("featuredTracks");if(!backend){empty(featured,"Backend unavailable","Restart Vitr and try again.");return}try{var results=await backend.search("music");discoveryTracks=(results||[]).slice(0,12);renderCards(discoveryTracks,featured);renderTrending(discoveryTracks);var hero=document.getElementById("heroPlay");hero.disabled=!discoveryTracks.length;hero.onclick=function(){if(discoveryTracks[0])openTrack(discoveryTracks[0],discoveryTracks)}}catch(error){empty(featured,"Discovery unavailable",error&&error.message||"Backend error");renderTrending([])}}
-  function init(){backend=window.vitrPlatformBackend||backend;document.getElementById("searchCatalog").innerHTML="";empty(document.getElementById("searchTracks"),"Search Vitr","Type a song, artist, album, playlist or genre above.");renderLibrary();loadLibrary();loadHistory();loadDiscovery();if(backend)backend.state().then(applyPlayerState).catch(function(){});setInterval(function(){if(backend)backend.state().then(applyPlayerState).catch(function(){})},700)}
+  function recommendationSeeds(){
+    var seeds=[],seen={};function add(value){value=String(value||"").trim();var k=value.toLowerCase();if(!value||seen[k])return;seen[k]=1;seeds.push(value)}
+    libraryTracks.slice(0,6).forEach(function(t){add(t.artist);add(t.album)});
+    historyTracks.slice(0,10).forEach(function(t){add(t.artist)});
+    readJson("vitr-search-history",[]).slice(0,5).forEach(add);
+    if(!seeds.length)add("music");
+    return seeds.slice(0,4);
+  }
+  async function loadRecommendations(){
+    var host=document.getElementById("recommendedTracks");if(!host||!backend)return;
+    var seeds=recommendationSeeds(),recent=historyTracks.slice(0,8).map(function(t){return key(t,0)});
+    try{
+      var batches=await Promise.all(seeds.map(function(seed){return backend.search(seed+" music").catch(function(){return []})})),seen={},recommended=[];
+      batches.forEach(function(list){(list||[]).forEach(function(t){var k=key(t,0);if(seen[k]||recent.indexOf(k)>=0)return;seen[k]=1;recommended.push(t)})});
+      if(!recommended.length)recommended=(await backend.search("music discovery").catch(function(){return []})).slice(0,10);
+      renderCards(recommended.slice(0,10),host);var why=document.getElementById("recommendationWhy");if(why)why.textContent=seeds[0]==="music"?"Fresh discovery":"Because you listen to "+seeds.slice(0,2).join(" · ");
+    }catch(e){empty(host,"Recommendations unavailable","Play, like, or search for music to build your recommendations.")}
+  }
+  async function loadDiscovery(){var featured=document.getElementById("featuredTracks");if(!backend){empty(featured,"Backend unavailable","Restart Vitr and try again.");return}try{var results=await backend.search("music");discoveryTracks=(results||[]).slice(0,12);renderCards(discoveryTracks,featured);renderTrending(discoveryTracks);var hero=document.getElementById("heroPlay");hero.disabled=!discoveryTracks.length;hero.onclick=function(){if(discoveryTracks[0])openTrack(discoveryTracks[0],discoveryTracks)};loadRecommendations()}catch(error){empty(featured,"Discovery unavailable",error&&error.message||"Backend error");renderTrending([])}}
+  function init(){backend=window.vitrPlatformBackend||backend;applyLanguage();syncPillSetting();document.getElementById("searchCatalog").innerHTML="";empty(document.getElementById("searchTracks"),"Search Vitr","Type a song, artist, album, playlist or genre above.");renderLibrary();loadLibrary();loadHistory();loadDiscovery();refreshRuntimeStatus();if(autoUpdateCheck&&autoUpdateCheck.checked)checkUpdates(true);if(backend)backend.state().then(applyPlayerState).catch(function(){});setInterval(function(){if(backend)backend.state().then(applyPlayerState).catch(function(){})},700)}
   if(backend)init();else window.addEventListener("vitr-backend-ready",init,{once:true});
 })();
 </script>

@@ -1,6 +1,8 @@
 package com.bloodvitr.vitr.backend
 
 import android.content.ComponentName
+import android.content.Intent
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.webkit.JavascriptInterface
@@ -10,11 +12,21 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.frxe.music.data.FrxeDatabase
 import com.frxe.music.data.TrackEntity
+import com.frxe.music.lyrics.LyricsRepository
 import com.frxe.music.model.Track
 import com.frxe.music.playback.FrxePlaybackService
 import com.frxe.music.playback.PlaybackQueueStore
 import com.frxe.music.playback.QueueRepeatMode
+import com.frxe.music.save.FrxeDownloadService
+import com.frxe.music.save.SaveFormat
+import com.frxe.music.save.defaultQualityFor
+import com.frxe.music.source.PlaybackStreamResolver
 import com.frxe.music.source.YouTubeCatalogSource
+import com.frxe.music.updates.FrxeUpdateRepository
+import com.frxe.music.updates.RuntimeHealthStore
+import com.frxe.music.updates.UpdateCheckResult
+import com.frxe.music.updates.YtDlpRuntimeUpdater
+import com.frxe.music.ytdlp.YtDlpDownloadRequest
 import java.util.concurrent.Executor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,6 +45,7 @@ class VitrBackendBridge(
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private val source = YouTubeCatalogSource(activity.application)
     private val dao = FrxeDatabase.get(activity.applicationContext).libraryDao()
+    private val lyricsRepository = LyricsRepository()
     private var controller: MediaController? = null
 
     private val controllerFuture =
@@ -219,6 +232,123 @@ class VitrBackendBridge(
     }
 
     @JavascriptInterface
+    fun download(trackJson: String, formatName: String, requestId: String) {
+        scope.launch {
+            try {
+                val track = parseTrack(JSONObject(trackJson))
+                val format = when (formatName.trim().lowercase()) {
+                    "m4a" -> SaveFormat.M4A
+                    "mp3" -> SaveFormat.MP3
+                    "flac" -> SaveFormat.FLAC
+                    "wav" -> SaveFormat.WAV
+                    else -> throw IllegalArgumentException("Unsupported audio format")
+                }
+                val sourceUrl = track.downloadUrl
+                    ?: PlaybackStreamResolver.youtubeWatchUrl(track.streamUrl)
+                    ?: track.id.removePrefix("yt-")
+                        .takeIf { it.length == 11 }
+                        ?.let(PlaybackStreamResolver::youtubeWatchUrlFromId)
+                    ?: throw IllegalStateException("This track has no downloadable source.")
+
+                val result = FrxeDownloadService.enqueue(
+                    activity,
+                    YtDlpDownloadRequest(
+                        sourceUrl = sourceUrl,
+                        title = track.title,
+                        artist = track.artist,
+                        outputFormat = format,
+                        quality = defaultQualityFor(format),
+                        thumbnailUrl = track.artworkUrl,
+                        album = track.album
+                    )
+                )
+                reply(
+                    requestId,
+                    true,
+                    JSONObject()
+                        .put("queueId", result.item.id)
+                        .put("duplicate", result.duplicate)
+                        .put("format", format.extension)
+                )
+            } catch (error: Throwable) {
+                replyError(requestId, error)
+            }
+        }
+    }
+
+    @JavascriptInterface
+    fun runtimeStatus(requestId: String) {
+        val state = RuntimeHealthStore.state.value
+        reply(
+            requestId,
+            true,
+            JSONObject()
+                .put("ytDlpVersion", state.ytDlpVersion ?: JSONObject.NULL)
+                .put("lastStatus", state.ytDlpUpdateStatus)
+                .put("lastError", state.ytDlpInitStatus)
+        )
+    }
+
+    @JavascriptInterface
+    fun updateRuntime(requestId: String) {
+        scope.launch {
+            try {
+                val state = YtDlpRuntimeUpdater.updateNow(activity.applicationContext)
+                reply(
+                    requestId,
+                    true,
+                    JSONObject()
+                        .put("ytDlpVersion", state.ytDlpVersion ?: JSONObject.NULL)
+                        .put("lastStatus", state.ytDlpUpdateStatus)
+                        .put("lastError", state.ytDlpInitStatus)
+                )
+            } catch (error: Throwable) {
+                replyError(requestId, error)
+            }
+        }
+    }
+
+    @JavascriptInterface
+    fun checkClientUpdate(requestId: String) {
+        scope.launch {
+            try {
+                val payload = when (val result = FrxeUpdateRepository().check()) {
+                    is UpdateCheckResult.UpdateAvailable -> JSONObject()
+                        .put("updateAvailable", true)
+                        .put("latestVersion", result.version)
+                        .put("releaseUrl", result.pageUrl)
+                        .put("notes", result.notes)
+                    is UpdateCheckResult.UpToDate -> JSONObject()
+                        .put("updateAvailable", false)
+                        .put("latestVersion", result.latestVersion)
+                        .put("releaseUrl", FrxeUpdateRepository.RELEASES_PAGE)
+                        .put("notes", "")
+                    UpdateCheckResult.NoPublishedRelease -> JSONObject()
+                        .put("updateAvailable", false)
+                        .put("latestVersion", "")
+                        .put("releaseUrl", FrxeUpdateRepository.RELEASES_PAGE)
+                        .put("notes", "No published Vitr release is available yet.")
+                    is UpdateCheckResult.Error -> throw IllegalStateException(result.message)
+                }
+                reply(requestId, true, payload)
+            } catch (error: Throwable) {
+                replyError(requestId, error)
+            }
+        }
+    }
+
+    @JavascriptInterface
+    fun openReleasePage(url: String) {
+        val target = url
+            .takeIf { it.startsWith("https://github.com/bloodvitr/vitr/") }
+            ?: FrxeUpdateRepository.RELEASES_PAGE
+        activity.startActivity(
+            Intent(Intent.ACTION_VIEW, Uri.parse(target))
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        )
+    }
+
+    @JavascriptInterface
     fun play(trackJson: String, queueJson: String, requestId: String) {
         scope.launch {
             try {
@@ -230,11 +360,14 @@ class VitrBackendBridge(
                     listOf(selected) + requestedQueue
                 }.ifEmpty { listOf(selected) }
 
-                PlaybackQueueStore.replaceAndRequestPlay(
-                    tracks = queue,
-                    currentTrackId = selected.id
-                )
-                controller?.play()
+                val current = PlaybackQueueStore.currentTrack()
+                if (current?.id != selected.id) {
+                    PlaybackQueueStore.replaceAndRequestPlay(
+                        tracks = queue,
+                        currentTrackId = selected.id
+                    )
+                    controller?.play()
+                }
 
                 reply(requestId, true, trackJson(selected))
                 emitPlayerState()
@@ -261,7 +394,7 @@ class VitrBackendBridge(
     @JavascriptInterface
     fun next() {
         val next = PlaybackQueueStore.advance(
-            repeatMode = QueueRepeatMode.Off,
+            repeatMode = currentRepeatMode(),
             shuffle = controller?.shuffleModeEnabled == true
         )
         next?.current?.entryId?.let(PlaybackQueueStore::selectAndRequestPlay)
@@ -271,10 +404,57 @@ class VitrBackendBridge(
 
     @JavascriptInterface
     fun previous() {
-        val previous = PlaybackQueueStore.previous(QueueRepeatMode.Off)
+        val previous = PlaybackQueueStore.previous(currentRepeatMode())
         previous?.current?.entryId?.let(PlaybackQueueStore::selectAndRequestPlay)
         controller?.play()
         emitPlayerState()
+    }
+
+    @JavascriptInterface
+    fun setShuffle(enabled: Boolean) {
+        controller?.shuffleModeEnabled = enabled
+        emitPlayerState()
+    }
+
+    @JavascriptInterface
+    fun setRepeat(mode: String) {
+        controller?.repeatMode = when (mode.trim().lowercase()) {
+            "all" -> Player.REPEAT_MODE_ALL
+            "one" -> Player.REPEAT_MODE_ONE
+            else -> Player.REPEAT_MODE_OFF
+        }
+        emitPlayerState()
+    }
+
+    @JavascriptInterface
+    fun lyrics(trackJson: String, requestId: String) {
+        scope.launch {
+            try {
+                val track = parseTrack(JSONObject(trackJson))
+                val result = lyricsRepository.lyrics(track)
+                val lines = JSONArray().also { array ->
+                    result.lines.forEach { line ->
+                        array.put(
+                            JSONObject()
+                                .put("startMs", line.startMs)
+                                .put("endMs", line.endMs)
+                                .put("text", line.text)
+                        )
+                    }
+                }
+                reply(
+                    requestId,
+                    true,
+                    JSONObject()
+                        .put("lines", lines)
+                        .put("synced", result.synced)
+                        .put("source", result.source ?: JSONObject.NULL)
+                        .put("message", result.message ?: JSONObject.NULL)
+                )
+            } catch (error: Throwable) {
+                replyError(requestId, error)
+            }
+        }
     }
 
     @JavascriptInterface
@@ -446,6 +626,13 @@ class VitrBackendBridge(
     private fun tracksJson(tracks: List<Track>): JSONArray =
         JSONArray().also { array -> tracks.forEach { array.put(trackJson(it)) } }
 
+    private fun currentRepeatMode(): QueueRepeatMode =
+        when (controller?.repeatMode) {
+            Player.REPEAT_MODE_ALL -> QueueRepeatMode.All
+            Player.REPEAT_MODE_ONE -> QueueRepeatMode.One
+            else -> QueueRepeatMode.Off
+        }
+
     private fun playerStateJson(): JSONObject {
         val player = controller
         val track = PlaybackQueueStore.currentTrack()
@@ -461,6 +648,15 @@ class VitrBackendBridge(
             )
             .put("bufferedPercent", player?.bufferedPercentage ?: 0)
             .put("volume", player?.volume ?: 1f)
+            .put("shuffle", player?.shuffleModeEnabled == true)
+            .put(
+                "repeatMode",
+                when (player?.repeatMode) {
+                    Player.REPEAT_MODE_ALL -> "all"
+                    Player.REPEAT_MODE_ONE -> "one"
+                    else -> "off"
+                }
+            )
     }
 
     private fun reply(requestId: String, ok: Boolean, payload: Any) {

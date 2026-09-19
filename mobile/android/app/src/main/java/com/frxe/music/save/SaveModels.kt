@@ -1,6 +1,7 @@
 package com.frxe.music.save
 
 enum class SaveFormat(val extension: String, val mimeType: String, val displayName: String) {
+    M4A("m4a", "audio/mp4", "M4A"),
     MP3("mp3", "audio/mpeg", "MP3"),
     FLAC("flac", "audio/flac", "FLAC"),
     WAV("wav", "audio/wav", "WAV")
@@ -58,7 +59,7 @@ data class SaveResult(
 )
 
 fun qualityOptionsFor(format: SaveFormat): List<SaveQuality> = when (format) {
-    SaveFormat.MP3 -> listOf(
+    SaveFormat.M4A, SaveFormat.MP3 -> listOf(
         SaveQuality.Mp3K128,
         SaveQuality.Mp3K192,
         SaveQuality.Mp3K256,
@@ -71,6 +72,6 @@ fun qualityOptionsFor(format: SaveFormat): List<SaveQuality> = when (format) {
 }
 
 fun defaultQualityFor(format: SaveFormat): SaveQuality = when (format) {
-    SaveFormat.MP3 -> SaveQuality.Mp3K320
+    SaveFormat.M4A, SaveFormat.MP3 -> SaveQuality.Mp3K320
     SaveFormat.FLAC, SaveFormat.WAV -> SaveQuality.Lossless48k
 }
