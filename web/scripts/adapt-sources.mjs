@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { inferSourceContract } from '../shared/source-contract.js';
 
-const RELEASE_VERSION = '0.1.0';
+const RELEASE_VERSION = '0.3.1';
 
 const SOURCE = {
   repo: 'bloodvitr/vitr',
