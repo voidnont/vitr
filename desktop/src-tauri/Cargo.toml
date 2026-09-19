@@ -2,7 +2,7 @@
 name = "vitr"
 version = "0.1.0"
 description = "vitr for Windows, Linux and macOS"
-authors = ["blood"]
+authors = ["Blood"]
 edition = "2021"
 
 [lib]
