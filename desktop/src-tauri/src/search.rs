@@ -2,7 +2,7 @@ use regex::Regex;
 use serde_json::{json, Value};
 use tauri::AppHandle;
 
-use crate::{models::{CatalogItem, SearchCatalog, Track}, runtime};
+use crate::{models::{CatalogItem, CatalogMetadata, SearchCatalog, Track}, runtime};
 
 const VITR_USER_AGENT: &str = concat!("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 vitr/", env!("CARGO_PKG_VERSION"));
 
@@ -118,56 +118,128 @@ fn dedupe_catalog(items: Vec<CatalogItem>) -> Vec<CatalogItem> {
     items.into_iter().filter(|item| seen.insert(format!("{}:{}", item.kind, item.id))).collect()
 }
 
-fn catalog_item(renderer: &Value, kind: &str) -> Option<CatalogItem> {
-    let title = renderer.get("title").map(first_run_text).unwrap_or_default();
+fn classify_catalog_entity(renderer: &Value) -> Option<(&'static str, f64)> {
+    let page_type = first_named_string(renderer, "pageType").unwrap_or_default().to_uppercase();
+    let subtitle = renderer
+        .get("subtitle")
+        .map(first_run_text)
+        .unwrap_or_default()
+        .to_lowercase();
+    let browse_id = first_named_string(renderer, "browseId").unwrap_or_default();
+
+    if page_type.contains("ARTIST") {
+        return Some(("artist", 1.0));
+    }
+    if page_type.contains("ALBUM") {
+        return Some(("album", 1.0));
+    }
+    if page_type.contains("PLAYLIST") {
+        return Some(("playlist", 1.0));
+    }
+    if page_type.contains("MOOD") || page_type.contains("GENRE") {
+        return Some(("genre", 1.0));
+    }
+
+    if browse_id.starts_with("UC") || browse_id.starts_with("MPLA") {
+        return Some(("artist", 0.92));
+    }
+    if browse_id.starts_with("MPRE") {
+        return Some(("album", 0.92));
+    }
+    if browse_id.starts_with("VL") || browse_id.starts_with("PL") {
+        return Some(("playlist", 0.92));
+    }
+    if browse_id.contains("moods_and_genres") {
+        return Some(("genre", 0.92));
+    }
+
+    if subtitle == "artist"
+        || subtitle.starts_with("artist ·")
+        || subtitle.starts_with("artist •")
+    {
+        return Some(("artist", 0.84));
+    }
+    if subtitle.starts_with("album")
+        || subtitle.starts_with("single")
+        || subtitle == "ep"
+        || subtitle.starts_with("ep ·")
+        || subtitle.starts_with("ep •")
+    {
+        return Some(("album", 0.84));
+    }
+    if subtitle.starts_with("playlist") {
+        return Some(("playlist", 0.84));
+    }
+    if subtitle.contains("genre") || subtitle.contains("mood") {
+        return Some(("genre", 0.84));
+    }
+
+    None
+}
+
+fn catalog_item(renderer: &Value, kind: &str, confidence: f64) -> Option<CatalogItem> {
+    let title = renderer
+        .get("title")
+        .or_else(|| renderer.get("buttonText"))
+        .map(first_run_text)
+        .unwrap_or_default();
     if title.is_empty() { return None; }
+
     let subtitle = renderer.get("subtitle").map(first_run_text).unwrap_or_default();
-    let id = first_named_string(renderer, "browseId").unwrap_or_else(|| format!("{kind}:{title}"));
+    let browse_id = first_named_string(renderer, "browseId");
+    let id = browse_id
+        .clone()
+        .unwrap_or_else(|| format!("{kind}:{title}"));
+    let search_query = match kind {
+        "artist" => title.clone(),
+        "album" => format!("{title} album"),
+        "playlist" => format!("{title} playlist"),
+        "genre" => format!("{title} music"),
+        _ => title.clone(),
+    };
+
     Some(CatalogItem {
         id,
         kind: kind.to_string(),
         title,
         subtitle,
         cover: last_thumbnail(renderer),
+        metadata: CatalogMetadata {
+            entity_type: kind.to_string(),
+            source: "youtube_music".to_string(),
+            browse_id,
+            search_query,
+            confidence,
+        },
     })
 }
 
 fn parse_music_catalog(root: &Value) -> SearchCatalog {
-    let mut catalog = SearchCatalog { tracks: parse_music_results(root), ..Default::default() };
+    let mut catalog = SearchCatalog {
+        tracks: parse_music_results(root),
+        ..Default::default()
+    };
+    let mut all_items = Vec::new();
+
     let mut two_rows = Vec::new();
     collect_named(root, "musicTwoRowItemRenderer", &mut two_rows);
-
     for renderer in two_rows {
-        let page_type = first_named_string(&renderer, "pageType").unwrap_or_default().to_uppercase();
-        let subtitle = renderer.get("subtitle").map(first_run_text).unwrap_or_default().to_lowercase();
-        let browse_id = first_named_string(&renderer, "browseId").unwrap_or_default();
-        let class = if page_type.contains("ALBUM") {
-            "album"
-        } else if page_type.contains("PLAYLIST") {
-            "playlist"
-        } else if page_type.contains("ARTIST") {
-            "artist"
-        } else if page_type.contains("MOOD") || page_type.contains("GENRE") {
-            "genre"
-        } else if subtitle.starts_with("album") || subtitle.starts_with("single") || subtitle == "ep" || subtitle.starts_with("ep ·") || subtitle.starts_with("ep •") {
-            "album"
-        } else if subtitle.starts_with("playlist") || browse_id.starts_with("VL") || browse_id.starts_with("PL") {
-            "playlist"
-        } else if subtitle == "artist" || subtitle.starts_with("artist ·") || subtitle.starts_with("artist •") {
-            "artist"
-        } else if subtitle.contains("genre") || subtitle.contains("mood") {
-            "genre"
-        } else {
-            continue;
-        };
+        if let Some((kind, confidence)) = classify_catalog_entity(&renderer) {
+            if let Some(item) = catalog_item(&renderer, kind, confidence) {
+                all_items.push(item);
+            }
+        }
+    }
 
-        if let Some(item) = catalog_item(&renderer, class) {
-            match class {
-                "artist" => catalog.artists.push(item),
-                "album" => catalog.albums.push(item),
-                "playlist" => catalog.playlists.push(item),
-                "genre" => catalog.genres.push(item),
-                _ => {}
+    let mut responsive_rows = Vec::new();
+    collect_named(root, "musicResponsiveListItemRenderer", &mut responsive_rows);
+    for renderer in responsive_rows {
+        if renderer.pointer("/playlistItemData/videoId").is_some() {
+            continue;
+        }
+        if let Some((kind, confidence)) = classify_catalog_entity(&renderer) {
+            if let Some(item) = catalog_item(&renderer, kind, confidence) {
+                all_items.push(item);
             }
         }
     }
@@ -175,24 +247,40 @@ fn parse_music_catalog(root: &Value) -> SearchCatalog {
     let mut buttons = Vec::new();
     collect_named(root, "musicNavigationButtonRenderer", &mut buttons);
     for renderer in buttons {
-        let page_type = first_named_string(&renderer, "pageType").unwrap_or_default().to_uppercase();
-        let browse_id = first_named_string(&renderer, "browseId").unwrap_or_default();
-        if !(page_type.contains("MOOD") || page_type.contains("GENRE") || browse_id.contains("moods_and_genres")) { continue; }
-        let title = renderer.get("buttonText").map(first_run_text).unwrap_or_default();
-        if title.is_empty() { continue; }
-        catalog.genres.push(CatalogItem {
-            id: if browse_id.is_empty() { format!("genre:{title}") } else { browse_id },
-            kind: "genre".to_string(),
-            title,
-            subtitle: "Genre & mood".to_string(),
-            cover: last_thumbnail(&renderer),
-        });
+        if let Some((kind, confidence)) = classify_catalog_entity(&renderer) {
+            if kind == "genre" {
+                if let Some(item) = catalog_item(&renderer, kind, confidence) {
+                    all_items.push(item);
+                }
+            }
+        }
     }
 
-    catalog.artists = dedupe_catalog(catalog.artists);
-    catalog.albums = dedupe_catalog(catalog.albums);
-    catalog.playlists = dedupe_catalog(catalog.playlists);
-    catalog.genres = dedupe_catalog(catalog.genres);
+    catalog.items = dedupe_catalog(all_items);
+    catalog.artists = catalog
+        .items
+        .iter()
+        .filter(|item| item.metadata.entity_type == "artist")
+        .cloned()
+        .collect();
+    catalog.albums = catalog
+        .items
+        .iter()
+        .filter(|item| item.metadata.entity_type == "album")
+        .cloned()
+        .collect();
+    catalog.playlists = catalog
+        .items
+        .iter()
+        .filter(|item| item.metadata.entity_type == "playlist")
+        .cloned()
+        .collect();
+    catalog.genres = catalog
+        .items
+        .iter()
+        .filter(|item| item.metadata.entity_type == "genre")
+        .cloned()
+        .collect();
     catalog
 }
 
@@ -441,8 +529,12 @@ mod tests {
         });
         let catalog = parse_music_catalog(&json);
         assert_eq!(catalog.artists[0].title, "Example Artist");
+        assert_eq!(catalog.artists[0].metadata.entity_type, "artist");
         assert_eq!(catalog.albums[0].title, "Example Album");
+        assert_eq!(catalog.albums[0].metadata.entity_type, "album");
         assert_eq!(catalog.playlists[0].title, "Example Playlist");
+        assert_eq!(catalog.playlists[0].metadata.entity_type, "playlist");
+        assert_eq!(catalog.items.len(), 3);
     }
 
     #[test]
