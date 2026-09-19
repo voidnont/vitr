@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Window;
+import android.view.WindowInsets;
+import android.graphics.Insets;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -67,6 +69,27 @@ public final class MainActivity extends Activity {
         });
 
         setContentView(webView);
+
+        webView.setOnApplyWindowInsetsListener((view, insets) -> {
+            if (android.os.Build.VERSION.SDK_INT >= 30) {
+                Insets safe = insets.getInsets(
+                    WindowInsets.Type.statusBars()
+                        | WindowInsets.Type.navigationBars()
+                        | WindowInsets.Type.displayCutout()
+                );
+                view.setPadding(0, safe.top, 0, safe.bottom);
+            } else {
+                view.setPadding(
+                    0,
+                    insets.getSystemWindowInsetTop(),
+                    0,
+                    insets.getSystemWindowInsetBottom()
+                );
+            }
+            return insets;
+        });
+        webView.requestApplyInsets();
+
         webView.loadUrl("file:///android_asset/index.html");
     }
 
