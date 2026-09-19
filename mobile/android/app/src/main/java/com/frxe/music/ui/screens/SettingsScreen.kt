@@ -502,29 +502,27 @@ fun SettingsScreen(
                         Text("  Check release")
                     }
 
-                    state.releasePageUrl
-                        ?.let { page ->
-                            OutlinedButton(
-                                onClick = {
-                                    openExternal(
-                                        context,
-                                        page
-                                    )
-                                },
-                                colors =
-                                    ButtonDefaults
-                                        .outlinedButtonColors(
-                                            contentColor =
-                                                Color.White
-                                        )
-                            ) {
-                                Icon(
-                                    Icons.Default.OpenInNew,
-                                    contentDescription = null
+                    OutlinedButton(
+                        onClick = {
+                            openExternal(
+                                context,
+                                state.releasePageUrl
+                                    ?: FrxeSupportLinks.RELEASES
+                            )
+                        },
+                        colors =
+                            ButtonDefaults
+                                .outlinedButtonColors(
+                                    contentColor =
+                                        Color.White
                                 )
-                                Text("  Releases")
-                            }
-                        }
+                    ) {
+                        Icon(
+                            Icons.Default.OpenInNew,
+                            contentDescription = null
+                        )
+                        Text("  Releases")
+                    }
                 }
 
                 Spacer(
