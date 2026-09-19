@@ -538,6 +538,39 @@ mod tests {
     }
 
     #[test]
+    fn parses_responsive_artist_metadata() {
+        let json = json!({
+            "items": [{
+                "musicResponsiveListItemRenderer": {
+                    "flexColumns": [{
+                        "musicResponsiveListItemFlexColumnRenderer": {
+                            "text": { "runs": [{ "text": "Metadata Artist" }] }
+                        }
+                    }],
+                    "title": { "runs": [{ "text": "Metadata Artist" }] },
+                    "subtitle": { "runs": [{ "text": "Artist" }] },
+                    "navigationEndpoint": {
+                        "browseEndpoint": {
+                            "browseId": "UCmetadataartist",
+                            "browseEndpointContextSupportedConfigs": {
+                                "browseEndpointContextMusicConfig": {
+                                    "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                                }
+                            }
+                        }
+                    }
+                }
+            }]
+        });
+        let catalog = parse_music_catalog(&json);
+        assert_eq!(catalog.artists.len(), 1);
+        assert_eq!(catalog.artists[0].metadata.entity_type, "artist");
+        assert_eq!(catalog.artists[0].metadata.source, "youtube_music");
+        assert_eq!(catalog.artists[0].metadata.browse_id.as_deref(), Some("UCmetadataartist"));
+        assert_eq!(catalog.artists[0].metadata.search_query, "Metadata Artist");
+    }
+
+    #[test]
     fn rejects_invalid_video_ids() {
         assert!(valid_video_id("abcdefghijk"));
         assert!(!valid_video_id("too-short"));
