@@ -45,6 +45,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.frxe.music.BuildConfig
+import com.frxe.music.save.DownloadPreferences
+import com.frxe.music.save.SaveFormat
 import com.frxe.music.ui.FrxeViewModel
 import com.frxe.music.ui.components.GlassPanel
 import com.frxe.music.ui.gestures.PlayerGesturePreferences
@@ -82,6 +84,13 @@ fun SettingsScreen(
     var updatingRuntime by
         remember {
             mutableStateOf(false)
+        }
+
+    var defaultDownloadFormat by
+        remember(context) {
+            mutableStateOf(
+                DownloadPreferences.defaultFormat(context)
+            )
         }
 
     var playerGesturesEnabled by
@@ -173,6 +182,107 @@ fun SettingsScreen(
             Column(
                 verticalArrangement =
                     Arrangement.spacedBy(
+                        12.dp
+                    )
+            ) {
+                Text(
+                    "Audio downloads",
+                    fontWeight =
+                        FontWeight.Bold,
+                    color =
+                        MaterialTheme
+                            .colorScheme
+                            .onSurface
+                )
+
+                Text(
+                    "Downloaded songs are saved to the Android media library and stay available outside Vitr.",
+                    color =
+                        MaterialTheme
+                            .colorScheme
+                            .onSurfaceVariant
+                )
+
+                StatusRow(
+                    "Folder",
+                    DownloadPreferences.DISPLAY_LOCATION
+                )
+
+                Text(
+                    "Default format",
+                    fontWeight =
+                        FontWeight.SemiBold,
+                    color =
+                        MaterialTheme
+                            .colorScheme
+                            .onSurface
+                )
+
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement =
+                        Arrangement.spacedBy(
+                            8.dp
+                        )
+                ) {
+                    SaveFormat.entries.forEach { format ->
+                        Button(
+                            modifier =
+                                Modifier.weight(1f),
+                            onClick = {
+                                defaultDownloadFormat =
+                                    format
+                                DownloadPreferences
+                                    .setDefaultFormat(
+                                        context,
+                                        format
+                                    )
+                            },
+                            colors =
+                                ButtonDefaults
+                                    .buttonColors(
+                                        containerColor =
+                                            if (
+                                                defaultDownloadFormat ==
+                                                format
+                                            ) {
+                                                MaterialTheme
+                                                    .colorScheme
+                                                    .primary
+                                            } else {
+                                                Color.White
+                                                    .copy(
+                                                        alpha = 0.10f
+                                                    )
+                                            }
+                                    )
+                        ) {
+                            Text(
+                                format.displayName,
+                                maxLines = 1
+                            )
+                        }
+                    }
+                }
+
+                Text(
+                    "M4A, MP3, FLAC and WAV use this saved choice when you open the download sheet. You can still change the format per song.",
+                    color =
+                        MaterialTheme
+                            .colorScheme
+                            .onSurfaceVariant
+                )
+            }
+        }
+
+        GlassPanel(
+            Modifier.fillMaxWidth(),
+            radius = 28.dp,
+            strong = true
+        ) {
+            Column(
+                verticalArrangement =
+                    Arrangement.spacedBy(
                         13.dp
                     )
             ) {
@@ -231,7 +341,7 @@ fun SettingsScreen(
                                     .onSurface
                         )
                         Text(
-                            "Disabled so the Island never covers FRXE itself",
+                            "Disabled so the Island never covers Vitr itself",
                             color =
                                 MaterialTheme
                                     .colorScheme
@@ -438,7 +548,7 @@ fun SettingsScreen(
                                     .onSurface
                         )
                         Text(
-                            "Runtime components update in place; compiled libraries require a Frxe update.",
+                            "Runtime components update in place; compiled libraries require a Vitr update.",
                             color =
                                 MaterialTheme
                                     .colorScheme
