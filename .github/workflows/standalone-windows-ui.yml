@@ -26,6 +26,10 @@ jobs:
         working-directory: desktop
         run: npm ci
 
+      - name: Generate app icons
+        working-directory: desktop
+        run: npm run icons
+
       - name: Generate installer art
         working-directory: desktop
         shell: powershell
