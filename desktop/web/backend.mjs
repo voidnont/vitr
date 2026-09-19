@@ -159,12 +159,20 @@ export function createBackend({ invoke, listen = null, convertFileSrc = (path) =
       return dedupeTracks(successful.map((attempt) => attempt.results));
     },
 
-    async discover(query) {
+    async discover(query, preferredType = 'all') {
       const clean = String(query || '').trim();
-      if (!clean) return { tracks: [], artists: [], albums: [], playlists: [], genres: [] };
+      if (!clean) return { tracks: [], items: [], artists: [], albums: [], playlists: [], genres: [] };
+      const type = String(preferredType || 'all').toLowerCase();
+      const suffix =
+        type === 'artist' ? 'artist' :
+        type === 'album' ? 'album' :
+        type === 'playlist' ? 'playlist' :
+        type === 'genre' ? 'genre' :
+        type === 'track' ? 'song' :
+        'music';
       const providerQuery = /\b(song|music|audio|lyrics?|official|album|artist|playlist|remix|instrumental|soundtrack|single|genre|mood)\b/i.test(clean)
         ? clean
-        : `${clean} music`;
+        : `${clean} ${suffix}`;
       const [musicCatalog, webAttempt, ytdlpAttempt] = await Promise.all([
         tryCatalog({ query: providerQuery }),
         trySearch('innertube_search', { query: providerQuery, client: 'web' }),
