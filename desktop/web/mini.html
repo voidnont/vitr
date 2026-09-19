@@ -25,7 +25,6 @@ body.normal .shell{background:#111116;border-color:#292730;box-shadow:0 18px 40p
 .shell:before{content:"";position:absolute;width:150px;height:150px;border-radius:50%;right:-70px;top:-80px;
  background:radial-gradient(circle,#ff6685 0,#bd183f 32%,transparent 68%);opacity:.38;filter:blur(12px);pointer-events:none}
 body.normal .shell:before{opacity:.12}
-.drag{position:absolute;inset:0;z-index:1;cursor:grab}
 .content{position:relative;z-index:2;width:100%;height:100%;pointer-events:none}
 button,.menu,.menu *{pointer-events:auto}
 .cover{position:relative;overflow:hidden;background:
@@ -78,7 +77,6 @@ body[data-mode="ultra"] .badge,body[data-mode="tiny"] .badge{display:none}
 </head>
 <body data-mode="standard">
 <div class="shell" id="shell">
-  <div class="drag" data-drag></div>
   <div class="content">
     <section class="standard">
       <div class="cover"></div>
@@ -214,8 +212,9 @@ body[data-mode="ultra"] .badge,body[data-mode="tiny"] .badge{display:none}
   document.querySelector("[data-open-main]").addEventListener("click",async function(){menu.classList.remove("open");if(invoke){try{await invoke("show_main_window")}catch(e){}}});
   document.querySelector("[data-hide]").addEventListener("click",async function(){menu.classList.remove("open");if(invoke){try{await invoke("hide_mini_player")}catch(e){}}});
 
-  document.querySelector("[data-drag]").addEventListener("pointerdown",async function(e){
+  document.getElementById("shell").addEventListener("pointerdown",async function(e){
     if(e.button!==0||!invoke)return;
+    if(e.target.closest("button,.menu,a,input,textarea,select,[contenteditable='true']"))return;
     try{await invoke("start_mini_drag");setTimeout(savePosition,250)}catch(err){}
   });
   document.addEventListener("contextmenu",function(e){e.preventDefault();menu.classList.add("open")});
