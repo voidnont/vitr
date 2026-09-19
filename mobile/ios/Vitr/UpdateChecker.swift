@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 struct GitHubRelease: Decodable {
     let tagName: String
