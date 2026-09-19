@@ -11,7 +11,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.IBinder
 import android.os.PowerManager
-import com.frxe.music.MainActivity
 import com.frxe.music.R
 import com.frxe.music.source.YouTubeChallengeHandler
 import com.frxe.music.ytdlp.YtDlpDownloadRequest
@@ -398,11 +397,15 @@ class FrxeDownloadService : Service() {
             ""
         }
 
+        val launchIntent =
+            packageManager.getLaunchIntentForPackage(packageName)
+                ?.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                ?: Intent()
+
         val openAppIntent = PendingIntent.getActivity(
             this,
             OPEN_REQUEST_CODE,
-            Intent(this, MainActivity::class.java)
-                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
+            launchIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
