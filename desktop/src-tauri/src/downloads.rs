@@ -98,9 +98,9 @@ fn parse_progress(line: &str) -> Option<DownloadProgress> {
 
 #[tauri::command]
 pub fn default_download_dir() -> Result<String, String> {
-    let root = dirs::download_dir()
-        .or_else(dirs::audio_dir)
-        .ok_or_else(|| "Could not locate your Downloads or Music folder".to_string())?
+    let root = dirs::audio_dir()
+        .or_else(dirs::download_dir)
+        .ok_or_else(|| "Could not locate your Music or Downloads folder".to_string())?
         .join("Vitr");
     std::fs::create_dir_all(&root)
         .map_err(|e| format!("Could not create Vitr download folder: {e}"))?;
