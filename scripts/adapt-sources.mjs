@@ -2,6 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { inferSourceContract } from '../shared/source-contract.js';
 
+const RELEASE_VERSION = '0.1.0';
+
 const SOURCE = {
   repo: 'bloodvitr/vitr',
   kind: 'vitr',
@@ -55,7 +57,7 @@ async function inspectVitr() {
     ...SOURCE.appSourcePaths.map((sourcePath) => raw(SOURCE.repo, branch, sourcePath).catch(() => '')),
   ]);
   const pkg = {
-    version: parseVitrVersion(gradleText),
+    version: RELEASE_VERSION,
     name: 'vitr',
     description: 'VITR liquid-glass music player',
     scripts: { android: 'gradle' },
