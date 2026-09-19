@@ -28,7 +28,7 @@ if not defined VITR_VERSION (
   exit /b 1
 )
 
-call npx --no-install tauri icon web\vitr-icon.svg --output src-tauri\icons
+call npx --no-install tauri icon web\vitr-icon.png --output src-tauri\icons
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 PowerShell -NoProfile -ExecutionPolicy Bypass -File platforms\windows\generate-installer-art.ps1 -Version "%VITR_VERSION%"
