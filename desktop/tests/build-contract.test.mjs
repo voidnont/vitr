@@ -75,11 +75,11 @@ test('Home and About use canonical vitr support links', async () => {
   ]);
   assert.match(ui, /home-links/);
   assert.match(ui, /https:\/\/ko-fi\.com\/bloodvitr/);
-  assert.match(ui, /https:\/\/github\.com\/voidnont\/vitr/);
-  assert.doesNotMatch(ui, /github\.com\/voidnont\/vitr-windows/i);
+  assert.match(ui, /https:\/\/github\.com\/bloodvitr\/vitr/);
+  assert.doesNotMatch(ui, /github\.com\/bloodvitr\/vitr-windows/i);
   assert.match(ui, /data-external=/);
   assert.match(app, /closest\('\[data-external\]'\)/);
-  assert.doesNotMatch(app, /github\.com\/voidnont\/vitr-windows/i);
+  assert.doesNotMatch(app, /github\.com\/bloodvitr\/vitr-windows/i);
 });
 
 test('release version mirrors remain 0.1.0 while package names are derived dynamically', async () => {
@@ -114,14 +114,14 @@ test('release version mirrors remain 0.1.0 while package names are derived dynam
   }
 });
 
-test('current project links use voidnont/vitr', async () => {
+test('current project links use the Blood Vitr repository', async () => {
   const [config, ui] = await Promise.all([
     read('src-tauri/tauri.conf.json'),
     read('web/ui.mjs'),
   ]);
   const joined = [config, ui].join('\n');
-  assert.match(joined, /github\.com\/voidnont\/vitr/);
-  assert.doesNotMatch(joined, /github\.com\/voidnont\/vitr-Windows/i);
+  assert.match(joined, /github\.com\/bloodvitr\/vitr/);
+  assert.doesNotMatch(joined, /github\.com\/bloodvitr\/vitr-Windows/i);
 });
 
 test('vitr uses signed automatic updates', async () => {
@@ -141,7 +141,7 @@ test('vitr uses signed automatic updates', async () => {
   assert.match(lib, /download_and_install/);
   assert.match(lib, /auto_update/);
   assert.match(capabilities, /updater:default/);
-  assert.match(config, /"publisher"\s*:\s*"blood"/);
+  assert.match(config, /"publisher"\s*:\s*"Blood"/);
   assert.match(config, /"pubkey"\s*:/);
   assert.match(config, /releases\/latest\/download\/latest\.json/);
   assert.match(config, /"installMode"\s*:\s*"passive"/);
@@ -251,7 +251,7 @@ test('release signing is secret-driven and unsigned desktop packages stay valida
   assert.match(macImport, /security create-keychain/);
   assert.match(macImport, /security import/);
   assert.match(releaseWorkflow, /validation-only|signing credentials|code-signing/i);
-  assert.match(config, /"publisher"\s*:\s*"blood"/);
+  assert.match(config, /"publisher"\s*:\s*"Blood"/);
 });
 
 
