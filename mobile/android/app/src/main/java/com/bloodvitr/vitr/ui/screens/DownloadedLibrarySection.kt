@@ -1,4 +1,4 @@
-package com.frxe.music.ui.screens
+package com.bloodvitr.vitr.ui.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -26,20 +26,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.frxe.music.model.Track
-import com.frxe.music.save.DownloadQueueActions
-import com.frxe.music.save.DownloadQueueStore
-import com.frxe.music.save.DownloadedLibraryPolicy
-import com.frxe.music.ui.FrxeViewModel
-import com.frxe.music.ui.playQueued
-import com.frxe.music.ui.components.GeneratedArtwork
-import com.frxe.music.ui.components.GlassPanel
-import com.frxe.music.ui.components.LiquidIconButton
-import com.frxe.music.ui.components.springPress
+import com.bloodvitr.vitr.model.Track
+import com.bloodvitr.vitr.save.DownloadQueueActions
+import com.bloodvitr.vitr.save.DownloadQueueStore
+import com.bloodvitr.vitr.save.DownloadedLibraryPolicy
+import com.bloodvitr.vitr.ui.VitrViewModel
+import com.bloodvitr.vitr.ui.playQueued
+import com.bloodvitr.vitr.ui.components.GeneratedArtwork
+import com.bloodvitr.vitr.ui.components.GlassPanel
+import com.bloodvitr.vitr.ui.components.LiquidIconButton
+import com.bloodvitr.vitr.ui.components.springPress
 
 @Composable
 internal fun DownloadedLibrarySection(
-    viewModel: FrxeViewModel,
+    viewModel: VitrViewModel,
     onOpenPlayer: (Track) -> Unit
 ) {
     val context = LocalContext.current

@@ -1,4 +1,4 @@
-package com.frxe.music.ui.gestures
+package com.bloodvitr.vitr.ui.gestures
 
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown

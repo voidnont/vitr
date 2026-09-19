@@ -1,4 +1,4 @@
-package com.frxe.music.ui
+package com.bloodvitr.vitr.ui
 
 import android.app.Application
 import android.content.ComponentName
@@ -11,53 +11,53 @@ import androidx.media3.common.Player
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
-import com.frxe.music.core.selectAutoDjId
-import com.frxe.music.core.sleepDeadline
-import com.frxe.music.core.sleepRemaining
-import com.frxe.music.data.FrxeDatabase
-import com.frxe.music.data.PlaybackHistoryEntity
-import com.frxe.music.data.TrackEntity
-import com.frxe.music.island.IslandHubPreferences
-import com.frxe.music.island.IslandHubUiState
-import com.frxe.music.lyrics.LyricsRepository
-import com.frxe.music.lyrics.LyricsUiState
-import com.frxe.music.model.CanvasMode
-import com.frxe.music.model.EXTRA_ARTWORK_SEED
-import com.frxe.music.model.EXTRA_DOWNLOAD_URL
-import com.frxe.music.model.EXTRA_DURATION_MS
-import com.frxe.music.model.FrxeRepeatMode
-import com.frxe.music.model.HomeSection
-import com.frxe.music.model.PlayerUiState
-import com.frxe.music.model.Track
-import com.frxe.music.playback.AudioOnlyPlaybackPolicy
-import com.frxe.music.playback.FrxePlaybackService
-import com.frxe.music.playback.NowPlayingTrackPolicy
-import com.frxe.music.playback.PlaybackLaunchPolicy
-import com.frxe.music.playback.PlaybackQueueStore
-import com.frxe.music.recommendation.HomeRefreshPolicy
-import com.frxe.music.recommendation.RecommendationRepository
-import com.frxe.music.save.DownloadCoordinator
-import com.frxe.music.save.DownloadRoutePolicy
-import com.frxe.music.save.SaveFormat
-import com.frxe.music.save.SaveQuality
-import com.frxe.music.save.SaveRequest
-import com.frxe.music.save.SaveStage
-import com.frxe.music.save.SaveUiState
-import com.frxe.music.save.automaticDownloadSource
-import com.frxe.music.social.ListenTogetherManager
-import com.frxe.music.social.ListenTogetherPlayback
-import com.frxe.music.social.ListenTogetherTrack
-import com.frxe.music.social.PlaybackClockSynchronizer
-import com.frxe.music.social.SharedPlaybackState
-import com.frxe.music.social.SyncAction
-import com.frxe.music.social.decideSyncAction
-import com.frxe.music.source.CatalogLoadPolicy
-import com.frxe.music.source.YouTubeCatalogSource
-import com.frxe.music.updates.DependencyReleaseRepository
-import com.frxe.music.updates.FrxeUpdateRepository
-import com.frxe.music.updates.UpdateCheckResult
-import com.frxe.music.updates.UpdaterUiState
-import com.frxe.music.voice.VoiceCommand
+import com.bloodvitr.vitr.core.selectAutoDjId
+import com.bloodvitr.vitr.core.sleepDeadline
+import com.bloodvitr.vitr.core.sleepRemaining
+import com.bloodvitr.vitr.data.VitrDatabase
+import com.bloodvitr.vitr.data.PlaybackHistoryEntity
+import com.bloodvitr.vitr.data.TrackEntity
+import com.bloodvitr.vitr.island.IslandHubPreferences
+import com.bloodvitr.vitr.island.IslandHubUiState
+import com.bloodvitr.vitr.lyrics.LyricsRepository
+import com.bloodvitr.vitr.lyrics.LyricsUiState
+import com.bloodvitr.vitr.model.CanvasMode
+import com.bloodvitr.vitr.model.EXTRA_ARTWORK_SEED
+import com.bloodvitr.vitr.model.EXTRA_DOWNLOAD_URL
+import com.bloodvitr.vitr.model.EXTRA_DURATION_MS
+import com.bloodvitr.vitr.model.VitrRepeatMode
+import com.bloodvitr.vitr.model.HomeSection
+import com.bloodvitr.vitr.model.PlayerUiState
+import com.bloodvitr.vitr.model.Track
+import com.bloodvitr.vitr.playback.AudioOnlyPlaybackPolicy
+import com.bloodvitr.vitr.playback.VitrPlaybackService
+import com.bloodvitr.vitr.playback.NowPlayingTrackPolicy
+import com.bloodvitr.vitr.playback.PlaybackLaunchPolicy
+import com.bloodvitr.vitr.playback.PlaybackQueueStore
+import com.bloodvitr.vitr.recommendation.HomeRefreshPolicy
+import com.bloodvitr.vitr.recommendation.RecommendationRepository
+import com.bloodvitr.vitr.save.DownloadCoordinator
+import com.bloodvitr.vitr.save.DownloadRoutePolicy
+import com.bloodvitr.vitr.save.SaveFormat
+import com.bloodvitr.vitr.save.SaveQuality
+import com.bloodvitr.vitr.save.SaveRequest
+import com.bloodvitr.vitr.save.SaveStage
+import com.bloodvitr.vitr.save.SaveUiState
+import com.bloodvitr.vitr.save.automaticDownloadSource
+import com.bloodvitr.vitr.social.ListenTogetherManager
+import com.bloodvitr.vitr.social.ListenTogetherPlayback
+import com.bloodvitr.vitr.social.ListenTogetherTrack
+import com.bloodvitr.vitr.social.PlaybackClockSynchronizer
+import com.bloodvitr.vitr.social.SharedPlaybackState
+import com.bloodvitr.vitr.social.SyncAction
+import com.bloodvitr.vitr.social.decideSyncAction
+import com.bloodvitr.vitr.source.CatalogLoadPolicy
+import com.bloodvitr.vitr.source.YouTubeCatalogSource
+import com.bloodvitr.vitr.updates.DependencyReleaseRepository
+import com.bloodvitr.vitr.updates.VitrUpdateRepository
+import com.bloodvitr.vitr.updates.UpdateCheckResult
+import com.bloodvitr.vitr.updates.UpdaterUiState
+import com.bloodvitr.vitr.voice.VoiceCommand
 import com.yausername.youtubedl_android.YoutubeDL
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -74,7 +74,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class FrxeViewModel(application: Application) : AndroidViewModel(application) {
+class VitrViewModel(application: Application) : AndroidViewModel(application) {
 
     private val source = YouTubeCatalogSource(application)
 
@@ -85,13 +85,13 @@ class FrxeViewModel(application: Application) : AndroidViewModel(application) {
         LyricsRepository()
 
     private val dao =
-        FrxeDatabase.get(application).libraryDao()
+        VitrDatabase.get(application).libraryDao()
 
     private val downloadCoordinator =
         DownloadCoordinator(application)
 
     private val appUpdateRepository =
-        FrxeUpdateRepository()
+        VitrUpdateRepository()
 
     private val dependencyReleaseRepository =
         DependencyReleaseRepository()
@@ -304,7 +304,7 @@ class FrxeViewModel(application: Application) : AndroidViewModel(application) {
                 application,
                 ComponentName(
                     application,
-                    FrxePlaybackService::class.java
+                    VitrPlaybackService::class.java
                 )
             )
         )
@@ -538,7 +538,7 @@ class FrxeViewModel(application: Application) : AndroidViewModel(application) {
     /*
      * Playback flow:
      *
-     * Frxe catalog URI
+     * Vitr catalog URI
      *      ↓
      * PlaybackStreamResolver
      *      ↓
@@ -1612,7 +1612,7 @@ class FrxeViewModel(application: Application) : AndroidViewModel(application) {
                                 releasePageUrl =
                                     result.pageUrl
                                         .ifBlank {
-                                            FrxeUpdateRepository
+                                            VitrUpdateRepository
                                                 .RELEASES_PAGE
                                         }
                             )
@@ -1632,7 +1632,7 @@ class FrxeViewModel(application: Application) : AndroidViewModel(application) {
                                     result.latestVersion,
 
                                 releasePageUrl =
-                                    FrxeUpdateRepository
+                                    VitrUpdateRepository
                                         .RELEASES_PAGE
                             )
 
@@ -1651,7 +1651,7 @@ class FrxeViewModel(application: Application) : AndroidViewModel(application) {
                                     null,
 
                                 releasePageUrl =
-                                    FrxeUpdateRepository
+                                    VitrUpdateRepository
                                         .RELEASES_PAGE
                             )
 
@@ -2084,13 +2084,13 @@ class FrxeViewModel(application: Application) : AndroidViewModel(application) {
                     ) {
 
                         Player.REPEAT_MODE_ALL ->
-                            FrxeRepeatMode.All
+                            VitrRepeatMode.All
 
                         Player.REPEAT_MODE_ONE ->
-                            FrxeRepeatMode.One
+                            VitrRepeatMode.One
 
                         else ->
-                            FrxeRepeatMode.Off
+                            VitrRepeatMode.Off
                     },
 
                 sleepTimerRemainingMs =

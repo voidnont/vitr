@@ -1,59 +1,59 @@
-package com.frxe.music.ui
+package com.bloodvitr.vitr.ui
 
 import android.app.Application
 import androidx.lifecycle.viewModelScope
-import com.frxe.music.data.PlaylistRepository
-import com.frxe.music.model.FrxeRepeatMode
-import com.frxe.music.model.Track
-import com.frxe.music.playback.PlaybackQueueState
-import com.frxe.music.playback.PlaybackQueueStore
-import com.frxe.music.playback.QueueRepeatMode
-import com.frxe.music.save.FrxeDownloadService
-import com.frxe.music.save.SaveFormat
-import com.frxe.music.save.SaveRequest
-import com.frxe.music.save.automaticDownloadSource
-import com.frxe.music.save.defaultQualityFor
+import com.bloodvitr.vitr.data.PlaylistRepository
+import com.bloodvitr.vitr.model.VitrRepeatMode
+import com.bloodvitr.vitr.model.Track
+import com.bloodvitr.vitr.playback.PlaybackQueueState
+import com.bloodvitr.vitr.playback.PlaybackQueueStore
+import com.bloodvitr.vitr.playback.QueueRepeatMode
+import com.bloodvitr.vitr.save.VitrDownloadService
+import com.bloodvitr.vitr.save.SaveFormat
+import com.bloodvitr.vitr.save.SaveRequest
+import com.bloodvitr.vitr.save.automaticDownloadSource
+import com.bloodvitr.vitr.save.defaultQualityFor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-val FrxeViewModel.playbackQueueState:
+val VitrViewModel.playbackQueueState:
     StateFlow<PlaybackQueueState>
     get() = PlaybackQueueStore.state
 
-fun FrxeViewModel.playQueued(
+fun VitrViewModel.playQueued(
     track: Track,
     queue: List<Track> = emptyList()
 ) {
     play(track, queue)
 }
 
-fun FrxeViewModel.playNext(
+fun VitrViewModel.playNext(
     track: Track
 ) {
     PlaybackQueueStore.playNext(track)
 }
 
-fun FrxeViewModel.addToQueue(
+fun VitrViewModel.addToQueue(
     track: Track
 ) {
     PlaybackQueueStore.append(track)
 }
 
-fun FrxeViewModel.selectQueueEntry(
+fun VitrViewModel.selectQueueEntry(
     entryId: String
 ) {
     PlaybackQueueStore.selectAndRequestPlay(entryId)
 }
 
-fun FrxeViewModel.removeQueueEntry(
+fun VitrViewModel.removeQueueEntry(
     entryId: String
 ) {
     PlaybackQueueStore.remove(entryId)
 }
 
-fun FrxeViewModel.moveQueueEntry(
+fun VitrViewModel.moveQueueEntry(
     fromIndex: Int,
     toIndex: Int
 ) {
@@ -63,11 +63,11 @@ fun FrxeViewModel.moveQueueEntry(
     )
 }
 
-fun FrxeViewModel.clearPlaybackQueue() {
+fun VitrViewModel.clearPlaybackQueue() {
     PlaybackQueueStore.clear()
 }
 
-fun FrxeViewModel.queueNext() {
+fun VitrViewModel.queueNext() {
     val player = playerState.value
 
     PlaybackQueueStore.advance(
@@ -76,20 +76,20 @@ fun FrxeViewModel.queueNext() {
     )
 }
 
-fun FrxeViewModel.queuePrevious() {
+fun VitrViewModel.queuePrevious() {
     PlaybackQueueStore.previous(
         playerState.value.repeatMode
             .toQueueRepeatMode()
     )
 }
 
-fun FrxeViewModel.playlistRepository():
+fun VitrViewModel.playlistRepository():
     PlaylistRepository =
     PlaylistRepository(
         getApplication<Application>()
     )
 
-fun FrxeViewModel.createPlaylist(
+fun VitrViewModel.createPlaylist(
     name: String,
     onCreated: (Long) -> Unit = {}
 ) {
@@ -101,7 +101,7 @@ fun FrxeViewModel.createPlaylist(
     }
 }
 
-fun FrxeViewModel.renamePlaylist(
+fun VitrViewModel.renamePlaylist(
     playlistId: Long,
     name: String
 ) {
@@ -113,7 +113,7 @@ fun FrxeViewModel.renamePlaylist(
     }
 }
 
-fun FrxeViewModel.deletePlaylist(
+fun VitrViewModel.deletePlaylist(
     playlistId: Long
 ) {
     viewModelScope.launch(Dispatchers.IO) {
@@ -121,7 +121,7 @@ fun FrxeViewModel.deletePlaylist(
     }
 }
 
-fun FrxeViewModel.addTrackToPlaylist(
+fun VitrViewModel.addTrackToPlaylist(
     playlistId: Long,
     track: Track
 ) {
@@ -133,7 +133,7 @@ fun FrxeViewModel.addTrackToPlaylist(
     }
 }
 
-fun FrxeViewModel.removeTrackFromPlaylist(
+fun VitrViewModel.removeTrackFromPlaylist(
     playlistId: Long,
     rowId: Long
 ) {
@@ -145,7 +145,7 @@ fun FrxeViewModel.removeTrackFromPlaylist(
     }
 }
 
-fun FrxeViewModel.playPlaylist(
+fun VitrViewModel.playPlaylist(
     playlistId: Long
 ) {
     viewModelScope.launch {
@@ -162,7 +162,7 @@ fun FrxeViewModel.playPlaylist(
     }
 }
 
-fun FrxeViewModel.addPlaylistToQueue(
+fun VitrViewModel.addPlaylistToQueue(
     playlistId: Long
 ) {
     viewModelScope.launch {
@@ -174,7 +174,7 @@ fun FrxeViewModel.addPlaylistToQueue(
     }
 }
 
-fun FrxeViewModel.downloadPlaylist(
+fun VitrViewModel.downloadPlaylist(
     playlistId: Long
 ) {
     val app = getApplication<Application>()
@@ -192,7 +192,7 @@ fun FrxeViewModel.downloadPlaylist(
                 track.streamUrl
             ) ?: return@forEach
 
-            FrxeDownloadService.enqueue(
+            VitrDownloadService.enqueue(
                 app,
                 SaveRequest(
                     sourceUrl = source,
@@ -206,10 +206,10 @@ fun FrxeViewModel.downloadPlaylist(
     }
 }
 
-private fun FrxeRepeatMode.toQueueRepeatMode():
+private fun VitrRepeatMode.toQueueRepeatMode():
     QueueRepeatMode =
     when (this) {
-        FrxeRepeatMode.All -> QueueRepeatMode.All
-        FrxeRepeatMode.One -> QueueRepeatMode.One
-        FrxeRepeatMode.Off -> QueueRepeatMode.Off
+        VitrRepeatMode.All -> QueueRepeatMode.All
+        VitrRepeatMode.One -> QueueRepeatMode.One
+        VitrRepeatMode.Off -> QueueRepeatMode.Off
     }

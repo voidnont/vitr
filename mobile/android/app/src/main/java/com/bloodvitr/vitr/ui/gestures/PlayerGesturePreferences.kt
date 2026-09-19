@@ -1,4 +1,4 @@
-package com.frxe.music.ui.gestures
+package com.bloodvitr.vitr.ui.gestures
 
 import android.content.Context
 

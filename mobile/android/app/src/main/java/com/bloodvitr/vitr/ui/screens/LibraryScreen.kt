@@ -1,4 +1,4 @@
-package com.frxe.music.ui.screens
+package com.bloodvitr.vitr.ui.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -43,27 +43,27 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.frxe.music.data.FrxePlaylist
-import com.frxe.music.data.FrxePlaylistTrack
-import com.frxe.music.model.Track
-import com.frxe.music.ui.FrxeViewModel
-import com.frxe.music.ui.addPlaylistToQueue
-import com.frxe.music.ui.createPlaylist
-import com.frxe.music.ui.deletePlaylist
-import com.frxe.music.ui.downloadPlaylist
-import com.frxe.music.ui.playPlaylist
-import com.frxe.music.ui.playQueued
-import com.frxe.music.ui.playlistRepository
-import com.frxe.music.ui.removeTrackFromPlaylist
-import com.frxe.music.ui.renamePlaylist
-import com.frxe.music.ui.components.GeneratedArtwork
-import com.frxe.music.ui.components.GlassPanel
-import com.frxe.music.ui.components.LiquidIconButton
-import com.frxe.music.ui.components.springPress
+import com.bloodvitr.vitr.data.VitrPlaylist
+import com.bloodvitr.vitr.data.VitrPlaylistTrack
+import com.bloodvitr.vitr.model.Track
+import com.bloodvitr.vitr.ui.VitrViewModel
+import com.bloodvitr.vitr.ui.addPlaylistToQueue
+import com.bloodvitr.vitr.ui.createPlaylist
+import com.bloodvitr.vitr.ui.deletePlaylist
+import com.bloodvitr.vitr.ui.downloadPlaylist
+import com.bloodvitr.vitr.ui.playPlaylist
+import com.bloodvitr.vitr.ui.playQueued
+import com.bloodvitr.vitr.ui.playlistRepository
+import com.bloodvitr.vitr.ui.removeTrackFromPlaylist
+import com.bloodvitr.vitr.ui.renamePlaylist
+import com.bloodvitr.vitr.ui.components.GeneratedArtwork
+import com.bloodvitr.vitr.ui.components.GlassPanel
+import com.bloodvitr.vitr.ui.components.LiquidIconButton
+import com.bloodvitr.vitr.ui.components.springPress
 
 @Composable
 fun LibraryScreen(
-    viewModel: FrxeViewModel,
+    viewModel: VitrViewModel,
     isTv: Boolean,
     onOpenPlayer: (Track) -> Unit = {}
 ) {
@@ -81,7 +81,7 @@ fun LibraryScreen(
         mutableStateOf("")
     }
     var selectedPlaylist by remember {
-        mutableStateOf<FrxePlaylist?>(null)
+        mutableStateOf<VitrPlaylist?>(null)
     }
 
     Column(
@@ -260,8 +260,8 @@ fun LibraryScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PlaylistDetailSheet(
-    playlist: FrxePlaylist,
-    viewModel: FrxeViewModel,
+    playlist: VitrPlaylist,
+    viewModel: VitrViewModel,
     onDismiss: () -> Unit,
     onOpenPlayer: (Track) -> Unit
 ) {
@@ -366,9 +366,9 @@ private fun PlaylistDetailSheet(
 
 @Composable
 private fun PlaylistTrackRow(
-    row: FrxePlaylistTrack,
+    row: VitrPlaylistTrack,
     allTracks: List<Track>,
-    viewModel: FrxeViewModel,
+    viewModel: VitrViewModel,
     playlistId: Long,
     onOpenPlayer: (Track) -> Unit,
     onDismiss: () -> Unit
@@ -411,7 +411,7 @@ private fun PlaylistTrackRow(
 private fun LibraryTrackRow(
     track: Track,
     queue: List<Track>,
-    viewModel: FrxeViewModel,
+    viewModel: VitrViewModel,
     onOpenPlayer: (Track) -> Unit
 ) {
     val interactionSource = remember(track.id, queue.size) { MutableInteractionSource() }

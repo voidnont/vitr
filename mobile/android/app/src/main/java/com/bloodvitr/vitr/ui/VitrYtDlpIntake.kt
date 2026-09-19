@@ -1,10 +1,10 @@
-package com.frxe.music.ui
+package com.bloodvitr.vitr.ui
 
 import androidx.lifecycle.viewModelScope
-import com.frxe.music.intake.UrlIntakeParser
-import com.frxe.music.ytdlp.YtDlpCore
-import com.frxe.music.ytdlp.YtDlpInspectionResult
-import com.frxe.music.ytdlp.YtDlpInspectionUiState
+import com.bloodvitr.vitr.intake.UrlIntakeParser
+import com.bloodvitr.vitr.ytdlp.YtDlpCore
+import com.bloodvitr.vitr.ytdlp.YtDlpInspectionResult
+import com.bloodvitr.vitr.ytdlp.YtDlpInspectionUiState
 import java.util.WeakHashMap
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-private class FrxeYtDlpUiHolder {
+private class VitrYtDlpUiHolder {
     val pendingExternalUrl =
         MutableStateFlow<String?>(null)
 
@@ -25,31 +25,31 @@ private class FrxeYtDlpUiHolder {
     var inspectionJob: Job? = null
 }
 
-private val frxeYtDlpUiHolders =
-    WeakHashMap<FrxeViewModel, FrxeYtDlpUiHolder>()
+private val vitrYtDlpUiHolders =
+    WeakHashMap<VitrViewModel, VitrYtDlpUiHolder>()
 
-private fun FrxeViewModel.ytDlpUiHolder(): FrxeYtDlpUiHolder =
-    synchronized(frxeYtDlpUiHolders) {
-        frxeYtDlpUiHolders.getOrPut(this) {
-            FrxeYtDlpUiHolder()
+private fun VitrViewModel.ytDlpUiHolder(): VitrYtDlpUiHolder =
+    synchronized(vitrYtDlpUiHolders) {
+        vitrYtDlpUiHolders.getOrPut(this) {
+            VitrYtDlpUiHolder()
         }
     }
 
-val FrxeViewModel.pendingExternalUrl:
+val VitrViewModel.pendingExternalUrl:
     StateFlow<String?>
     get() =
         ytDlpUiHolder()
             .pendingExternalUrl
             .asStateFlow()
 
-val FrxeViewModel.inspectionState:
+val VitrViewModel.inspectionState:
     StateFlow<YtDlpInspectionUiState>
     get() =
         ytDlpUiHolder()
             .inspectionState
             .asStateFlow()
 
-fun FrxeViewModel.acceptSharedText(
+fun VitrViewModel.acceptSharedText(
     text: String?
 ) {
     val url =
@@ -61,13 +61,13 @@ fun FrxeViewModel.acceptSharedText(
         .value = url
 }
 
-fun FrxeViewModel.consumeExternalUrl() {
+fun VitrViewModel.consumeExternalUrl() {
     ytDlpUiHolder()
         .pendingExternalUrl
         .value = null
 }
 
-fun FrxeViewModel.inspectUrl(
+fun VitrViewModel.inspectUrl(
     url: String
 ) {
     val holder =
@@ -155,7 +155,7 @@ fun FrxeViewModel.inspectUrl(
     }
 }
 
-fun FrxeViewModel.clearInspection() {
+fun VitrViewModel.clearInspection() {
     val holder =
         ytDlpUiHolder()
 

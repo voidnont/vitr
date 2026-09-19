@@ -1,4 +1,4 @@
-package com.frxe.music.ui.components
+package com.bloodvitr.vitr.ui.components
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -42,7 +42,7 @@ fun WavySlider(
     val inactive = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.18f)
     val thumb = MaterialTheme.colorScheme.onSurface
 
-    val transition = rememberInfiniteTransition(label = "frxe-wavy-slider")
+    val transition = rememberInfiniteTransition(label = "vitr-wavy-slider")
     val phase by transition.animateFloat(
         initialValue = 0f,
         targetValue = (2f * PI).toFloat(),
@@ -50,7 +50,7 @@ fun WavySlider(
             animation = tween(1500, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Restart
         ),
-        label = "frxe-wave-phase"
+        label = "vitr-wave-phase"
     )
 
     val interactive = if (enabled) {

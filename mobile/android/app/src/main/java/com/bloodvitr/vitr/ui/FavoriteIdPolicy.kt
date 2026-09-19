@@ -1,4 +1,4 @@
-package com.frxe.music.ui
+package com.bloodvitr.vitr.ui
 
 object FavoriteIdPolicy {
     fun snapshot(ids: Set<String>?): Set<String> =

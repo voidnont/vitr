@@ -1,4 +1,4 @@
-package com.frxe.music.ui.components
+package com.bloodvitr.vitr.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -35,16 +35,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.frxe.music.model.Track
-import com.frxe.music.save.DownloadQueueItemState
-import com.frxe.music.save.DownloadQueuePolicy
-import com.frxe.music.save.DownloadQueueStore
-import com.frxe.music.save.SaveFormat
-import com.frxe.music.save.SaveQuality
-import com.frxe.music.save.SaveUiState
-import com.frxe.music.save.automaticDownloadSource
-import com.frxe.music.save.defaultQualityFor
-import com.frxe.music.save.qualityOptionsFor
+import com.bloodvitr.vitr.model.Track
+import com.bloodvitr.vitr.save.DownloadQueueItemState
+import com.bloodvitr.vitr.save.DownloadQueuePolicy
+import com.bloodvitr.vitr.save.DownloadQueueStore
+import com.bloodvitr.vitr.save.SaveFormat
+import com.bloodvitr.vitr.save.SaveQuality
+import com.bloodvitr.vitr.save.SaveUiState
+import com.bloodvitr.vitr.save.automaticDownloadSource
+import com.bloodvitr.vitr.save.defaultQualityFor
+import com.bloodvitr.vitr.save.qualityOptionsFor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -1,4 +1,4 @@
-package com.frxe.music.ui
+package com.bloodvitr.vitr.ui
 
 internal object LikedTrackPersistencePolicy {
     fun encode(ids: Set<String>): String =

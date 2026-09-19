@@ -1,4 +1,4 @@
-package com.frxe.music.ui.screens
+package com.bloodvitr.vitr.ui.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -29,20 +29,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.frxe.music.model.Track
-import com.frxe.music.playback.AudioOnlyPlaybackPolicy
-import com.frxe.music.save.automaticDownloadSource
-import com.frxe.music.source.PlaybackStreamResolver
-import com.frxe.music.ui.FrxeViewModel
-import com.frxe.music.ui.playQueued
-import com.frxe.music.ui.components.GeneratedArtwork
-import com.frxe.music.ui.components.GlassPanel
-import com.frxe.music.ui.components.LiquidIconButton
-import com.frxe.music.ui.components.springPress
+import com.bloodvitr.vitr.model.Track
+import com.bloodvitr.vitr.playback.AudioOnlyPlaybackPolicy
+import com.bloodvitr.vitr.save.automaticDownloadSource
+import com.bloodvitr.vitr.source.PlaybackStreamResolver
+import com.bloodvitr.vitr.ui.VitrViewModel
+import com.bloodvitr.vitr.ui.playQueued
+import com.bloodvitr.vitr.ui.components.GeneratedArtwork
+import com.bloodvitr.vitr.ui.components.GlassPanel
+import com.bloodvitr.vitr.ui.components.LiquidIconButton
+import com.bloodvitr.vitr.ui.components.springPress
 
 @Composable
 fun HomeScreen(
-    viewModel: FrxeViewModel,
+    viewModel: VitrViewModel,
     isTv: Boolean,
     onOpenPlayer: (Track) -> Unit = {}
 ) {

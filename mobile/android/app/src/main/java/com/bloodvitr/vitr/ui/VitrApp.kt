@@ -1,4 +1,4 @@
-package com.frxe.music.ui
+package com.bloodvitr.vitr.ui
 
 import android.app.UiModeManager
 import android.content.Context
@@ -56,29 +56,29 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.frxe.music.island.IslandPresentationPolicy
-import com.frxe.music.model.Track
-import com.frxe.music.source.PlaybackResolutionMonitor
-import com.frxe.music.source.PlaybackResolutionStage
-import com.frxe.music.ui.components.FrxeAmbientBackground
-import com.frxe.music.ui.components.GeneratedArtwork
-import com.frxe.music.ui.components.GlassPanel
-import com.frxe.music.ui.components.IslandHub
-import com.frxe.music.ui.components.LiquidIconButton
-import com.frxe.music.ui.components.LocalFrxeBackdrop
-import com.frxe.music.ui.components.TrackDownloadSheet
-import com.frxe.music.ui.components.springPress
-import com.frxe.music.ui.screens.HomeScreen
-import com.frxe.music.ui.screens.LibraryScreen
-import com.frxe.music.ui.screens.NowPlayingScreen
-import com.frxe.music.ui.screens.SaveScreen
-import com.frxe.music.ui.screens.SearchScreen
-import com.frxe.music.ui.screens.SettingsScreen
+import com.bloodvitr.vitr.island.IslandPresentationPolicy
+import com.bloodvitr.vitr.model.Track
+import com.bloodvitr.vitr.source.PlaybackResolutionMonitor
+import com.bloodvitr.vitr.source.PlaybackResolutionStage
+import com.bloodvitr.vitr.ui.components.VitrAmbientBackground
+import com.bloodvitr.vitr.ui.components.GeneratedArtwork
+import com.bloodvitr.vitr.ui.components.GlassPanel
+import com.bloodvitr.vitr.ui.components.IslandHub
+import com.bloodvitr.vitr.ui.components.LiquidIconButton
+import com.bloodvitr.vitr.ui.components.LocalVitrBackdrop
+import com.bloodvitr.vitr.ui.components.TrackDownloadSheet
+import com.bloodvitr.vitr.ui.components.springPress
+import com.bloodvitr.vitr.ui.screens.HomeScreen
+import com.bloodvitr.vitr.ui.screens.LibraryScreen
+import com.bloodvitr.vitr.ui.screens.NowPlayingScreen
+import com.bloodvitr.vitr.ui.screens.SaveScreen
+import com.bloodvitr.vitr.ui.screens.SearchScreen
+import com.bloodvitr.vitr.ui.screens.SettingsScreen
 import com.kyant.backdrop.backdrops.layerBackdrop
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
 
 @Composable
-fun FrxeApp(viewModel: FrxeViewModel) {
+fun VitrApp(viewModel: VitrViewModel) {
     val context = LocalContext.current
     val uiModeManager =
         context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
@@ -86,7 +86,7 @@ fun FrxeApp(viewModel: FrxeViewModel) {
         uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION
 
     var tab by remember {
-        mutableStateOf(FrxeTab.Home)
+        mutableStateOf(VitrTab.Home)
     }
     var playerOpen by remember {
         mutableStateOf(false)
@@ -105,7 +105,7 @@ fun FrxeApp(viewModel: FrxeViewModel) {
     LaunchedEffect(pendingExternalUrl) {
         if (pendingExternalUrl != null) {
             playerOpen = false
-            tab = FrxeTab.Save
+            tab = VitrTab.Save
         }
     }
 
@@ -162,7 +162,7 @@ fun FrxeApp(viewModel: FrxeViewModel) {
                 .fillMaxSize()
                 .layerBackdrop(ambientBackdrop)
         ) {
-            FrxeAmbientBackground(
+            VitrAmbientBackground(
                 track = shownTrack,
                 isPlaying = player.isPlaying,
                 canvasMode = player.canvasMode
@@ -170,7 +170,7 @@ fun FrxeApp(viewModel: FrxeViewModel) {
         }
 
         CompositionLocalProvider(
-            LocalFrxeBackdrop provides ambientBackdrop
+            LocalVitrBackdrop provides ambientBackdrop
         ) {
             Box(
                 Modifier
@@ -228,37 +228,37 @@ fun FrxeApp(viewModel: FrxeViewModel) {
                         )
                     } else {
                         when (tab) {
-                            FrxeTab.Home ->
+                            VitrTab.Home ->
                                 HomeScreen(
                                     viewModel = viewModel,
                                     isTv = isTv,
                                     onOpenPlayer = openPlayerForTrack
                                 )
 
-                            FrxeTab.Search ->
+                            VitrTab.Search ->
                                 SearchScreen(
                                     viewModel = viewModel,
                                     isTv = isTv,
                                     onOpenSave = {
-                                        tab = FrxeTab.Save
+                                        tab = VitrTab.Save
                                     },
                                     onOpenPlayer = openPlayerForTrack
                                 )
 
-                            FrxeTab.Save ->
+                            VitrTab.Save ->
                                 SaveScreen(
                                     viewModel,
                                     isTv
                                 )
 
-                            FrxeTab.Library ->
+                            VitrTab.Library ->
                                 LibraryScreen(
                                     viewModel = viewModel,
                                     isTv = isTv,
                                     onOpenPlayer = openPlayerForTrack
                                 )
 
-                            FrxeTab.Settings ->
+                            VitrTab.Settings ->
                                 SettingsScreen(
                                     viewModel,
                                     isTv
@@ -271,7 +271,7 @@ fun FrxeApp(viewModel: FrxeViewModel) {
 
         if (!playerOpen) {
             CompositionLocalProvider(
-                LocalFrxeBackdrop provides contentBackdrop
+                LocalVitrBackdrop provides contentBackdrop
             ) {
                 Column(
                     modifier = Modifier
@@ -314,7 +314,7 @@ fun FrxeApp(viewModel: FrxeViewModel) {
             player.track != null
         ) {
             CompositionLocalProvider(
-                LocalFrxeBackdrop provides contentBackdrop
+                LocalVitrBackdrop provides contentBackdrop
             ) {
                 Box(
                     modifier = Modifier
@@ -340,7 +340,7 @@ fun FrxeApp(viewModel: FrxeViewModel) {
 
         downloadTarget?.let { track ->
             CompositionLocalProvider(
-                LocalFrxeBackdrop provides contentBackdrop
+                LocalVitrBackdrop provides contentBackdrop
             ) {
                 TrackDownloadSheet(
                     track = track,
@@ -362,7 +362,7 @@ fun FrxeApp(viewModel: FrxeViewModel) {
 
 @Composable
 private fun MiniPlayer(
-    viewModel: FrxeViewModel,
+    viewModel: VitrViewModel,
     onOpen: () -> Unit
 ) {
     val state by viewModel.playerState.collectAsState()
@@ -457,20 +457,20 @@ private fun MiniPlayer(
 
 @Composable
 private fun BottomGlassNav(
-    tab: FrxeTab,
-    onTab: (FrxeTab) -> Unit,
+    tab: VitrTab,
+    onTab: (VitrTab) -> Unit,
     isTv: Boolean
 ) {
     val icons = mapOf(
-        FrxeTab.Home to Icons.Default.Home,
-        FrxeTab.Library to Icons.Default.LibraryMusic,
-        FrxeTab.Settings to Icons.Default.Settings,
-        FrxeTab.Search to Icons.Default.Search
+        VitrTab.Home to Icons.Default.Home,
+        VitrTab.Library to Icons.Default.LibraryMusic,
+        VitrTab.Settings to Icons.Default.Settings,
+        VitrTab.Search to Icons.Default.Search
     )
 
     val selectedPrimary =
-        if (tab == FrxeTab.Save) {
-            FrxeTab.Search
+        if (tab == VitrTab.Save) {
+            VitrTab.Search
         } else {
             tab
         }
