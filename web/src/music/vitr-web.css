@@ -359,12 +359,26 @@
   .frxe069-player .frxe-player-controls{margin:8px auto}
 }
 @media(max-height:560px){
+  .frxe069-player{
+    padding-top:4px;
+    padding-bottom:6px;
+  }
+  .frxe069-player .frxe-player-top{margin-bottom:2px}
   .frxe069-player .frxe-player-art,
   .frxe069-player .frxe069-art{
-    width:min(260px,42vw,calc(100dvh - 250px));
-    max-height:calc(100dvh - 250px);
+    width:min(220px,38vw,calc(100dvh - 290px));
+    max-height:calc(100dvh - 290px);
+    min-width:min(128px,38vw);
+    min-height:min(128px,38vw);
   }
-  .frxe069-player .frxe-player-meta h2{font-size:clamp(18px,3vw,28px)}
+  .frxe069-player .frxe-player-meta{margin:5px auto 4px}
+  .frxe069-player .frxe-player-meta h2{font-size:clamp(18px,3vw,26px)}
+  .frxe069-player .frxe-player-meta p{margin-top:3px}
+  .frxe069-player .frxe-player-controls{margin:5px auto}
+  .frxe069-player .frxe-player-controls button.main{
+    width:58px;
+    height:58px;
+  }
   .frxe069-player-actions{display:none}
 }
 @media(max-width:640px){
