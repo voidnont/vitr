@@ -1,96 +1,75 @@
-Vitr Source-Available License 1.0
+Vitr Blood Attribution License 1.0
 
-Copyright (c) 2026 Blood. All rights reserved.
+Copyright (c) 2026 Blood.
 
-This license governs use of the Vitr source code, binaries, assets, and related
-materials (the "Software").
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+Vitr and its source code, binaries, assets, documentation, and related materials
+(the "Software"), to use, copy, run, study, modify, adapt, merge, publish,
+distribute, sublicense, sell, commercialize, and otherwise use or create
+derivative works from the Software for any purpose, subject to the conditions
+below.
 
-1. PERMITTED USE
+1. BLOOD ATTRIBUTION IN MODIFIED VERSIONS
 
-Subject to the terms of this license, you are permitted to:
+Any modified, forked, adapted, rebranded, or derivative version of the Software
+that is distributed, published, released, hosted, sold, shared, or otherwise
+made available to other people must include a visible and reasonably accessible
+attribution to "Blood" inside the resulting application.
 
-a. download and possess copies of the Software;
-b. view and study the source code; and
-c. run unmodified copies of the Software for personal, non-commercial use.
+That attribution must include both of the following working links:
 
-No other rights are granted except as expressly stated in this license.
+GitHub: https://github.com/bloodvitr
+Ko-fi:  https://ko-fi.com/bloodvitr
 
-2. NO MODIFICATION OR DERIVATIVE WORKS
+The attribution and both links must be present in the modified application on
+every platform, operating system, device type, build, edition, and version on
+which that modified application is made available.
 
-You may not modify, adapt, translate, alter, create derivative works from, or
-prepare modified versions of the Software without prior written permission from
-Blood, except solely as allowed by Section 3 (Contributions).
+The attribution may be placed in a reasonable location such as an About,
+Credits, Support, Settings, Help, or similar screen, provided that an ordinary
+user of the application can access it without modifying the application or its
+files.
 
-3. CONTRIBUTIONS
+The attribution and links may not be removed, hidden, intentionally obscured,
+made unreadable, replaced with misleading destinations, or restricted to only
+some supported versions or devices.
 
-You may create modifications only for the purpose of preparing and submitting a
-contribution to the official Vitr project, including through a pull request,
-patch, issue attachment, or another contribution method designated by the
-project maintainers.
+2. SOURCE AND LICENSE NOTICE
 
-Any such modified copy must remain private and may not be published,
-redistributed, released, hosted, or otherwise made available as a separate or
-forked version of Vitr.
+Copies or substantial portions of the Software's source code that are
+redistributed must retain this license notice.
 
-By intentionally submitting a contribution to the official Vitr project, you
-represent that you have the right to submit it and you grant Blood and the Vitr
-project maintainers a perpetual, worldwide, non-exclusive, irrevocable,
-royalty-free copyright license to use, reproduce, modify, adapt, distribute,
-sublicense, and relicense that contribution as part of or in connection with
-Vitr.
+3. BRANDING
 
-Submitting a contribution does not give you permission to distribute or publish
-a modified version of Vitr.
+This license does not require modified versions to use the Vitr name, logo,
+icons, or other Vitr branding. No trademark rights are granted by this license.
 
-4. NO REDISTRIBUTION
+The required "Blood" attribution described in Section 1 is a license condition
+and does not by itself grant permission to imply endorsement, sponsorship, or
+official status.
 
-You may not copy, redistribute, republish, mirror, sell, sublicense, rent,
-lease, host, bundle, or otherwise provide the Software or any substantial
-portion of it to third parties, whether modified or unmodified, without prior
-written permission from Blood.
-
-This restriction does not prevent you from linking to the official Vitr
-repository or official Vitr releases.
-
-5. NO COMMERCIAL USE
-
-You may not use the Software, or any modified or derivative version of it, for
-commercial purposes, paid services, resale, monetized redistribution, or as
-part of a commercial product or service without prior written permission from
-Blood.
-
-6. BRANDING AND TRADEMARKS
-
-The names "Vitr", "Blood", Vitr logos, icons, visual identity, and other Vitr
-branding are not licensed for use in derivative products, forks, or unrelated
-projects. No trademark rights are granted by this license.
-
-7. SEPARATE PERMISSION
-
-Any permission granted separately in writing by Blood may override the relevant
-restriction in this license to the extent stated in that written permission.
-
-8. TERMINATION
-
-Your rights under this license terminate automatically if you violate any term
-of this license. Upon termination, you must stop using the Software and delete
-any copies in your possession or control, except where retention is required by
-law.
-
-9. NO WARRANTY
+4. NO WARRANTY
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR
 A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
 
 TO THE MAXIMUM EXTENT PERMITTED BY LAW, BLOOD AND THE VITR PROJECT CONTRIBUTORS
-SHALL NOT BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM OR
-RELATED TO THE SOFTWARE OR ITS USE.
+SHALL NOT BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM,
+OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
-10. CONTACT
+5. TERMINATION
 
-For permission to modify, redistribute, commercialize, or otherwise use Vitr
-outside the rights granted by this license, contact Blood through the official
-Vitr project or the creator links provided in the repository.
+The rights granted by this license terminate automatically for any person or
+entity that materially violates its conditions. Rights are restored when the
+violation is corrected, unless Blood has provided written notice that the
+violation will not be treated as cured.
 
-This is a source-available license, not an open-source license.
+6. SEPARATE PERMISSION
+
+Blood may grant separate written permission that waives or changes one or more
+conditions of this license for a particular person, organization, or use.
+
+This is a custom license. It has not been submitted for approval by the Open
+Source Initiative.
