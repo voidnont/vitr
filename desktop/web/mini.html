@@ -124,11 +124,11 @@ body[data-mode="ultra"] .ultra{display:flex;padding:4px 10px}
   document.querySelectorAll("[data-mini-volume]").forEach(function(el){el.addEventListener("input",function(e){e.stopPropagation();if(!invoke)return;var state=currentState(),target=Math.max(0,Math.min(1,Number(el.value)/100)),current=Math.max(0,Math.min(1,Number(state.volume==null?0.7:state.volume)));invoke("mini_player_volume",{delta:target-current}).catch(function(){})})});
   document.querySelectorAll("[data-prev]").forEach(function(el){el.addEventListener("click",function(e){e.stopPropagation();action("previous")})});
   document.querySelectorAll("[data-next]").forEach(function(el){el.addEventListener("click",function(e){e.stopPropagation();action("next")})});
-  document.querySelectorAll("[data-mini-options]").forEach(function(el){el.addEventListener("change",function(e){e.stopPropagation();var value=el.value;el.value="";if(modes.indexOf(value)>=0){setMode(value);return}if(value==="open"&&invoke)invoke("show_main_window").catch(function(){});if(value==="hide"&&invoke)invoke("hide_mini_player").catch(function(){})})});
+  document.querySelectorAll("[data-mini-options]").forEach(function(el){el.addEventListener("change",function(e){e.stopPropagation();var value=el.value;el.value="";if(modes.indexOf(value)>=0){setMode(value);return}if(value==="open"&&invoke)invoke("show_main_window").catch(function(){});if(value==="hide"){localStorage.setItem("vitr-mini-enabled","false");if(invoke)invoke("hide_mini_player").catch(function(){})}})});
   document.getElementById("shell").addEventListener("dblclick",function(e){if(e.target.closest("button,select,input"))return;if(invoke)invoke("show_main_window").catch(function(){})});
   document.addEventListener("wheel",function(e){if(Math.abs(e.deltaY)<1||!invoke)return;invoke("mini_player_volume",{delta:e.deltaY<0?.04:-.04}).catch(function(){})},{passive:true});
 
-  syncTheme();syncState();localStorage.setItem("vitr-mini-dock","right");localStorage.setItem("vitr-mini-on-top","true");
+  syncTheme();syncState();localStorage.setItem("vitr-mini-enabled","true");localStorage.setItem("vitr-mini-dock","right");localStorage.setItem("vitr-mini-on-top","true");
   setMode(localStorage.getItem("vitr-mini-mode")||"standard").then(dockRight);
   if(invoke)invoke("set_mini_always_on_top",{enabled:true}).catch(function(){});
   setInterval(function(){syncTheme();syncState();dockRight()},1000);
